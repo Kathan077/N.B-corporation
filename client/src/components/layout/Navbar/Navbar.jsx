@@ -285,8 +285,8 @@ const Navbar = () => {
 
                   <div className="drawer-contact">
                     {[
-                      { Icon: Phone, text: '+91 98765 43210' },
-                      { Icon: Mail,  text: 'info@nbcorp.com' },
+                      { Icon: Phone, text: '+91 98259 54315' },
+                      { Icon: Mail,  text: 'nb2corporation@gmail.com' },
                     ].map(({ Icon, text }) => (
                       <div key={text} className="drawer-contact-item">
                         <div className="drawer-contact-icon"><Icon size={16} /></div>

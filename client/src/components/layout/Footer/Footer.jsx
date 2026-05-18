@@ -94,7 +94,7 @@ const Footer = () => {
                 </div>
                 <div>
                   <span className="block text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Digital Mail</span>
-                  <p className="text-sm font-bold">info@nbcorp.com</p>
+                  <p className="text-sm font-bold">nb2corporation@gmail.com</p>
                 </div>
               </div>
             </div>

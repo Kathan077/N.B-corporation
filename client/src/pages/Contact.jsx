@@ -91,7 +91,7 @@ const Contact = () => {
       <section className="nodes-section">
         <div className="nodes-inner">
           <div className="nodes-grid">
-            <ContactNode id="NODE_ALPHA" label="Satellite Data"   value="info@nbcorp.com" icon={<Mail   size={26} />} />
+            <ContactNode id="NODE_ALPHA" label="Satellite Data"   value="nb2corporation@gmail.com" icon={<Mail   size={26} />} />
             <ContactNode id="NODE_BETA"  label="Direct Uplink"    value="+91 98259 54315"    icon={<Phone  size={26} />} />
             <ContactNode id="NODE_GAMMA" label="Command Center"   value="Ahmedabad, Gujarat"   icon={<MapPin size={26} />} />
           </div>

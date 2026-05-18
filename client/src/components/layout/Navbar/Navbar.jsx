@@ -34,7 +34,8 @@ const Navbar = () => {
     const token = localStorage.getItem('token');
     if (!token) { if (user) setUser(null); return; }
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/me', {
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await axios.get(`${baseUrl}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.data) setUser(res.data);

@@ -16,5 +16,10 @@ mongoose.connect(MONGODB_URI)
 
 app.use("/api/auth", require("./routes/auth"));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Only listen to port if run directly (local development)
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app;

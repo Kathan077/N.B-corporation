@@ -61,7 +61,7 @@ router.post("/verify-otp", async (req, res) => {
     user.otp = null;
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, "secretkey");
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "secretkey");
 
     res.json({ token });
   } catch (error) {
@@ -76,7 +76,7 @@ const auth = async (req, res, next) => {
     const token = req.header("Authorization")?.replace("Bearer ", "");
     if (!token) return res.status(401).json({ msg: "No token, authorization denied" });
 
-    const decoded = jwt.verify(token, "secretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secretkey");
     req.user = decoded.id;
     next();
   } catch (err) {

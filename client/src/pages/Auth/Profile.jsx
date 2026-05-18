@@ -14,8 +14,9 @@ const Profile = () => {
     const token = localStorage.getItem('token');
     if (!token) { navigate('/login'); return; }
 
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     axios
-      .get('http://localhost:5000/api/auth/me', {
+      .get(`${baseUrl}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => { setUser(res.data); setLoading(false); })

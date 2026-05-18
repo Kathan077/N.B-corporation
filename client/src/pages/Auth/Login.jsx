@@ -22,7 +22,8 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/send-otp', { mobile });
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await axios.post(`${baseUrl}/api/auth/send-otp`, { mobile });
       setStep(2);
       alert(`TESTING MODE: Your OTP is ${res.data.otp}`);
       setOtp(res.data.otp); // Auto-fill for convenience
@@ -42,7 +43,8 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/verify-otp', { mobile, otp });
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await axios.post(`${baseUrl}/api/auth/verify-otp`, { mobile, otp });
       localStorage.setItem('token', res.data.token);
       window.dispatchEvent(new Event('storage'));
       window.dispatchEvent(new Event('auth-change'));

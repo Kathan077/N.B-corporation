@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { animate } from 'framer-motion';
 import Footer from '../components/layout/Footer/Footer';
+import tapesImage from '../assets/3m_industrial_tapes.png';
 import './Blog.css';
 
 /* ─── DATA ─────────────────────────────────────────────── */
@@ -132,19 +133,11 @@ const Blog = () => {
       <section className="blog-hero">
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="hero-bg-layer">
           <div className="hero-img-wrap">
-            <iframe 
-              className="hero-video-bg"
-              src="https://www.youtube.com/embed/pcPo05-xO70?autoplay=1&mute=1&loop=1&playlist=pcPo05-xO70&controls=0&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1" 
-              title="3M™ Electrical Tapes Product Family" 
-              frameborder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen
-            ></iframe>
-            {/* Fallback image */}
             <img
-              src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=2000&dpr=1"
-              alt="" className="hero-bg-img"
+              src={tapesImage}
+              alt="3M Industrial Tapes" 
+              className="hero-bg-img"
+              style={{ opacity: 0.5, filter: 'none', zIndex: 1 }}
             />
           </div>
           <div className="hero-overlay" />

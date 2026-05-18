@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Instagram, Twitter, Facebook, ArrowUpRight } from 'lucide-react';
 import './Footer.css';
@@ -48,17 +49,27 @@ const Footer = () => {
           <div className="footer-links">
             <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-10">Navigation</h3>
             <ul className="flex flex-col gap-5">
-              {['Home', 'About Us', 'Services', 'Products', 'Contact'].map((item) => (
-                <li key={item}>
-                  <motion.a 
-                    href="#" 
+              {[
+                { name: 'Home', path: '/' },
+                { name: 'About Us', path: '/about' },
+                { name: 'Services', path: '/product' },
+                { name: 'Products', path: '/product' },
+                { name: 'Contact', path: '/contact' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link 
+                    to={item.path} 
                     className="group flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors"
-                    whileHover={{ x: 10 }}
                   >
-                    <span className="w-0 h-px bg-brand-red group-hover:w-4 transition-all" />
-                    {item}
-                    <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </motion.a>
+                    <motion.span 
+                      className="flex items-center gap-2"
+                      whileHover={{ x: 10 }}
+                    >
+                      <span className="w-0 h-px bg-brand-red group-hover:w-4 transition-all" />
+                      {item.name}
+                      <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </motion.span>
+                  </Link>
                 </li>
               ))}
             </ul>

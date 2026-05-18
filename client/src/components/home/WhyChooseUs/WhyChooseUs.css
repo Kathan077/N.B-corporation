@@ -1,0 +1,128 @@
+.why-choose-section {
+    background-color: #ffffff;
+    border-top: 1px solid #f8fafc;
+    margin-top: -200px;
+
+}
+
+.choice-grid-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: radial-gradient(#0f172a 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+}
+
+.choice-visual-container {
+    padding: 2rem;
+}
+
+.choice-image-frame {
+    height: 600px;
+    width: 100%;
+    z-index: 10;
+}
+
+.choice-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, transparent 50%);
+    z-index: 15;
+}
+
+.choice-blueprint-ring {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 200px;
+    height: 200px;
+    border: 1px dashed rgba(220, 38, 38, 0.2);
+    border-radius: 50%;
+    z-index: 5;
+    animation: spin 60s linear infinite;
+}
+
+.choice-blueprint-line {
+    position: absolute;
+    bottom: -40px;
+    left: -40px;
+    width: 300px;
+    height: 1px;
+    background: linear-gradient(to right, #DC2626, transparent);
+    z-index: 5;
+}
+
+.glass-morphism {
+    background: rgba(15, 23, 42, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.choice-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem;
+    background: #f8fafc;
+    border-radius: 1rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+}
+
+.choice-feature-item:hover {
+    background: #ffffff;
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.05);
+    transform: translateX(10px);
+}
+
+.choice-icon-outer {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 0.75rem;
+    color: #DC2626;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1);
+}
+
+.choice-feature-item:hover .choice-icon-outer {
+    background: #DC2626;
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.choice-feature-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.4;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .choice-image-frame {
+        height: 400px;
+    }
+
+    .choice-visual-container {
+        padding: 0;
+    }
+
+    .choice-feature-item {
+        padding: 1rem;
+    }
+}

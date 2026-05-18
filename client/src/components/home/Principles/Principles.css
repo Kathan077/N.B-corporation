@@ -1,0 +1,284 @@
+/* ============================================================
+   Principles Section
+   ============================================================ */
+
+.principles-section {
+  position: relative;
+  padding: 8rem 1.5rem;
+  background-color: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+/* ── Corner Accents ─────────────────────────────────────── */
+.corner {
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  pointer-events: none;
+  opacity: 0.25;
+}
+
+.corner--tr {
+  top: 2rem;
+  right: 2rem;
+  border-top: 1px solid #94a3b8;
+  border-right: 1px solid #94a3b8;
+}
+
+.corner--bl {
+  bottom: 2rem;
+  left: 2rem;
+  border-bottom: 1px solid #94a3b8;
+  border-left: 1px solid #94a3b8;
+}
+
+/* ── Watermark ───────────────────────────────────────────── */
+.watermark {
+  position: absolute;
+  bottom: -2rem;
+  right: -3%;
+  font-size: clamp(8rem, 22vw, 20rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: #0f172a;
+  opacity: 0.025;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.principles-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.principles-header {
+  max-width: 52rem;
+  margin-bottom: 5rem;
+}
+
+.principles-heading {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 900;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+.principles-heading-accent {
+  color: #DC2626;
+  font-style: italic;
+}
+
+/* ── Grid ────────────────────────────────────────────────── */
+.principles-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .principles-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .principles-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+.principle-card {
+  position: relative;
+  padding: 2.75rem 2.25rem;
+  min-height: 380px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.5s ease,
+    background 0.5s ease,
+    box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+}
+
+.principle-card:hover {
+  border-color: rgba(220, 38, 38, 0.18);
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-6px) scale(1.008);
+  box-shadow:
+    0 32px 64px -16px rgba(15, 23, 42, 0.09),
+    inset 0 0 40px rgba(220, 38, 38, 0.02);
+}
+
+/* ── Card — Glow Overlay ─────────────────────────────────── */
+.card-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(220, 38, 38, 0.04), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.principle-card:hover .card-glow {
+  opacity: 1;
+}
+
+/* ── Card — Scan Line ────────────────────────────────────── */
+.scan-line {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent, rgba(220, 38, 38, 0.03), transparent);
+  pointer-events: none;
+  z-index: 1;
+  transition: top 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.principle-card:hover .scan-line {
+  top: 150%;
+}
+
+/* ── Card — Content ──────────────────────────────────────── */
+.card-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ── Icon ────────────────────────────────────────────────── */
+.icon-wrapper {
+  margin-bottom: 1.75rem;
+}
+
+.icon-container {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 0.875rem;
+  color: #0f172a;
+  transition:
+    background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.3s ease;
+}
+
+.principle-card:hover .icon-container {
+  background: #0f172a;
+  color: #ffffff;
+  transform: scale(1.1) rotate(-5deg);
+}
+
+.principle-icon {
+  transition: color 0.3s ease;
+}
+
+/* ── Title ───────────────────────────────────────────────── */
+.principle-title {
+  font-size:20px;
+  font-weight: 900;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-bottom: 0.875rem;
+}
+
+/* ── Description ─────────────────────────────────────────── */
+.principle-description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #64748b;
+  font-weight: 400;
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.card-footer {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.footer-line {
+  height: 1px;
+  background: #e2e8f0;
+  width: 2rem;
+  transition:
+    width 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.4s ease;
+}
+
+.principle-card:hover .footer-line {
+  width: 100%;
+  background: #DC2626;
+}
+
+/* ============================================================
+   Responsive Overrides
+   ============================================================ */
+
+/* Tighter padding on small screens */
+@media (max-width: 639px) {
+  .principles-section {
+    padding: 5rem 1.25rem;
+  }
+
+  .principle-card {
+    min-height: unset;
+    padding: 2rem 1.75rem;
+  }
+
+  .principles-header {
+    margin-bottom: 3rem;
+  }
+}
+
+/* Medium screens — 2 col */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .principles-section {
+    padding: 6rem 2rem;
+  }
+
+  .principle-card {
+    min-height: 340px;
+  }
+}
+
+/* Large screens — 3 col */
+@media (min-width: 1024px) {
+  .principles-section {
+    padding: 8rem 3rem;
+  }
+}
+
+/* XL screens */
+@media (min-width: 1280px) {
+  .principles-section {
+    padding: 10rem 4rem;
+  }
+}

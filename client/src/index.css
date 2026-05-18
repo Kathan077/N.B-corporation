@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-slate-900 font-sans antialiased overflow-x-hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    /* Inherits Outfit globally via Body font-sans mapping */
+  }
+}
+
+@layer components {
+
+  /* Common Button utilities - move complex shadows to standard CSS or config */
+  .btn-register {
+    @apply relative overflow-hidden bg-brand-red text-white px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out;
+    /* Use standard CSS for complex shadows that break @apply */
+    box-shadow: 0 20px 50px rgba(220, 38, 36, 0.2);
+  }
+
+  .btn-register:hover {
+    box-shadow: 0 20px 50px rgba(220, 38, 36, 0.4);
+  }
+
+  .btn-register::before {
+    content: '';
+    @apply absolute inset-0 bg-white/20 translate-x-[-100%] transition-transform duration-700 ease-in-out;
+  }
+
+  .btn-register:hover::before {
+    @apply translate-x-[100%];
+  }
+
+  .btn-login {
+    @apply relative text-slate-800 px-6 py-3.5 font-black text-sm uppercase tracking-[0.2em] hover:text-brand-red transition-all duration-300 flex items-center gap-2;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}

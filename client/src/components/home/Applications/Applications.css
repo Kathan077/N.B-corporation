@@ -1,0 +1,267 @@
+.applications-section {
+    position: relative;
+    background-color: #ffffff;
+    margin-top: -150px;
+}
+
+.app-header-arrow {
+    position: relative;
+    width: 65px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.arrow-tail {
+    width: 50px;
+    height: 8px;
+    background: #DC2626;
+}
+
+.arrow-head {
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 18px solid #DC2626;
+}
+
+.application-card {
+    position: relative;
+    height: 450px;
+    border-radius: 2rem;
+    overflow: hidden;
+    background: #f8fafc;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.app-image-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.app-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.application-card:hover .app-bg-image {
+    transform: scale(1.05);
+}
+
+.app-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(15, 23, 42, 0.4) 100%);
+}
+
+.app-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #DC2626;
+    padding: 1.5rem 2.5rem;
+    z-index: 10;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.application-card:hover .app-bottom-bar {
+    transform: translateY(100%);
+}
+
+.app-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.app-hover-content {
+    position: absolute;
+    inset: 0;
+    background: #DC2626;
+    z-index: 20;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.application-card:hover .app-hover-content {
+    transform: translateY(0);
+}
+
+.app-icon-box {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.app-hover-title {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.app-points-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.app-point {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.point-dot {
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    border-radius: 50%;
+}
+
+.app-learn-more {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1.8rem;
+    background: #ffffff;
+    color: #DC2626;
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-radius: 100px;
+    width: fit-content;
+    transition: all 0.3s ease;
+}
+
+.app-learn-more:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.master-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+        linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+    background-size: 100px 100px;
+}
+
+/* --- Responsive Refinements --- */
+
+@media (max-width: 768px) {
+    .application-card {
+        height: 420px;
+    }
+
+    .app-hover-title {
+        font-size: 1.5rem;
+    }
+
+    .app-hover-content {
+        padding: 2.5rem 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .applications-section {
+        padding-top: 5rem !important;
+        padding-bottom: 5rem !important;
+    }
+
+    .application-card {
+        height: 480px;
+        /* Increased to fix text clipping and button visibility */
+        border-radius: 1.5rem;
+    }
+
+    .app-bottom-bar {
+        padding: 1.2rem 1.5rem;
+    }
+
+    .app-title {
+        font-size: 1rem;
+    }
+
+    .app-hover-content {
+        padding: 2rem 1.5rem;
+        justify-content: flex-start;
+        padding-top: 3rem;
+    }
+
+    .app-hover-title {
+        font-size: 1.35rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .app-icon-box {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1.5rem;
+    }
+
+    .app-points-list {
+        gap: 0.85rem;
+        margin-bottom: 2rem;
+    }
+
+    .app-point {
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+    .app-learn-more {
+        padding: 0.75rem 1.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 340px) {
+    .application-card {
+        height: 490px;
+        /* Maximum height for very narrow screens like 320px */
+    }
+
+    .app-hover-content {
+        padding-top: 2.5rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    .app-hover-title {
+        font-size: 1.2rem;
+    }
+
+    .app-point {
+        font-size: 0.85rem;
+    }
+
+    .app-points-list {
+        gap: 0.75rem;
+        margin-bottom: 1.75rem;
+    }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ReactLenis } from 'lenis/react';
 import Navbar from './components/layout/Navbar/Navbar';
+import ScrollToTop from './components/layout/ScrollToTop';
 import Home from './pages/Home';
 import About from './pages/About';
 import Blog from './pages/Blog';
@@ -25,6 +26,7 @@ function App() {
   return (
     <ReactLenis root>
       <Router>
+        <ScrollToTop />
         <div className="min-h-screen bg-slate-950">
           <Navbar />
           <Routes>

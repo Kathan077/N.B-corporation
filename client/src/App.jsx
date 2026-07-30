@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Blog from './pages/Blog';
 import ProductShowcase from './pages/ProductShowcase';
+import ProductDetail from './pages/ProductDetail';
 import Contact from './pages/Contact';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -33,7 +34,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/product" element={<ProductShowcase />} />
-            <Route path="/blog" element={<Blog />} />
+            <Route path="/products" element={<ProductShowcase />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />

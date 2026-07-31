@@ -85,30 +85,6 @@
     opacity: 1;
 }
 
-.action-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.action-btn.quick-view {
-    background: #ffffff;
-    color: #0f172a;
-}
-
-.action-btn.add-cart {
-    background: #DC2626;
-    color: #ffffff;
-}
-
-.action-btn:hover {
-    transform: scale(1.1);
-}
-
 .product-info {
     flex: 1;
 }

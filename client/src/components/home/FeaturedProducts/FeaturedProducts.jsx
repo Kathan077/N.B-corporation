@@ -45,8 +45,8 @@ const ProductCard = ({ product, index, onInquire, onExplore }) => {
           
           {/* Quick Action Overlay */}
           <div className="product-action-overlay absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-            <span className="action-btn px-3.5 py-2 rounded-xl bg-white text-slate-900 font-bold text-xs flex items-center gap-1.5 shadow-lg">
-              <Eye size={14} /> View Details & Variants
+            <span className="px-4 py-2 rounded-xl bg-white text-slate-900 font-extrabold text-xs flex items-center gap-1.5 shadow-lg transform translate-y-2 group-hover:translate-y-0 hover:scale-105 transition-all duration-300">
+              <Eye size={14} className="text-red-600" /> View Details & Variants
             </span>
           </div>
         </div>

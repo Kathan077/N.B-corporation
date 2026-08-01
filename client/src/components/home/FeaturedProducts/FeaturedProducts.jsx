@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Eye, ArrowRight, ShieldCheck, Cpu, Package } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PRODUCTS } from '../../../data/productsData';
+import { getImageUrl } from '../../../utils/imageUtils';
 import './FeaturedProducts.css';
 
 const ProductCard = ({ product, index, onInquire, onExplore }) => {
@@ -35,7 +36,7 @@ const ProductCard = ({ product, index, onInquire, onExplore }) => {
             </div>
           ) : (
             <img
-              src={encodeURI(product.image)}
+              src={getImageUrl(product.image)}
               alt={product.name}
               className="w-full h-full object-contain mx-auto my-auto block group-hover:scale-105 transition-transform duration-300"
               loading="lazy"

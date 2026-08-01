@@ -1529,13 +1529,13 @@ export const PRODUCTS = [
     "categoryId": "waterproofing",
     "subtitle": "48\" X 36 Yrd • White TPO Extreme Seal 1.0mm",
     "description": "White 1.0 mm thick TPO-backed extreme sealing tape with linerless acrylic adhesive. Conforms over screw heads, rivets, joints and gaps. Linerless format means easier application with less waste.",
-    "image": "/product/HD Images/EST TAPE WATER PR/4411W+ — 3M™ Extreme Sealing Tape (48 X 36 Yrd ( 1 mm)).jpeg",
+    "image": "/product/HD Images/EST TAPE WATER PR/4411W-Plus — 3M Extreme Sealing Tape (48 X 36 Yrd (1 mm)).jpeg",
     "pdfPage": 17,
     "colors": [
       {
         "name": "White TPO",
         "hex": "#ffffff",
-        "image": "/product/HD Images/EST TAPE WATER PR/4411W+ — 3M™ Extreme Sealing Tape (48 X 36 Yrd ( 1 mm)).jpeg"
+        "image": "/product/HD Images/EST TAPE WATER PR/4411W-Plus — 3M Extreme Sealing Tape (48 X 36 Yrd (1 mm)).jpeg"
       }
     ],
     "widths": [

@@ -7,6 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/layout/Footer/Footer';
 import { MAIN_CATEGORIES, SUB_CATEGORIES, PRODUCTS, INDUSTRIES } from '../data/productsData';
+import { getImageUrl } from '../utils/imageUtils';
 import './ProductShowcase.css';
 
 // ── CATALOG PRODUCT CARD COMPONENT WITH PROFESSIONAL UI/UX ──
@@ -24,18 +25,11 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
         {/* Product HD Image Container */}
         <div 
           onClick={() => navigate(`/product/${product.id}`)}
-          className="w-full h-56 mb-4 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-50 via-slate-100/40 to-white border border-slate-100 flex items-center justify-center p-4 group-hover:border-red-200 transition-colors cursor-pointer relative shrink-0"
+          className="relative h-56 mb-4 bg-slate-50 rounded-2xl p-4 flex items-center justify-center overflow-hidden border border-slate-100 group-hover:border-red-200 transition-colors cursor-pointer shrink-0"
         >
           {/* Top Badges */}
-          <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
-            <span className="px-2.5 py-1 rounded-lg bg-red-600 text-white font-mono font-black text-[11px] shadow-sm tracking-wider">
-              3M {product.code}
-            </span>
-            {product.pdfPage && (
-              <span className="px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-600 font-bold text-[10px] shadow-xs">
-                PDF p.{product.pdfPage}
-              </span>
-            )}
+          <div className="absolute top-3 left-3 bg-red-600 text-white font-mono font-bold text-[10px] px-2.5 py-0.5 rounded-md shadow-sm z-10">
+            3M {product.code}
           </div>
 
           {!product.image || imgError ? (
@@ -46,7 +40,7 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
             </div>
           ) : (
             <img 
-              src={encodeURI(product.image)} 
+              src={getImageUrl(product.image)} 
               alt={product.name} 
               className="w-full h-full object-contain mx-auto my-auto block group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
@@ -155,7 +149,7 @@ const ModalProductGallery = ({ product }) => {
           </div>
         ) : (
           <img 
-            src={encodeURI(currentSrc)} 
+            src={getImageUrl(currentSrc)} 
             alt={product.name} 
             className="w-full h-full object-contain"
             onError={() => setModalImgErr(true)}
@@ -176,7 +170,7 @@ const ModalProductGallery = ({ product }) => {
                 idx === activeIdx ? 'border-red-600 ring-2 ring-red-600 scale-105 shadow-sm' : 'border-slate-200 opacity-60 hover:opacity-100'
               }`}
             >
-              <img src={encodeURI(img)} alt="" className="w-full h-full object-contain" />
+              <img src={getImageUrl(img)} alt="" className="w-full h-full object-contain" />
             </button>
           ))}
         </div>

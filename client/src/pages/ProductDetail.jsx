@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Footer from '../components/layout/Footer/Footer';
 import { PRODUCTS, CATEGORIES } from '../data/productsData';
+import { getImageUrl } from '../utils/imageUtils';
 import './ProductDetail.css';
 
 const RelatedCard = ({ rel, navigate }) => {
@@ -27,7 +28,7 @@ const RelatedCard = ({ rel, navigate }) => {
             </div>
           ) : (
             <img
-              src={encodeURI(rel.image)}
+              src={getImageUrl(rel.image)}
               alt={rel.name}
               className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
               onError={() => setImgErr(true)}
@@ -233,7 +234,7 @@ const ProductDetail = () => {
                   ) : (
                     <>
                       <img
-                        src={encodeURI(currentImageSrc)}
+                        src={getImageUrl(currentImageSrc)}
                         alt={`${product.name} - Photo ${activeImageIndex + 1}`}
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                         onError={() => setImageError(true)}
@@ -291,7 +292,7 @@ const ProductDetail = () => {
                             }`}
                           >
                             <img
-                              src={encodeURI(img)}
+                              src={getImageUrl(img)}
                               alt={`Thumbnail ${idx + 1}`}
                               className="w-full h-full object-contain"
                             />
@@ -715,7 +716,7 @@ const ProductDetail = () => {
 
             <div className="relative w-full h-[65vh] flex items-center justify-center">
               <img 
-                src={encodeURI(currentImageSrc)} 
+                src={getImageUrl(currentImageSrc)} 
                 alt={product.name} 
                 className="max-w-full max-h-[60vh] object-contain"
               />
@@ -748,7 +749,7 @@ const ProductDetail = () => {
                       idx === activeImageIndex ? 'border-red-600 ring-2 ring-red-600 scale-105 shadow-md' : 'border-slate-200 opacity-50 hover:opacity-100'
                     }`}
                   >
-                    <img src={encodeURI(img)} alt="" className="w-full h-full object-contain" />
+                    <img src={getImageUrl(img)} alt="" className="w-full h-full object-contain" />
                   </button>
                 ))}
               </div>

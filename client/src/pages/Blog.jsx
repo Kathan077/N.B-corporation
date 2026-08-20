@@ -4,7 +4,7 @@ import {
   ArrowRight, Search, MessageSquare, Activity,
   Layers, ShieldCheck, Terminal, ChevronRight,
   Filter, Zap, Clock, Eye, BookOpen,
-  Radio, Award, Users, BarChart2
+  Radio, Award, Users, BarChart2, User
 } from 'lucide-react';
 import { animate } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';

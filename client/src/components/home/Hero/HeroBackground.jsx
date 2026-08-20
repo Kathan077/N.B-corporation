@@ -16,16 +16,20 @@ const HeroBackground = ({ smoothMouseX, smoothMouseY, smoothCursorX, smoothCurso
           aria-hidden="true"
           style={{ border: "none", pointerEvents: 'none', userSelect: 'none' }}
         ></iframe>
-        {/* Transparent blocker to prevent YouTube controls from showing on hover */}
+        {/* Full-cover blocker - intercepts all mouse events so YouTube controls NEVER appear */}
         <div style={{
           position: 'absolute',
-          inset: 0,
-          zIndex: 1,
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 10,
           background: 'transparent',
-          pointerEvents: 'none'
+          pointerEvents: 'auto',
+          cursor: 'default'
         }} aria-hidden="true" />
         <img src={abrasiveSheet} alt="Industrial Background" className="hero-fallback-img" />
-        <div className="hero-image-overlay" style={{ pointerEvents: 'auto' }} />
+        <div className="hero-image-overlay" style={{ pointerEvents: 'auto', zIndex: 11 }} />
       </div>
       <div className="hero-noise" />
       

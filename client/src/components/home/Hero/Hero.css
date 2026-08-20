@@ -18,9 +18,11 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    /* Scale 3x so YouTube's logo/controls chrome is pushed fully off-screen */
-    width: 300vw;
-    height: 300vh;
+    /* Maintain 16:9 aspect ratio and cover the full hero area */
+    width: 177.78vh;   /* 16/9 * 100vh */
+    min-width: 100%;
+    height: 56.25vw;   /* 9/16 * 100vw */
+    min-height: 100%;
     transform: translate(-50%, -50%);
     pointer-events: none !important;
     user-select: none;

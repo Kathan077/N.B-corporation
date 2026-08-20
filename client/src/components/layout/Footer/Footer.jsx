@@ -123,19 +123,22 @@ const Footer = () => {
           <div className="footer-col footer-hq flex flex-col">
             <div className="footer-col-header">
               <span className="footer-col-indicator" />
-              <h3 className="footer-col-title">Tactical HQ</h3>
+              <h3 className="footer-col-title">Headquarters</h3>
             </div>
             <div className="footer-address-card">
-              <div className="flex items-start gap-3.5 mb-3">
-                <div className="footer-contact-icon shrink-0 mt-0.5">
-                  <MapPin size={16} />
+              <div className="flex items-start gap-3">
+                <div className="footer-contact-icon shrink-0 mt-1">
+                  <MapPin size={18} />
                 </div>
-                <div className="text-sm font-medium text-slate-300 leading-relaxed">
-                  <p className="font-bold text-white mb-1">NB Corporation</p>
-                  <p>G-10, 11, 12 Satkar Avenue,</p>
-                  <p>Nr. Railway Crossing, NH No-08,</p>
-                  <p>Opp. Starline Maruti Showroom, Naroda,</p>
-                  <p>Ahmedabad, Gujarat 382340</p>
+                <div className="text-xs font-medium text-slate-300 leading-normal space-y-1">
+                  <p className="font-bold text-white text-sm flex items-center gap-1.5 mb-1">
+                    <span>NB Corporation</span>
+                    <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-600/20 text-red-400 border border-red-500/30">HQ</span>
+                  </p>
+                  <p className="text-slate-300 whitespace-nowrap">G-10, 11, 12 Satkar Avenue,</p>
+                  <p className="text-slate-300 whitespace-nowrap">Nr. Railway Crossing, NH No. 08,</p>
+                  <p className="text-slate-300 whitespace-nowrap">Opp. Starline Maruti Showroom,</p>
+                  <p className="text-slate-300 whitespace-nowrap">Naroda, Ahmedabad, Gujarat 382340</p>
                 </div>
               </div>
             </div>

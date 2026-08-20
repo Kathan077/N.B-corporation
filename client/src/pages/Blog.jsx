@@ -7,33 +7,11 @@ import {
   Radio, Award, Users, BarChart2
 } from 'lucide-react';
 import { animate } from 'framer-motion';
+import { useNavigate, Link } from 'react-router-dom';
 import Footer from '../components/layout/Footer/Footer';
 import tapesImage from '../assets/3m_industrial_tapes.png';
+import { CATEGORIES, POSTS } from '../data/blogData';
 import './Blog.css';
-
-/* ─── DATA ─────────────────────────────────────────────── */
-const CATEGORIES = ["ALL", "INNOVATION", "TECHNOLOGY", "SUSTAINABILITY", "MATERIALS", "LOGISTICS", "SAFETY"];
-
-const POSTS = [
-  {
-    id: "ART-001", title: "The Future of Industrial Automation", category: "TECHNOLOGY",
-    excerpt: "Exploring the next generation of robotic precision and neural manufacturing protocols that will reshape factory floors globally.",
-    author: "Dr. Aris Thorne", role: "Chief Engineer", date: "MAR 22, 2026", readTime: "8 MIN", views: "12.4K",
-    image: "https://sanjaytools.com/wp-content/uploads/2022/11/sanjay-tools-infra-3.jpg"
-  },
-  {
-    id: "ART-002", title: "Sustainable Supply Chain Logistics", category: "SUSTAINABILITY",
-    excerpt: "How carbon-neutral logistics are transforming the global shipping landscape through radical systemic redesign.",
-    author: "Sarah Jenkins", role: "Logistics Director", date: "MAR 20, 2026", readTime: "6 MIN", views: "9.1K",
-    image: "https://images.pexels.com/photos/1556691/pexels-photo-1556691.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  },
-  {
-    id: "ART-003", title: "Advanced Material Science v2.0", category: "MATERIALS",
-    excerpt: "Integrating graphene-based composites into everyday structural engineering for next-decade resilience.",
-    author: "Marcus Vance", role: "Materials Lead", date: "MAR 18, 2026", readTime: "10 MIN", views: "7.8K",
-    image: "https://images.pexels.com/photos/3861964/pexels-photo-3861964.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  }
-];
 
 const STATS = [
   { value: "50K+", label: "Monthly Readers", icon: <Users size={20} /> },
@@ -78,6 +56,7 @@ const AnimatedCounter = ({ value }) => {
 
 /* ─── MAIN COMPONENT ────────────────────────────────────── */
 const Blog = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const containerRef = useRef(null);
@@ -234,9 +213,9 @@ const Blog = () => {
             viewport={{ once: true }}
             className="featured-img-col"
           >
-            <div className="featured-img-frame">
+            <div className="featured-img-frame cursor-pointer" onClick={() => navigate(`/blog/${featuredPost.id}`)}>
               <HudTag className="featured-unit-tag">PRIORITY_TRANS // 0xAF92</HudTag>
-              <img src={'https://sanjaytools.com/wp-content/uploads/2022/11/sanjay-tools-infra-3.jpg'} alt={featuredPost.title} className="featured-img" />
+              <img src={featuredPost.image} alt={featuredPost.title} className="featured-img" />
               <div className="featured-img-grad" />
               <div className="featured-img-bottom">
                 <span className="featured-img-cat">{featuredPost.category}</span>
@@ -257,13 +236,15 @@ const Blog = () => {
           >
             <SectionEyebrow>Pinned_Intel // Editor's Pick</SectionEyebrow>
 
-            <h2 className="featured-title">{featuredPost.title}</h2>
+            <h2 className="featured-title cursor-pointer hover:text-red-500 transition-colors" onClick={() => navigate(`/blog/${featuredPost.id}`)}>{featuredPost.title}</h2>
 
             <p className="featured-excerpt">{featuredPost.excerpt}</p>
 
             <div className="featured-author-row">
               <div className="featured-author-avatar">
-                <img src={`https://sanjaytools.com/wp-content/uploads/2022/11/sanjay-tools-infra-3.jpg`} alt="" />
+                <div className="w-8 h-8 rounded-full bg-red-600/20 text-red-500 flex items-center justify-center font-bold text-xs border border-red-500/30">
+                  <User size={14} />
+                </div>
               </div>
               <div>
                 <div className="featured-author-name">{featuredPost.author}</div>
@@ -275,8 +256,8 @@ const Blog = () => {
               </div>
             </div>
 
-            <button className="featured-cta">
-              <span>Access_Manuscript</span>
+            <button onClick={() => navigate(`/blog/${featuredPost.id}`)} className="featured-cta">
+              <span>Read Full Article</span>
               <div className="featured-cta-circle">
                 <ChevronRight size={18} />
               </div>
@@ -296,7 +277,7 @@ const Blog = () => {
         <div className="ticker-track">
           <div className="ticker-inner">
             {[...POSTS, ...POSTS].map((p, i) => (
-              <span key={i} className="ticker-item">
+              <span key={i} className="ticker-item cursor-pointer" onClick={() => navigate(`/blog/${p.id}`)}>
                 <span className="ticker-cat">{p.category}</span>
                 {p.title}
                 <span className="ticker-sep">//</span>
@@ -361,7 +342,8 @@ const Blog = () => {
                       exit={{ opacity: 0, scale: 0.94 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.55, delay: i * 0.07 }}
-                      className="blog-card group"
+                      onClick={() => navigate(`/blog/${post.id}`)}
+                      className="blog-card group cursor-pointer"
                     >
                       {/* Corner brackets */}
                       <div className="card-brackets" aria-hidden>
@@ -371,13 +353,13 @@ const Blog = () => {
 
                       {/* Image */}
                       <div className="card-img-box">
-                        <HudTag>UNIT_ID: {post.id}</HudTag>
+                        <HudTag>ARTICLE ID: {post.id}</HudTag>
                         <img src={post.image} alt={post.title} className="card-img" />
                         <div className="card-scan-grid" />
                         <div className="card-img-tint" />
                         {/* Hover overlay */}
                         <div className="card-img-overlay">
-                          <button className="card-overlay-btn">Read Article <ArrowRight size={14} /></button>
+                          <button onClick={(e) => { e.stopPropagation(); navigate(`/blog/${post.id}`); }} className="card-overlay-btn">Read Article <ArrowRight size={14} /></button>
                         </div>
                       </div>
 
@@ -397,15 +379,17 @@ const Blog = () => {
                         <div className="card-footer">
                           <div className="card-author-row">
                             <div className="card-avatar">
-                              <img src={`https://i.pravatar.cc/60?u=${post.id}`} alt="" />
+                              <div className="w-6 h-6 rounded-full bg-red-600/20 text-red-500 flex items-center justify-center font-bold text-[10px]">
+                                <User size={12} />
+                              </div>
                             </div>
                             <div>
                               <div className="card-author-name">{post.author}</div>
                               <div className="card-author-date">{post.date}</div>
                             </div>
                           </div>
-                          <button className="card-read-btn">
-                            ACCESS <ArrowRight size={13} className="card-arrow" />
+                          <button onClick={(e) => { e.stopPropagation(); navigate(`/blog/${post.id}`); }} className="card-read-btn">
+                            READ <ArrowRight size={13} className="card-arrow" />
                           </button>
                         </div>
                       </div>

@@ -8,13 +8,20 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// MongoDB connect
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://kathanpatel099_db_user:kathanapate12@cluster0.r70sqps.mongodb.net/?appName=Cluster0";
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Connection Error:", err));
+// MongoDB connect securely via environment variable
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error("CRITICAL SECURITY WARNING: MONGODB_URI is not set in environment variables!");
+} else {
+  mongoose
+    .connect(MONGODB_URI)
+    .then(() => console.log("MongoDB Connected Successfully"))
+    .catch((err) => console.error("MongoDB Connection Error:", err));
+}
 
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/cart", require("./routes/cart"));
 
 // Only listen to port if run directly (local development)
 if (require.main === module) {

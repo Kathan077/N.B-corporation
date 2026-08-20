@@ -2,17 +2,21 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, X, Eye, FileText, Download, CheckCircle2, 
-  ArrowRight, ShieldCheck, Sparkles, PhoneCall, Info, Layers, Package
+  ArrowRight, ShieldCheck, Sparkles, PhoneCall, Info, Layers, Package, ShoppingBag, Plus, Minus
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/layout/Footer/Footer';
 import { MAIN_CATEGORIES, SUB_CATEGORIES, PRODUCTS, INDUSTRIES } from '../data/productsData';
 import { getImageUrl } from '../utils/imageUtils';
+import { useCart } from '../context/CartContext';
 import './ProductShowcase.css';
 
 // ── CATALOG PRODUCT CARD COMPONENT WITH PROFESSIONAL UI/UX ──
 const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
+  const { addToCart, updateQuantity, getCartItem, loading } = useCart();
   const [imgError, setImgError] = useState(false);
+
+  const cartItem = getCartItem(product.id);
 
   return (
     <motion.div
@@ -94,21 +98,68 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
       </div>
 
       {/* Card Actions (Anchored at bottom) */}
-      <div className="flex items-center gap-2.5 pt-3.5 border-t border-slate-100 shrink-0">
+      <div className="flex items-center gap-2 pt-3.5 border-t border-slate-100 shrink-0">
+        {cartItem ? (
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center bg-red-600 border border-red-500 rounded-xl p-0.5 shadow-md shadow-red-600/30"
+          >
+            <button
+              type="button"
+              disabled={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                updateQuantity(cartItem._id, cartItem.quantity - 1);
+              }}
+              className="w-7 h-7 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+              title="Decrease quantity"
+            >
+              <Minus size={12} />
+            </button>
+
+            <span className="px-2 font-mono font-black text-xs text-white min-w-[20px] text-center select-none">
+              {cartItem.quantity}
+            </span>
+
+            <button
+              type="button"
+              disabled={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                updateQuantity(cartItem._id, cartItem.quantity + 1);
+              }}
+              className="w-7 h-7 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+              title="Increase quantity"
+            >
+              <Plus size={12} />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart(product, 1);
+            }}
+            className="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md shadow-red-600/20 active:scale-95 cursor-pointer"
+          >
+            <ShoppingBag size={14} /> Add Cart
+          </button>
+        )}
+
         <button
           onClick={() => navigate(`/product/${product.id}`)}
-          className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 cursor-pointer"
+          className="flex-1 py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-extrabold text-xs flex items-center justify-center gap-1 transition-all duration-300 cursor-pointer"
         >
-          <Eye size={14} /> Full Details
+          <Eye size={13} /> Details
         </button>
 
         <button
           onClick={() => handleInquire(product)}
-          className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md shadow-red-600/20 cursor-pointer"
+          className="py-2.5 px-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold text-xs flex items-center justify-center gap-1 transition-all duration-300 cursor-pointer"
           title="Get Instant Quotation"
         >
           <span>Inquire</span>
-          <ArrowRight size={13} />
         </button>
       </div>
     </motion.div>

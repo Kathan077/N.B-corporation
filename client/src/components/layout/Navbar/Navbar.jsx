@@ -3,6 +3,7 @@ import axios from 'axios';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight, UserPlus, LogIn, X, Menu, Phone, Mail, Instagram, Twitter, Facebook, ShoppingCart, Search } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useCart } from '../../../context/CartContext';
 import './Navbar.css';
 
 const useMagneticEffect = () => {
@@ -22,6 +23,7 @@ const useMagneticEffect = () => {
 };
 
 const Navbar = () => {
+  const { cartCount } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -169,7 +171,11 @@ const Navbar = () => {
                 <div className="relative">
                   <ShoppingCart size={20}
                     className="text-slate-700 group-hover:text-brand-red transition-all duration-300" />
-                  <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="cart-badge">3</motion.span>
+                  {cartCount > 0 && (
+                    <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} key={cartCount} className="cart-badge">
+                      {cartCount}
+                    </motion.span>
+                  )}
                 </div>
               </MagneticLink>
 

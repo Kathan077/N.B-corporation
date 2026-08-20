@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, ArrowRight, ShieldCheck, Cpu, Package } from 'lucide-react';
+import { Eye, ArrowRight, ShieldCheck, Cpu, Package, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PRODUCTS } from '../../../data/productsData';
 import { getImageUrl } from '../../../utils/imageUtils';
+import { useCart } from '../../../context/CartContext';
 import './FeaturedProducts.css';
 
 const ProductCard = ({ product, index, onInquire, onExplore }) => {
   const navigate = useNavigate();
+  const { addToCart, updateQuantity, getCartItem, loading } = useCart();
   const [imgErr, setImgErr] = useState(false);
+
+  const cartItem = getCartItem(product.id);
 
   return (
     <motion.div
@@ -85,17 +89,59 @@ const ProductCard = ({ product, index, onInquire, onExplore }) => {
         </div>
       </div>
 
-      <div className="product-footer pt-3 border-t border-slate-100 flex items-center justify-between shrink-0">
-        <button 
-          onClick={() => navigate(`/product/${product.id}`)}
-          className="text-xs font-extrabold text-slate-700 hover:text-red-600 transition-colors flex items-center gap-1 cursor-pointer"
-        >
-          <span>Full Specs</span>
-        </button>
+      <div className="product-footer pt-3 border-t border-slate-100 flex items-center justify-between gap-2 shrink-0">
+        {cartItem ? (
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center bg-red-600 border border-red-500 rounded-xl p-0.5 shadow-md shadow-red-600/30"
+          >
+            <button
+              type="button"
+              disabled={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                updateQuantity(cartItem._id, cartItem.quantity - 1);
+              }}
+              className="w-7 h-7 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+              title="Decrease quantity"
+            >
+              <Minus size={12} />
+            </button>
+
+            <span className="px-2 font-mono font-black text-xs text-white min-w-[20px] text-center select-none">
+              {cartItem.quantity}
+            </span>
+
+            <button
+              type="button"
+              disabled={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                updateQuantity(cartItem._id, cartItem.quantity + 1);
+              }}
+              className="w-7 h-7 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+              title="Increase quantity"
+            >
+              <Plus size={12} />
+            </button>
+          </div>
+        ) : (
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart(product, 1);
+            }}
+            className="group/btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] transition-colors cursor-pointer shadow-sm shadow-red-600/20 active:scale-95"
+          >
+            <ShoppingBag size={13} />
+            <span>Add Cart</span>
+          </button>
+        )}
 
         <button 
           onClick={() => onInquire(product)}
-          className="add-to-cart-link group/btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-600 text-red-700 hover:text-white font-bold text-[11px] transition-colors cursor-pointer"
+          className="add-to-cart-link group/btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition-colors cursor-pointer"
         >
           <span>Inquire</span>
           <ArrowRight size={12} className="group-hover/btn:translate-x-0.5 transition-transform" />

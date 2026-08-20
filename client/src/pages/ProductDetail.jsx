@@ -4,11 +4,12 @@ import { motion } from 'framer-motion';
 import { 
   ChevronRight, ShieldCheck, FileText, Download, PhoneCall, ArrowRight,
   Layers, CheckCircle2, AlertCircle, Info, Sparkles, HelpCircle, Eye, ArrowLeft,
-  Check, Package, ChevronLeft, Images, X
+  Check, Package, ChevronLeft, Images, X, ShoppingBag, Plus, Minus
 } from 'lucide-react';
 import Footer from '../components/layout/Footer/Footer';
 import { PRODUCTS, CATEGORIES } from '../data/productsData';
 import { getImageUrl } from '../utils/imageUtils';
+import { useCart } from '../context/CartContext';
 import './ProductDetail.css';
 
 const RelatedCard = ({ rel, navigate }) => {
@@ -80,9 +81,20 @@ const ProductDetail = () => {
     return product?.volumes && product.volumes.length > 0 ? product.volumes[0] : null;
   });
 
+  const { addToCart, updateQuantity, getCartItem, loading: cartLoading } = useCart();
+  const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('specs');
   const [isZoomed, setIsZoomed] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const cartOptions = useMemo(() => ({
+    color: selectedColor ? selectedColor.name : '',
+    width: selectedWidth || '',
+    length: selectedLength || '',
+    volume: selectedVolume || ''
+  }), [selectedColor, selectedWidth, selectedLength, selectedVolume]);
+
+  const cartItem = getCartItem(product?.id, cartOptions);
 
   // Collect all valid images for Gallery View
   const galleryList = useMemo(() => {
@@ -174,6 +186,16 @@ const ProductDetail = () => {
     const subject = encodeURIComponent(`Quotation Request for ${product.name} (${product.code})${variantDetails}`);
     
     navigate(`/contact?subject=${subject}`);
+  };
+
+  const handleAddToCart = async () => {
+    const options = {
+      color: selectedColor ? selectedColor.name : '',
+      width: selectedWidth || '',
+      length: selectedLength || '',
+      volume: selectedVolume || ''
+    };
+    await addToCart(product, quantity, options);
   };
 
   return (
@@ -503,6 +525,70 @@ const ProductDetail = () => {
                 <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
                   <CheckCircle2 size={16} /> Ready Stock in Ahmedabad
                 </div>
+              </div>
+
+              {/* Quantity Selector & Add to Cart */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 border-t border-slate-800">
+                {cartItem ? (
+                  <div className="w-full p-2.5 rounded-2xl bg-red-950/40 border border-red-500/30 flex items-center justify-between gap-4">
+                    <span className="text-xs font-mono font-bold text-red-300 pl-2">
+                      In Your Cart:
+                    </span>
+
+                    <div className="flex items-center gap-3 bg-red-600 border border-red-500 rounded-xl p-1 shadow-md shadow-red-600/30">
+                      <button
+                        type="button"
+                        disabled={cartLoading}
+                        onClick={() => updateQuantity(cartItem._id, cartItem.quantity - 1)}
+                        className="w-8 h-8 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+                        title="Decrease quantity"
+                      >
+                        <Minus size={14} />
+                      </button>
+
+                      <span className="px-3 font-mono font-black text-sm text-white min-w-[24px] text-center select-none">
+                        {cartItem.quantity}
+                      </span>
+
+                      <button
+                        type="button"
+                        disabled={cartLoading}
+                        onClick={() => updateQuantity(cartItem._id, cartItem.quantity + 1)}
+                        className="w-8 h-8 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+                        title="Increase quantity"
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-3 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-1.5 w-full sm:w-auto justify-between">
+                      <button
+                        onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                        disabled={quantity <= 1}
+                        className="w-9 h-9 rounded-xl bg-slate-700 hover:bg-red-600 text-white font-black flex items-center justify-center transition-colors disabled:opacity-30 disabled:hover:bg-slate-700 cursor-pointer"
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="w-10 text-center font-mono font-bold text-sm text-white">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity((prev) => prev + 1)}
+                        className="w-9 h-9 rounded-xl bg-slate-700 hover:bg-red-600 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={handleAddToCart}
+                      className="w-full sm:flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all duration-300 shadow-xl shadow-red-600/40 cursor-pointer group"
+                    >
+                      <ShoppingBag size={18} />
+                      <span>Add To Cart</span>
+                    </button>
+                  </>
+                )}
               </div>
 
               {/* Primary Action Button */}

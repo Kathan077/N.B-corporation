@@ -44,7 +44,7 @@
   position: absolute;
   bottom: -2rem;
   left: 2%;
-  font-size: clamp(4rem, 20vw, 20rem);
+  font-size: clamp(6rem, 22vw, 20rem);
   font-weight: 900;
   letter-spacing: -0.05em;
   text-transform: uppercase;
@@ -61,12 +61,11 @@
   margin: 0 auto;
   position: relative;
   z-index: 1;
-  width: 100%;
 }
 
 /* ── Header ──────────────────────────────────────────────── */
 .t-header {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 @media (min-width: 768px) {
@@ -78,32 +77,32 @@
 .t-eyebrow {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .t-eyebrow-line {
-  width: 2.5rem;
+  width: 3rem;
   height: 1px;
   background: #DC2626;
   flex-shrink: 0;
 }
 
 .t-eyebrow-text {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.35em;
+  letter-spacing: 0.45em;
   color: #DC2626;
 }
 
 .t-heading {
-  font-size: clamp(1.75rem, 6.5vw, 3.75rem);
+  font-size: clamp(2rem, 5vw, 3.75rem);
   font-weight: 900;
   color: #0f172a;
   text-transform: uppercase;
   letter-spacing: -0.03em;
-  line-height: 1.05;
+  line-height: 0.95;
 }
 
 .t-heading-accent {
@@ -114,7 +113,7 @@
 /* ── Slider Wrapper ──────────────────────────────────────── */
 .t-slider-wrapper {
   position: relative;
-  margin: 0 -1rem;
+  margin: 0 -1.25rem;
 }
 
 @media (min-width: 640px) {
@@ -132,13 +131,12 @@
 /* ── Slider Track ────────────────────────────────────────── */
 .t-slider {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  padding: 1rem 1rem 1.5rem;
-  -webkit-overflow-scrolling: touch;
+  padding: 1.5rem 1.25rem 2rem;
 }
 
 .t-slider::-webkit-scrollbar {
@@ -163,21 +161,18 @@
 .t-slide {
   scroll-snap-align: start;
   flex-shrink: 0;
-  width: calc(100vw - 2.5rem);
-  max-width: 340px;
+  width: 88vw;
 }
 
 @media (min-width: 480px) {
   .t-slide {
     width: 78vw;
-    max-width: 360px;
   }
 }
 
 @media (min-width: 640px) {
   .t-slide {
     width: 56vw;
-    max-width: 380px;
   }
 }
 
@@ -199,6 +194,82 @@
   }
 }
 
+/* ── Desktop Nav Buttons ─────────────────────────────────── */
+.slider-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+@media (min-width: 1024px) {
+  .slider-nav {
+    display: flex;
+  }
+}
+
+.slider-nav--left {
+  left: 0.25rem;
+}
+
+.slider-nav--right {
+  right: 0.25rem;
+}
+
+.slider-nav:hover {
+  background: #DC2626;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 16px 36px -8px rgba(220, 38, 38, 0.4);
+}
+
+/* ── Mobile Nav ──────────────────────────────────────────── */
+.t-mobile-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .t-mobile-nav {
+    display: none;
+  }
+}
+
+.slider-nav--mobile {
+  position: static;
+  transform: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.slider-nav--mobile:hover {
+  background: #DC2626;
+  transform: scale(1.08);
+}
+
 /* ── Card ────────────────────────────────────────────────── */
 .testimonial-card {
   width: 100%;
@@ -208,18 +279,17 @@
 .testimonial-card-inner {
   position: relative;
   background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 1.25rem;
-  padding: 1.75rem 1.25rem 1.5rem;
-  min-height: 320px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  min-height: 380px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.75rem;
   transition:
     border-color 0.5s ease,
     box-shadow 0.5s ease;
   overflow: hidden;
-  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -511,4 +581,95 @@
 .testimonial-cta:hover .cta-metadata {
   bottom: -14px;
   opacity: 1;
+}
+
+/* ── Pro-Level Mobile Responsive (320px, 375px, 425px) ── */
+@media (max-width: 640px) {
+  .t-header {
+    margin-bottom: 2rem;
+  }
+  .t-eyebrow {
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .t-eyebrow-line {
+    width: 2rem;
+  }
+  .t-eyebrow-text {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+  }
+  .t-heading {
+    font-size: clamp(1.4rem, 6.5vw, 2.2rem);
+    line-height: 1.05;
+  }
+  .t-slider-wrapper {
+    margin: 0 -1rem;
+  }
+  .t-slider {
+    padding: 1rem 1rem 1.5rem;
+    gap: 0.85rem;
+  }
+  .t-slide {
+    width: 86vw;
+    max-width: 340px;
+  }
+  .testimonial-card-inner {
+    padding: 2.25rem 1.15rem 1.5rem;
+    min-height: 340px;
+    border-radius: 1.25rem;
+    gap: 1.25rem;
+  }
+  .card-top-accent {
+    top: 1rem;
+    left: 1.15rem;
+    width: 40px;
+    height: 4px;
+  }
+  .testimonial-id {
+    top: 1rem;
+    right: 1.15rem;
+    font-size: 7px;
+  }
+  .quote-icon {
+    margin-bottom: 0.75rem;
+  }
+  .testimonial-review {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .client-author {
+    font-size: 0.95rem;
+  }
+  .badge-logo-placeholder {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+  .client-name {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .testimonials-section {
+    padding: 2.5rem 0.75rem;
+  }
+  .t-heading {
+    font-size: 1.35rem;
+  }
+  .t-slide {
+    width: 88vw;
+    max-width: 290px;
+  }
+  .testimonial-card-inner {
+    padding: 2rem 1rem 1.25rem;
+    gap: 1rem;
+  }
+  .card-top-accent {
+    left: 1rem;
+  }
+  .testimonial-id {
+    right: 1rem;
+  }
 }

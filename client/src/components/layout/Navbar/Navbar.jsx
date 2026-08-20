@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
-import { ArrowRight, UserPlus, LogIn, X, Menu, Phone, Mail, Instagram, Twitter, Facebook, ShoppingCart, Search } from 'lucide-react';
+import { ArrowRight, UserPlus, LogIn, X, Menu, Phone, Mail, Instagram, Twitter, Facebook, ShoppingCart, Search, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
 import './Navbar.css';
@@ -182,9 +182,16 @@ const Navbar = () => {
               {/* Auth */}
               {user ? (
                 <>
-                  <Link to="/profile" className="hidden lg:flex flex-col items-end group/user">
-                    <span className="text-[10px] font-black text-brand-red uppercase tracking-widest">{user.name}</span>
-                    <span className="text-[8px] font-bold text-slate-500 uppercase">Authorized</span>
+                  <Link to="/profile" className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 transition-all group/user">
+                    <div className="w-6 h-6 rounded-full bg-red-600/10 text-red-600 flex items-center justify-center font-bold shrink-0">
+                      <User size={13} />
+                    </div>
+                    <div className="flex flex-col text-left leading-none max-w-[130px]">
+                      <span className="text-xs font-semibold text-slate-800 truncate group-hover/user:text-red-600 transition-colors">
+                        {user.name}
+                      </span>
+                      <span className="text-[9px] font-medium text-slate-500 mt-0.5">My Profile</span>
+                    </div>
                   </Link>
                   <button onClick={handleLogout} className="nav-icon-btn">
                     <LogIn size={18} className="text-slate-600 rotate-180" />
@@ -313,7 +320,7 @@ const Navbar = () => {
                     {user ? (
                       <>
                         <Link to="/profile" onClick={() => setIsOpen(false)} className="drawer-user-card">
-                          <span className="drawer-user-label">ACTIVE</span>
+                          <span className="drawer-user-label">My Account</span>
                           <span className="drawer-user-name">{user.name}</span>
                         </Link>
                         <button onClick={handleLogout} className="drawer-logout-btn">

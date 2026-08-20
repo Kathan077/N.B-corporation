@@ -95,7 +95,7 @@ const Blog = () => {
     return matchCat && matchQ;
   });
 
-  const featuredPost = POSTS[4]; // most views
+  const featuredPost = POSTS[0] || {};
 
   return (
     <div className="blog-page" ref={containerRef}>

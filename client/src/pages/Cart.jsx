@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -8,65 +8,28 @@ import {
   Minus,
   ArrowRight,
   ShieldCheck,
-  Tag,
   CheckCircle2,
-  AlertCircle,
   Truck,
   RotateCcw,
   Package,
-  Sparkles,
-  X,
-  CreditCard,
-  PhoneCall
+  CreditCard
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { getImageUrl } from '../utils/imageUtils';
 import './Cart.css';
 
 const Cart = () => {
-  const { cartItems, cartCount, cartTotal, updateQuantity, removeFromCart, clearCart, triggerToast, loading } = useCart();
-  const [couponCode, setCouponCode] = useState('');
-  const [discount, setDiscount] = useState(0);
-  const [couponApplied, setCouponApplied] = useState(false);
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const { cartItems, cartCount, updateQuantity, removeFromCart, clearCart, loading } = useCart();
   const navigate = useNavigate();
 
-  // Coupon handling logic
-  const handleApplyCoupon = (e) => {
-    e.preventDefault();
-    const cleanCode = couponCode.trim().toUpperCase();
-    if (cleanCode === 'NBCORP10') {
-      setDiscount(0.10); // 10% off
-      setCouponApplied(true);
-      triggerToast('Coupon NBCORP10 applied! 10% Discount applied.', 'success');
-    } else if (cleanCode === 'PROMAX') {
-      setDiscount(0.15); // 15% off
-      setCouponApplied(true);
-      triggerToast('PROMAX Coupon applied! 15% Discount applied.', 'success');
-    } else {
-      triggerToast('Invalid coupon code. Try NBCORP10 or PROMAX', 'error');
-    }
-  };
-
-  const handleRemoveCoupon = () => {
-    setDiscount(0);
-    setCouponApplied(false);
-    setCouponCode('');
-    triggerToast('Coupon removed.', 'info');
-  };
-
-  // Pricing calculations
-  const discountAmount = cartTotal * discount;
-  const subtotalAfterDiscount = cartTotal - discountAmount;
-  const gstTax = subtotalAfterDiscount * 0.18; // 18% GST for industrial supply
-  const shippingFee = cartTotal > 5000 || cartItems.length === 0 ? 0 : 250;
-  const grandTotal = subtotalAfterDiscount + gstTax + shippingFee;
+  // Total quantity calculation across all items
+  const totalUnits = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
   return (
     <div className="cart-page-wrapper bg-slate-50 min-h-screen">
       <div className="cart-bg-grid" />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-16">
         {/* Header Breadcrumb & Title */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
           <div>
@@ -200,8 +163,8 @@ const Cart = () => {
                       </div>
                     </div>
 
-                    {/* Quantity Controls & Price */}
-                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0">
+                    {/* Quantity Controls & Action */}
+                    <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0">
                       {/* Quantity Controller */}
                       <div className="flex items-center gap-2 bg-slate-100 border border-slate-200 rounded-xl p-1">
                         <button
@@ -225,16 +188,6 @@ const Cart = () => {
                         >
                           <Plus size={12} />
                         </button>
-                      </div>
-
-                      {/* Item Total Price */}
-                      <div className="text-right">
-                        <span className="text-xs text-slate-400 font-mono block">
-                          ₹{item.price ? item.price.toLocaleString('en-IN') : 'Quote'} / unit
-                        </span>
-                        <span className="text-base font-black text-slate-900 font-mono">
-                          ₹{((item.price || 0) * (item.quantity || 1)).toLocaleString('en-IN')}
-                        </span>
                       </div>
 
                       {/* Remove Button */}
@@ -263,58 +216,43 @@ const Cart = () => {
                   </h2>
                 </div>
 
-
-
-                {/* Calculation Rows */}
+                {/* Summary Rows */}
                 <div className="space-y-3 text-xs border-t border-slate-200 pt-4">
                   <div className="flex items-center justify-between text-slate-600 font-medium">
-                    <span>Subtotal</span>
+                    <span>Total Products</span>
                     <span className="font-mono text-slate-900 font-bold">
-                      ₹{cartTotal.toLocaleString('en-IN')}
+                      {cartCount} {cartCount === 1 ? 'Item' : 'Items'}
                     </span>
                   </div>
 
-                  {couponApplied && (
-                    <div className="flex items-center justify-between text-emerald-600 font-medium">
-                      <span>Discount ({discount * 100}%)</span>
-                      <span className="font-mono font-bold">
-                        -₹{discountAmount.toLocaleString('en-IN')}
-                      </span>
-                    </div>
-                  )}
-
                   <div className="flex items-center justify-between text-slate-600 font-medium">
-                    <span className="flex items-center gap-1">
-                      <span>GST / Industrial Tax (18%)</span>
-                    </span>
+                    <span>Total Units</span>
                     <span className="font-mono text-slate-900 font-bold">
-                      ₹{gstTax.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                      {totalUnits} Units
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-slate-600 font-medium">
                     <span className="flex items-center gap-1.5">
                       <Truck size={14} className="text-red-600" />
-                      <span>Factory Express Shipping</span>
+                      <span>Factory Dispatch</span>
                     </span>
                     <span className="font-mono font-bold text-emerald-600">
-                      {shippingFee === 0 ? 'FREE' : `₹${shippingFee}`}
+                      Standard Express
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between border-t border-slate-200 pt-4 text-base">
-                    <span className="font-black uppercase text-slate-900 tracking-wide">
-                      Grand Total
-                    </span>
-                    <span className="font-black font-mono text-red-600 text-xl">
-                      ₹{grandTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                  <div className="flex items-center justify-between text-slate-600 font-medium">
+                    <span>Pricing Inquiry</span>
+                    <span className="font-mono font-bold text-slate-900">
+                      Direct B2B Official Quotation
                     </span>
                   </div>
                 </div>
 
-                {/* Checkout CTA */}
+                {/* Checkout CTA -> Navigates to Next Page */}
                 <button
-                  onClick={() => setShowCheckoutModal(true)}
+                  onClick={() => navigate('/checkout')}
                   className="w-full py-4 px-6 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 shadow-xl shadow-red-600/30 hover:scale-[1.02] cursor-pointer"
                 >
                   <CreditCard size={16} />
@@ -338,80 +276,6 @@ const Cart = () => {
           </div>
         )}
       </div>
-
-      {/* 🚀 CHECKOUT CONFIRMATION MODAL */}
-      <AnimatePresence>
-        {showCheckoutModal && (
-          <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-slate-900"
-            >
-              <button
-                onClick={() => setShowCheckoutModal(false)}
-                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <X size={16} />
-              </button>
-
-              <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-                <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 border border-red-200 flex items-center justify-center">
-                  <Sparkles size={20} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black uppercase text-slate-900">
-                    Official Quotation & Order
-                  </h3>
-                  <span className="text-[10px] font-mono text-slate-500">
-                    NB.CORP Elite Engineering Supply
-                  </span>
-                </div>
-              </div>
-
-              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2 text-xs font-mono">
-                <div className="flex justify-between text-slate-600">
-                  <span>Total Items:</span>
-                  <span className="text-slate-900 font-bold">{cartCount}</span>
-                </div>
-                <div className="flex justify-between text-slate-600">
-                  <span>Estimated Total:</span>
-                  <span className="text-red-600 font-bold text-sm">
-                    ₹{grandTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                Our sales team will directly verify your organization details and send official tax invoice & dispatch documentation.
-              </p>
-
-              <div className="flex items-center gap-3">
-                <a
-                  href={`https://wa.me/919825954315?text=Hello%20NB.CORP,%20I%20would%20like%20to%20place%20an%20order%20for%20${cartCount}%20items%20totaling%20₹${Math.round(grandTotal)}.`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex-1 py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md"
-                >
-                  <PhoneCall size={16} />
-                  <span>Order via WhatsApp</span>
-                </a>
-
-                <button
-                  onClick={() => {
-                    setShowCheckoutModal(false);
-                    triggerToast('Order inquiry received! Representative will call shortly.', 'success');
-                  }}
-                  className="py-3.5 px-4 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-md"
-                >
-                  Confirm Order
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

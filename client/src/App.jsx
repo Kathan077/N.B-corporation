@@ -13,6 +13,7 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Profile from './pages/Auth/Profile';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -31,6 +32,8 @@ function App() {
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/products/:id" element={<ProductDetail />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/get-quote" element={<Checkout />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />

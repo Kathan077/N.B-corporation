@@ -22,6 +22,7 @@ if (!MONGODB_URI) {
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/cart", require("./routes/cart"));
+app.use("/api/inquiry", require("./routes/inquiry"));
 
 // Only listen to port if run directly (local development)
 if (require.main === module) {

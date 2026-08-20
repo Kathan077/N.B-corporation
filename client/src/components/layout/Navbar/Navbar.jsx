@@ -259,11 +259,11 @@ const Navbar = () => {
               >
                 <div className="search-row-inner">
                   <div className="search-row-container">
-                    <Search size={18} className="search-row-icon" />
+                    <Search size={18} className="search-row-icon shrink-0" />
                     <input
                       autoFocus
                       type="text"
-                      placeholder="Search 3M tapes, abrasives, adhesives, safety gear..."
+                      placeholder="Search 3M products..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="search-row-input"
@@ -272,17 +272,19 @@ const Navbar = () => {
                       <button
                         type="button"
                         onClick={() => setSearchQuery('')}
-                        className="text-xs font-semibold text-slate-400 hover:text-white px-2 py-1 bg-slate-800/60 rounded-md transition-colors mr-1"
+                        className="text-[11px] font-semibold text-slate-400 hover:text-white px-2 py-0.5 bg-slate-800/80 rounded transition-colors shrink-0"
                       >
                         Clear
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={() => {
                         setIsSearchOpen(false);
                         setSearchQuery('');
                       }}
-                      className="search-row-close"
+                      className="search-row-close shrink-0"
+                      aria-label="Close search"
                     >
                       <X size={18} />
                     </button>

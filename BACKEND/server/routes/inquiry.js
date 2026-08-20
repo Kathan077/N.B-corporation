@@ -1,31 +1,51 @@
 const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
+const axios = require("axios");
 const Inquiry = require("../models/Inquiry");
 
 // Target recipient email address
 const TARGET_EMAIL = process.env.TARGET_EMAIL || "krishnapanchal822006@gmail.com";
 
-// Setup nodemailer transporter helper
+// Setup nodemailer transporter helper (Supports both Google Developer OAuth2 and Gmail App Password)
 const createTransporter = () => {
-  const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
+  const emailUser = process.env.EMAIL_USER || process.env.TARGET_EMAIL || "krishnapanchal822006@gmail.com";
 
-  if (!emailUser || !emailPass) {
-    return null;
+  // Option A: Google Developer Console (OAuth2)
+  const clientId = process.env.OAUTH_CLIENT_ID;
+  const clientSecret = process.env.OAUTH_CLIENT_SECRET;
+  const refreshToken = process.env.OAUTH_REFRESH_TOKEN;
+
+  if (clientId && clientSecret && refreshToken) {
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: emailUser,
+        clientId,
+        clientSecret,
+        refreshToken,
+      },
+    });
   }
 
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: emailUser,
-      pass: emailPass,
-    },
-  });
+  // Option B: Gmail App Password
+  const emailPass = process.env.EMAIL_PASS;
+  if (emailUser && emailPass) {
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: emailUser,
+        pass: emailPass,
+      },
+    });
+  }
+
+  return null;
 };
 
 // @route   POST /api/inquiry
-// @desc    Submit quote/order inquiry and send email to nb2corporation@gmail.com
+// @desc    Submit quote/order inquiry and send email to target email
 // @access  Public
 router.post("/", async (req, res) => {
   try {
@@ -143,29 +163,72 @@ router.post("/", async (req, res) => {
       </div>
     `;
 
-    // 3. Send Email via Nodemailer if SMTP configured
-    const transporter = createTransporter();
-    if (transporter) {
+    let emailSent = false;
+    let emailError = null;
+
+    // 3. Option 1: Send via Google Apps Script Web App (HTTPS)
+    const googleScriptUrl = process.env.GOOGLE_SCRIPT_URL;
+    if (googleScriptUrl) {
       try {
-        await transporter.sendMail({
-          from: `"NB.CORP Inquiry Portal" <${process.env.EMAIL_USER}>`,
-          to: TARGET_EMAIL,
-          replyTo: email,
-          subject: `[New Quote Inquiry] ${name} - ${quantity || 1} Units`,
-          html: emailHtml,
-        });
-        console.log(`[Email Sent] Inquiry from ${name} sent to ${TARGET_EMAIL}`);
-      } catch (mailErr) {
-        console.error("[Email Delivery Error]:", mailErr.message);
-        // Note: We don't fail the request because the inquiry is already saved in the database
+        await axios.post(
+          googleScriptUrl,
+          {
+            name,
+            email,
+            mobile,
+            location: location || "",
+            selectedProduct: selectedProduct || "ALL",
+            quantity: quantity || 1,
+            message,
+            items: Array.isArray(items) ? items : [],
+            targetEmail: TARGET_EMAIL,
+            emailHtml,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+            maxRedirects: 5,
+          }
+        );
+        emailSent = true;
+        console.log(`✅ [Google Apps Script Web App] Email dispatched successfully to ${TARGET_EMAIL}`);
+      } catch (scriptErr) {
+        emailError = scriptErr.message;
+        console.error(`❌ [Google Apps Script Error]: ${scriptErr.message}`);
       }
-    } else {
-      console.log(`[Inquiry Saved] Email credentials not set in .env. Inquiry from ${name} (${email}) saved to Database.`);
+    }
+
+    // 4. Option 2: Fallback to Nodemailer if SMTP/OAuth2 configured and not yet sent
+    if (!emailSent) {
+      const transporter = createTransporter();
+      if (transporter) {
+        try {
+          await transporter.sendMail({
+            from: `"NB.CORP Inquiry Portal" <${process.env.EMAIL_USER}>`,
+            to: TARGET_EMAIL,
+            replyTo: email,
+            subject: `[New Quote Inquiry] ${name} - ${quantity || 1} Units`,
+            html: emailHtml,
+          });
+          emailSent = true;
+          console.log(`✅ [Email Sent Successfully] Inquiry from ${name} (${email}) sent to ${TARGET_EMAIL}`);
+        } catch (mailErr) {
+          emailError = mailErr.message;
+          console.error(`❌ [Email Delivery Failed]: ${mailErr.message}`);
+        }
+      }
+    }
+
+    if (!emailSent) {
+      console.log(`⚠️ [Notification] Inquiry saved in DB. Configure GOOGLE_SCRIPT_URL or EMAIL_PASS in BACKEND/.env for direct inbox delivery.`);
     }
 
     return res.status(201).json({
       success: true,
-      message: `Inquiry successfully submitted and recorded for ${TARGET_EMAIL}`,
+      emailSent,
+      emailError,
+      message: emailSent
+        ? `Inquiry sent successfully to ${TARGET_EMAIL}`
+        : `Inquiry saved in database.`,
       inquiryId: newInquiry._id,
     });
   } catch (error) {

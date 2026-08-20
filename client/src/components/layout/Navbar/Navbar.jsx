@@ -332,12 +332,14 @@ const Navbar = () => {
                                     />
                                   </div>
                                   <div className="search-result-info">
-                                    <div className="flex items-center gap-2 mb-0.5">
-                                      <span className="search-result-cat">{prod.category || prod.mainCategory || '3M Industrial'}</span>
-                                      {prod.code && <span className="search-result-code">SKU: {prod.code}</span>}
+                                    <div className="flex items-center justify-between gap-1 mb-0.5">
+                                      <span className="search-result-cat truncate max-w-[120px] sm:max-w-[200px]">
+                                        {prod.category || prod.mainCategory || '3M Industrial'}
+                                      </span>
+                                      {prod.code && <span className="search-result-code shrink-0">SKU: {prod.code}</span>}
                                     </div>
                                     <h4 className="search-result-title">{prod.name || prod.title}</h4>
-                                    <p className="search-result-desc">
+                                    <p className="search-result-desc text-[11px] sm:text-xs">
                                       {prod.tagline || prod.description || 'Engineered high-performance 3M industrial solution.'}
                                     </p>
                                   </div>

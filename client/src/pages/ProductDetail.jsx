@@ -199,10 +199,10 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="product-detail-page bg-slate-50 text-slate-900 min-h-screen">
+    <div className="product-detail-page bg-slate-50 text-slate-900 min-h-screen w-full max-w-full overflow-x-hidden">
       {/* ── BREADCRUMBS BAR ── */}
-      <section className="pt-28 pb-4 bg-white border-b border-slate-200">
-        <div className="container mx-auto px-6">
+      <section className="pt-24 sm:pt-28 pb-3 sm:pb-4 bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
           <nav className="flex items-center gap-2 text-xs font-semibold text-slate-500 overflow-x-auto no-scrollbar py-1">
             <Link to="/" className="hover:text-red-600 transition-colors flex items-center gap-1">
               Home
@@ -212,7 +212,7 @@ const ProductDetail = () => {
               Product Catalog
             </Link>
             <ChevronRight size={14} className="text-slate-400 shrink-0" />
-            <span className="text-slate-700 font-bold truncate max-w-[160px] sm:max-w-xs">{product.category}</span>
+            <span className="text-slate-700 font-bold truncate max-w-[140px] sm:max-w-xs">{product.category}</span>
             <ChevronRight size={14} className="text-slate-400 shrink-0" />
             <span className="text-red-600 font-extrabold truncate">{product.code}</span>
           </nav>
@@ -220,13 +220,13 @@ const ProductDetail = () => {
       </section>
 
       {/* ── MAIN PRODUCT HERO SECTION ── */}
-      <section className="py-10 container mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <section className="py-6 sm:py-10 container mx-auto px-4 sm:px-6 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
           {/* ── LEFT COLUMN: HD GALLERY & QUICK SPEC PILLS (5 Cols) ── */}
           <div className="lg:col-span-5">
-            <div className="sticky top-28 space-y-6">
+            <div className="lg:sticky lg:top-28 space-y-4 sm:space-y-6">
               {/* Main Image Container */}
-              <div className="relative rounded-3xl bg-white border border-slate-200 p-6 shadow-sm overflow-hidden group">
+              <div className="relative rounded-3xl bg-white border border-slate-200 p-4 sm:p-6 shadow-xs overflow-hidden group">
                 {/* Header Badges */}
                 <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between pointer-events-none">
                   <span className="px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700 font-mono font-black text-xs shadow-xs">

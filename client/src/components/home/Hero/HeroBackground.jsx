@@ -10,10 +10,10 @@ const HeroBackground = ({ smoothMouseX, smoothMouseY, smoothCursorX, smoothCurso
           className="hero-video-bg"
           src="https://www.youtube.com/embed/pcPo05-xO70?autoplay=1&mute=1&loop=1&playlist=pcPo05-xO70&controls=0&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1" 
           title="3M™ Electrical Tapes Product Family" 
-          frameborder="0" 
+          frameBorder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          referrerpolicy="strict-origin-when-cross-origin" 
-          allowfullscreen
+          referrerPolicy="strict-origin-when-cross-origin" 
+          allowFullScreen
         ></iframe>
         <img src={abrasiveSheet} alt="Industrial Background" className="hero-fallback-img" />
         <div className="hero-image-overlay" />

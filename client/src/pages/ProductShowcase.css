@@ -4,6 +4,9 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #f8fafc;
   color: #0f172a;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Background HUD Light Grid Pattern */
@@ -23,24 +26,16 @@
   -webkit-backdrop-filter: blur(20px);
 }
 
-/* Category Pills Carousel Scrollbar Styling */
+/* Category Pills Carousel Scrollbar Styling - Clean hidden scroll on mobile */
 .no-scrollbar::-webkit-scrollbar {
-  height: 5px;
-}
-.no-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 6px;
-}
-.no-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 6px;
-}
-.no-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #dc2626;
+  display: none;
+  width: 0px;
+  height: 0px;
 }
 .no-scrollbar {
-  -ms-overflow-style: auto;
-  scrollbar-width: thin;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Line clamping helper */

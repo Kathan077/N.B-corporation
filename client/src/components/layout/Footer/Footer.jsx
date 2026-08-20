@@ -134,8 +134,8 @@ const Footer = () => {
       </div>
 
       {/* Decorative Branding */}
-      <div className="absolute top-0 right-[-10%] select-none pointer-events-none opacity-[0.02]">
-        <h2 className="text-[20vw] font-black leading-none uppercase tracking-tighter text-white">
+      <div className="absolute top-0 right-0 select-none pointer-events-none opacity-[0.02] overflow-hidden max-w-full">
+        <h2 className="text-[12vw] font-black leading-none uppercase tracking-tighter text-white">
           PRECISION
         </h2>
       </div>

@@ -23,16 +23,16 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: (idx % 8) * 0.04, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative rounded-3xl bg-white border border-slate-200/90 hover:border-red-500/50 p-5 flex flex-col justify-between shadow-xs hover:shadow-2xl hover:shadow-slate-300/50 transition-all duration-300 product-card-light overflow-hidden h-full"
+      className="group relative rounded-3xl bg-white border border-slate-200/90 hover:border-red-500/50 p-4 sm:p-5 flex flex-col justify-between shadow-xs hover:shadow-2xl hover:shadow-slate-300/50 transition-all duration-300 product-card-light overflow-hidden h-full w-full"
     >
       <div className="flex flex-col flex-1 justify-between">
         {/* Product HD Image Container */}
         <div 
           onClick={() => navigate(`/product/${product.id}`)}
-          className="relative h-56 mb-4 bg-slate-50 rounded-2xl p-4 flex items-center justify-center overflow-hidden border border-slate-100 group-hover:border-red-200 transition-colors cursor-pointer shrink-0"
+          className="relative h-48 sm:h-56 mb-3 sm:mb-4 bg-slate-50 rounded-2xl p-3 sm:p-4 flex items-center justify-center overflow-hidden border border-slate-100 group-hover:border-red-200 transition-colors cursor-pointer shrink-0"
         >
           {/* Top Badges */}
-          <div className="absolute top-3 left-3 bg-red-600 text-white font-mono font-bold text-[10px] px-2.5 py-0.5 rounded-md shadow-sm z-10">
+          <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-red-600 text-white font-mono font-bold text-[10px] px-2.5 py-0.5 rounded-md shadow-xs z-10">
             3M {product.code}
           </div>
 
@@ -53,7 +53,7 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
           )}
 
           {/* Quick Action Overlay */}
-          <div className="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-xs">
+          <div className="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:flex items-center justify-center backdrop-blur-xs">
             <span className="px-4 py-2 rounded-xl bg-white text-slate-900 font-black text-xs flex items-center gap-2 shadow-xl transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
               <Eye size={14} className="text-red-600" /> View Details & Specs
             </span>
@@ -61,20 +61,20 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
         </div>
 
         {/* Category Tag */}
-        <div className="flex items-center justify-between mb-1.5 shrink-0">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-red-600 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
-            <span>{product.category}</span>
+        <div className="flex items-center justify-between mb-1.5 shrink-0 gap-2">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-red-600 flex items-center gap-1 truncate max-w-[70%]">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-600 shrink-0" />
+            <span className="truncate">{product.category}</span>
           </span>
           {product.thickness && (
-            <span className="text-[10px] font-mono font-bold text-slate-500">
+            <span className="text-[10px] font-mono font-bold text-slate-500 shrink-0">
               {product.thickness}
             </span>
           )}
         </div>
 
         {/* Verbatim Brochure Title Slot (Equalized grid height) */}
-        <div className="min-h-[3rem] flex items-start mb-1">
+        <div className="min-h-[2.5rem] sm:min-h-[3rem] flex items-start mb-1">
           <h3 
             onClick={() => navigate(`/product/${product.id}`)}
             className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-red-600 transition-colors line-clamp-2 leading-snug cursor-pointer uppercase tracking-tight"
@@ -85,12 +85,12 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
         </div>
 
         {/* Subtitle Slot */}
-        <div className="min-h-[1.25rem] flex items-center mb-2">
-          <p className="text-xs text-red-600 font-bold truncate font-mono">{product.subtitle}</p>
+        <div className="min-h-[1.25rem] flex items-center mb-1.5 sm:mb-2">
+          <p className="text-[11px] sm:text-xs text-red-600 font-bold truncate font-mono">{product.subtitle}</p>
         </div>
 
         {/* Description Slot */}
-        <div className="min-h-[2.5rem] flex items-start mb-4">
+        <div className="min-h-[2.25rem] sm:min-h-[2.5rem] flex items-start mb-3 sm:mb-4">
           <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-normal">
             {product.description}
           </p>
@@ -98,11 +98,11 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
       </div>
 
       {/* Card Actions (Anchored at bottom) */}
-      <div className="flex items-center gap-2 pt-3.5 border-t border-slate-100 shrink-0">
+      <div className="grid grid-cols-3 gap-1.5 pt-3 border-t border-slate-100 shrink-0 items-center">
         {cartItem ? (
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center bg-red-600 border border-red-500 rounded-xl p-0.5 shadow-md shadow-red-600/30"
+            className="col-span-1 inline-flex items-center justify-between bg-red-600 border border-red-500 rounded-xl p-0.5 shadow-md shadow-red-600/30 w-full"
           >
             <button
               type="button"
@@ -111,13 +111,13 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
                 e.stopPropagation();
                 updateQuantity(cartItem._id, cartItem.quantity - 1);
               }}
-              className="w-7 h-7 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+              className="w-6 h-6 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer shrink-0"
               title="Decrease quantity"
             >
-              <Minus size={12} />
+              <Minus size={11} />
             </button>
 
-            <span className="px-2 font-mono font-black text-xs text-white min-w-[20px] text-center select-none">
+            <span className="font-mono font-black text-xs text-white text-center select-none truncate px-0.5">
               {cartItem.quantity}
             </span>
 
@@ -128,10 +128,10 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
                 e.stopPropagation();
                 updateQuantity(cartItem._id, cartItem.quantity + 1);
               }}
-              className="w-7 h-7 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer"
+              className="w-6 h-6 rounded-lg bg-red-700 hover:bg-red-800 text-white font-black flex items-center justify-center transition-colors cursor-pointer shrink-0"
               title="Increase quantity"
             >
-              <Plus size={12} />
+              <Plus size={11} />
             </button>
           </div>
         ) : (
@@ -141,25 +141,27 @@ const CatalogProductCard = ({ product, idx, navigate, handleInquire }) => {
               e.stopPropagation();
               addToCart(product, 1);
             }}
-            className="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md shadow-red-600/20 active:scale-95 cursor-pointer"
+            className="col-span-1 py-2 px-1 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-[11px] flex items-center justify-center gap-1 transition-all duration-300 shadow-xs shadow-red-600/20 active:scale-95 cursor-pointer truncate"
           >
-            <ShoppingBag size={14} /> Add Cart
+            <ShoppingBag size={13} className="shrink-0" />
+            <span className="truncate">Cart</span>
           </button>
         )}
 
         <button
           onClick={() => navigate(`/product/${product.id}`)}
-          className="flex-1 py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-extrabold text-xs flex items-center justify-center gap-1 transition-all duration-300 cursor-pointer"
+          className="col-span-1 py-2 px-1 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-extrabold text-[11px] flex items-center justify-center gap-1 transition-all duration-300 cursor-pointer truncate"
         >
-          <Eye size={13} /> Details
+          <Eye size={12} className="shrink-0" />
+          <span className="truncate">Details</span>
         </button>
 
         <button
           onClick={() => handleInquire(product)}
-          className="py-2.5 px-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold text-xs flex items-center justify-center gap-1 transition-all duration-300 cursor-pointer"
+          className="col-span-1 py-2 px-1 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold text-[11px] flex items-center justify-center gap-1 transition-all duration-300 cursor-pointer truncate"
           title="Get Instant Quotation"
         >
-          <span>Inquire</span>
+          <span className="truncate">Inquire</span>
         </button>
       </div>
     </motion.div>
@@ -289,26 +291,26 @@ const ProductShowcase = () => {
   };
 
   return (
-    <div className="product-showcase-page bg-slate-50 text-slate-900 min-h-screen">
+    <div className="product-showcase-page bg-slate-50 text-slate-900 min-h-screen w-full max-w-full overflow-x-hidden">
       {/* ── HERO SECTION ── */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-b from-red-50/60 via-slate-50 to-white border-b border-slate-200">
-        <div className="absolute inset-0 opacity-40 pointer-events-none select-none">
+      <section className="relative pt-24 sm:pt-32 pb-12 sm:pb-16 bg-gradient-to-b from-red-50/60 via-slate-50 to-white border-b border-slate-200 overflow-hidden">
+        <div className="absolute inset-0 opacity-40 pointer-events-none select-none overflow-hidden">
           <div className="hud-grid-pattern-light" />
         </div>
 
         {/* Subtle Ambient Glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-red-400/10 blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-72 h-40 bg-red-400/10 blur-3xl pointer-events-none" />
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8 mb-10">
-            <div>
+        <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-7xl">
+          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 sm:gap-8 mb-8 sm:mb-10">
+            <div className="max-w-3xl">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-red-50 border border-red-200 mb-5 shadow-sm"
+                className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-red-50 border border-red-200 mb-4 sm:mb-5 shadow-xs"
               >
-                <ShieldCheck size={16} className="text-red-600" />
-                <span className="text-xs font-extrabold uppercase tracking-widest text-red-700">
+                <ShieldCheck size={16} className="text-red-600 shrink-0" />
+                <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider sm:tracking-widest text-red-700">
                   Authorized 3M Distributor Catalog
                 </span>
               </motion.div>
@@ -317,7 +319,7 @@ const ProductShowcase = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-slate-900 leading-tight mb-4"
+                className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-slate-900 leading-tight mb-3 sm:mb-4 break-words"
               >
                 Product <span className="text-red-600 italic">Catalog</span>
               </motion.h1>
@@ -326,7 +328,7 @@ const ProductShowcase = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-slate-600 text-sm sm:text-base max-w-2xl font-normal leading-relaxed"
+                className="text-slate-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed"
               >
                 Explore NB Corporation’s official 3M Authorised Distributor product catalog featuring {PRODUCTS.length} high-performance engineered adhesives, tapes, films, sealants, and safety solutions across {MAIN_CATEGORIES.length - 1} main category folders and {SUB_CATEGORIES.length} sub-categories.
               </motion.p>
@@ -337,60 +339,60 @@ const ProductShowcase = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="flex flex-wrap items-center gap-4"
+              className="grid grid-cols-2 sm:flex sm:flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-4 w-full lg:w-auto"
             >
-              <div className="px-5 py-3 rounded-2xl bg-white border border-slate-200 shadow-sm text-center">
-                <span className="block text-2xl font-black text-slate-900">{PRODUCTS.length}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Products</span>
+              <div className="px-3 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-white border border-slate-200 shadow-xs text-center flex-1 sm:flex-initial">
+                <span className="block text-lg sm:text-2xl font-black text-slate-900">{PRODUCTS.length}</span>
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-500">Products</span>
               </div>
-              <div className="px-5 py-3 rounded-2xl bg-white border border-slate-200 shadow-sm text-center">
-                <span className="block text-2xl font-black text-red-600">{MAIN_CATEGORIES.length - 1}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Category Folders</span>
+              <div className="px-3 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-white border border-slate-200 shadow-xs text-center flex-1 sm:flex-initial">
+                <span className="block text-lg sm:text-2xl font-black text-red-600">{MAIN_CATEGORIES.length - 1}</span>
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-500">Category Folders</span>
               </div>
               <a
                 href="/NB Corporation Brochure_260720_152747.pdf"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-red-600/20 group"
+                className="col-span-2 sm:col-span-1 inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-red-600/20 group w-full sm:w-auto text-center"
               >
-                <FileText size={16} />
+                <FileText size={16} className="shrink-0" />
                 <span>Download Brochure</span>
-                <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                <Download size={14} className="group-hover:translate-y-0.5 transition-transform shrink-0" />
               </a>
             </motion.div>
           </div>
 
           {/* ── SEARCH & INDUSTRY FILTERS BAR ── */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50">
-            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+          <div className="p-3 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50 w-full overflow-hidden">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2.5 sm:gap-4">
               {/* Search Bar */}
-              <div className="relative flex-1">
-                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <div className="relative flex-1 min-w-0">
+                <Search size={17} className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 text-slate-400 shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by code (e.g. 5952, 467MP, 610), product name, or specification..."
-                  className="w-full pl-11 pr-10 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-red-600 focus:bg-white transition-colors"
+                  placeholder="Search by code (e.g. 5952, 467MP), name, specs..."
+                  className="w-full pl-9 sm:pl-11 pr-9 py-2.5 sm:py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:border-red-600 focus:bg-white transition-colors"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
                   >
-                    <X size={16} />
+                    <X size={15} />
                   </button>
                 )}
               </div>
 
               {/* Industry Filter Dropdown */}
-              <div className="relative min-w-[220px]">
-                <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700">
-                  <Filter size={16} className="text-red-600" />
+              <div className="relative w-full md:w-auto md:min-w-[200px] shrink-0">
+                <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700">
+                  <Filter size={15} className="text-red-600 shrink-0" />
                   <select
                     value={selectedIndustry}
                     onChange={(e) => setSelectedIndustry(e.target.value)}
-                    className="bg-transparent text-slate-900 font-medium focus:outline-none w-full cursor-pointer"
+                    className="bg-transparent text-slate-900 font-medium focus:outline-none w-full cursor-pointer text-xs sm:text-sm truncate"
                   >
                     {INDUSTRIES.map((ind) => (
                       <option key={ind} value={ind} className="bg-white text-slate-900">
@@ -403,70 +405,85 @@ const ProductShowcase = () => {
             </div>
 
             {/* ── TIER 1: MAIN CATEGORY FOLDER TABS ── */}
-            <div className="mt-4 pt-4 border-t border-slate-100 overflow-x-auto no-scrollbar scroll-smooth">
-              <div className="flex items-center gap-2 pb-1">
-                {MAIN_CATEGORIES.map((main) => {
-                  const isActive = activeMainCategory === main.id;
-                  return (
-                    <button
-                      key={main.id}
-                      onClick={() => handleMainCategoryChange(main.id)}
-                      className={`whitespace-nowrap flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer ${
-                        isActive
-                          ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 border border-slate-900'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80'
-                      }`}
-                    >
-                      <Layers size={14} className={isActive ? 'text-red-400' : 'text-slate-400'} />
-                      <span>{main.name}</span>
-                      <span
-                        className={`text-[10px] px-1.5 py-0.5 rounded-md ${
-                          isActive ? 'bg-red-600 text-white font-extrabold' : 'bg-slate-200/80 text-slate-600'
+            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-between mb-1.5 px-0.5 sm:hidden">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                  <Layers size={11} className="text-red-600" /> Categories
+                </span>
+                <span className="text-[9px] font-mono text-slate-400">Swipe ➔</span>
+              </div>
+              <div className="overflow-x-auto no-scrollbar scroll-smooth -mx-3 px-3 sm:-mx-5 sm:px-5 py-0.5">
+                <div className="flex items-center gap-2 min-w-max">
+                  {MAIN_CATEGORIES.map((main) => {
+                    const isActive = activeMainCategory === main.id;
+                    return (
+                      <button
+                        key={main.id}
+                        onClick={() => handleMainCategoryChange(main.id)}
+                        className={`whitespace-nowrap flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer ${
+                          isActive
+                            ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 border border-slate-900'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80'
                         }`}
                       >
-                        {main.count}
-                      </span>
-                    </button>
-                  );
-                })}
+                        <Layers size={13} className={isActive ? 'text-red-400 shrink-0' : 'text-slate-400 shrink-0'} />
+                        <span>{main.name}</span>
+                        <span
+                          className={`text-[10px] px-1.5 py-0.5 rounded-md ${
+                            isActive ? 'bg-red-600 text-white font-extrabold' : 'bg-slate-200/80 text-slate-600'
+                          }`}
+                        >
+                          {main.count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
             {/* ── TIER 2: SUB-CATEGORY PILL FILTERS ── */}
-            <div className="mt-3 pt-3 border-t border-slate-100/80 overflow-x-auto no-scrollbar scroll-smooth">
-              <div className="flex items-center gap-1.5 pb-1">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mr-2 shrink-0 flex items-center gap-1">
-                  <Filter size={12} /> Subcategories:
+            <div className="mt-2.5 sm:mt-3 pt-2.5 sm:pt-3 border-t border-slate-100/80">
+              <div className="flex items-center justify-between mb-1.5 px-0.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                  <Filter size={11} className="text-red-600" /> Subcategories
                 </span>
-                <button
-                  onClick={() => setActiveSubCategory('all')}
-                  className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
-                    activeSubCategory === 'all'
-                      ? 'bg-red-600 text-white shadow-sm'
-                      : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200'
-                  }`}
-                >
-                  All Subcategories
-                </button>
-                {availableSubCategories.map((sub) => {
-                  const isActive = activeSubCategory === sub.id;
-                  return (
-                    <button
-                      key={sub.id}
-                      onClick={() => setActiveSubCategory(sub.id)}
-                      className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
-                        isActive
-                          ? 'bg-red-600 text-white shadow-sm'
-                          : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200'
-                      }`}
-                    >
-                      <span>{sub.name}</span>
-                      <span className={`text-[10px] opacity-80 ${isActive ? 'text-white' : 'text-slate-400'}`}>
-                        ({sub.count})
-                      </span>
-                    </button>
-                  );
-                })}
+                <span className="text-[9px] font-mono text-slate-400">
+                  {availableSubCategories.length + 1} Available
+                </span>
+              </div>
+              <div className="overflow-x-auto no-scrollbar scroll-smooth -mx-3 px-3 sm:-mx-5 sm:px-5 py-0.5">
+                <div className="flex items-center gap-1.5 min-w-max">
+                  <button
+                    onClick={() => setActiveSubCategory('all')}
+                    className={`whitespace-nowrap px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
+                      activeSubCategory === 'all'
+                        ? 'bg-red-600 text-white shadow-xs'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200'
+                    }`}
+                  >
+                    All Subcategories
+                  </button>
+                  {availableSubCategories.map((sub) => {
+                    const isActive = activeSubCategory === sub.id;
+                    return (
+                      <button
+                        key={sub.id}
+                        onClick={() => setActiveSubCategory(sub.id)}
+                        className={`whitespace-nowrap flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
+                          isActive
+                            ? 'bg-red-600 text-white shadow-xs'
+                            : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200'
+                        }`}
+                      >
+                        <span>{sub.name}</span>
+                        <span className={`text-[10px] opacity-80 ${isActive ? 'text-white' : 'text-slate-400'}`}>
+                          ({sub.count})
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -474,21 +491,23 @@ const ProductShowcase = () => {
       </section>
 
       {/* ── CATALOG RESULTS SECTION ── */}
-      <section className="py-14 container mx-auto px-6">
+      <section className="py-8 sm:py-14 container mx-auto px-4 sm:px-6 max-w-7xl">
         {/* Results Header */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 border-b border-slate-200">
           <div>
-            <h2 className="text-xl font-extrabold uppercase tracking-tight text-slate-900 flex flex-wrap items-center gap-3">
-              <span>{activeMainObj.name}</span>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <h2 className="text-lg sm:text-xl font-extrabold uppercase tracking-tight text-slate-900">
+                {activeMainObj.name}
+              </h2>
               {activeSubObj && (
-                <span className="text-sm font-bold text-red-600 flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-bold text-red-600 flex items-center gap-1">
                   <ArrowRight size={14} /> {activeSubObj.name}
                 </span>
               )}
-              <span className="text-xs px-3 py-1 rounded-full bg-red-50 text-red-600 font-bold border border-red-200">
+              <span className="text-[10px] sm:text-xs px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-red-50 text-red-600 font-bold border border-red-200">
                 {filteredProducts.length} Products
               </span>
-            </h2>
+            </div>
             {selectedIndustry !== 'All Industries' && (
               <p className="text-xs text-slate-500 mt-1 font-medium">Industry Filter: {selectedIndustry}</p>
             )}
@@ -502,7 +521,7 @@ const ProductShowcase = () => {
                 setSelectedIndustry('All Industries');
                 setSearchQuery('');
               }}
-              className="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1.5 transition-colors cursor-pointer self-start sm:self-auto"
             >
               <X size={14} /> Clear All Filters
             </button>
@@ -511,7 +530,7 @@ const ProductShowcase = () => {
 
         {/* Product Grid */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 items-stretch">
             {filteredProducts.map((product, idx) => (
               <CatalogProductCard
                 key={product.id}
@@ -523,19 +542,20 @@ const ProductShowcase = () => {
             ))}
           </div>
         ) : (
-          <div className="py-20 text-center rounded-3xl bg-white border border-slate-200 shadow-sm">
+          <div className="py-16 sm:py-20 text-center rounded-3xl bg-white border border-slate-200 shadow-sm px-4">
             <Info size={44} className="mx-auto text-slate-400 mb-3" />
-            <h3 className="text-lg font-bold text-slate-900 mb-1">No Matching Products Found</h3>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">No Matching Products Found</h3>
             <p className="text-slate-500 text-xs mb-5 max-w-md mx-auto">
               We couldn't find any products matching your active filters. Try adjusting your category or search query.
             </p>
             <button
               onClick={() => {
-                setActiveCategory('all');
+                setActiveMainCategory('all');
+                setActiveSubCategory('all');
                 setSelectedIndustry('All Industries');
                 setSearchQuery('');
               }}
-              className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-700 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-700 transition-colors cursor-pointer"
             >
               Reset Filters
             </button>
@@ -546,7 +566,7 @@ const ProductShowcase = () => {
       {/* ── TECHNICAL SPECIFICATION MODAL ── */}
       <AnimatePresence>
         {selectedProduct && (
-          <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="fixed inset-0 z-[3000] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -562,48 +582,48 @@ const ProductShowcase = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-3xl rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-2xl text-slate-900 z-10 my-8 max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-3xl rounded-3xl bg-white border border-slate-200 p-4 sm:p-8 shadow-2xl text-slate-900 z-10 my-4 sm:my-8 max-h-[90vh] overflow-y-auto"
             >
               {/* Modal Close Button */}
               <button
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-6 right-6 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-colors cursor-pointer"
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
 
               {/* Modal Header */}
-              <div className="mb-6 pr-10">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="px-3 py-1 rounded-md bg-red-50 text-red-700 font-mono font-bold text-xs border border-red-200">
+              <div className="mb-5 sm:mb-6 pr-8 sm:pr-10">
+                <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
+                  <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-red-50 text-red-700 font-mono font-bold text-xs border border-red-200">
                     Product Code: 3M {selectedProduct.code}
                   </span>
                   <span className="text-xs font-semibold text-slate-500">{selectedProduct.category}</span>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
+                <h2 className="text-xl sm:text-3xl font-black text-slate-900 leading-tight">
                   {selectedProduct.name}
                 </h2>
-                <p className="text-sm text-red-600 font-semibold mt-1">{selectedProduct.subtitle}</p>
+                <p className="text-xs sm:text-sm text-red-600 font-semibold mt-1">{selectedProduct.subtitle}</p>
               </div>
 
               {/* Product Image & Description Flex Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-5 sm:mb-6">
                 <ModalProductGallery product={selectedProduct} />
-                <div className="md:col-span-2 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-sm text-slate-700 leading-relaxed flex flex-col justify-center">
+                <div className="md:col-span-2 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs sm:text-sm text-slate-700 leading-relaxed flex flex-col justify-center">
                   <p>{selectedProduct.description}</p>
                 </div>
               </div>
 
               {/* Full Specs Table */}
-              <div className="mb-6">
+              <div className="mb-5 sm:mb-6">
                 <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
                   <Layers size={14} className="text-red-600" />
                   <span>Technical Datasheet Specifications</span>
                 </h4>
 
-                <div className="rounded-2xl border border-slate-200 overflow-hidden text-xs bg-white">
-                  <table className="w-full text-left border-collapse">
+                <div className="rounded-2xl border border-slate-200 overflow-x-auto text-xs bg-white">
+                  <table className="w-full text-left border-collapse min-w-[320px]">
                     <tbody>
                       {selectedProduct.backing && (
                         <tr className="border-b border-slate-100 bg-slate-50/60">
@@ -658,16 +678,16 @@ const ProductShowcase = () => {
 
               {/* Target Applications List */}
               {selectedProduct.applications && selectedProduct.applications.length > 0 && (
-                <div className="mb-6">
+                <div className="mb-5 sm:mb-6">
                   <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2.5 flex items-center gap-2">
                     <CheckCircle2 size={14} className="text-red-600" />
                     <span>Recommended Industrial Applications</span>
                   </h4>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {selectedProduct.applications.map((app, i) => (
                       <span
                         key={i}
-                        className="px-3 py-1.5 rounded-lg bg-red-50 text-red-700 text-xs font-semibold border border-red-200/70"
+                        className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-red-50 text-red-700 text-xs font-semibold border border-red-200/70"
                       >
                         {app}
                       </span>
@@ -677,16 +697,16 @@ const ProductShowcase = () => {
               )}
 
               {/* Modal Footer CTA */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 border-t border-slate-200">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 pt-4 sm:pt-5 border-t border-slate-200">
                 <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                  <ShieldCheck size={16} className="text-red-600" />
+                  <ShieldCheck size={16} className="text-red-600 shrink-0" />
                   <span>NB Corporation • 3M Authorised Distributor</span>
                 </div>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                   <button
                     onClick={() => setSelectedProduct(null)}
-                    className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer transition-colors"
+                    className="flex-1 sm:flex-none py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer transition-colors"
                   >
                     Close Sheet
                   </button>
@@ -696,7 +716,7 @@ const ProductShowcase = () => {
                       setSelectedProduct(null);
                       handleInquire(prod);
                     }}
-                    className="flex-1 sm:flex-none py-3 px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-red-600/20"
+                    className="flex-1 sm:flex-none py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-red-600/20"
                   >
                     <PhoneCall size={14} />
                     <span>Request Quotation</span>

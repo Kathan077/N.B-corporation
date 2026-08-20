@@ -22,7 +22,7 @@ function App() {
       <Router>
         <CartProvider>
           <ScrollToTop />
-          <div className="min-h-screen bg-slate-950">
+          <div className="min-h-screen bg-slate-950 w-full max-w-full overflow-x-hidden">
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />

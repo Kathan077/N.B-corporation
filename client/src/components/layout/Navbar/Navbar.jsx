@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight, UserPlus, LogIn, X, Menu, Phone, Mail, Instagram, Twitter, Facebook, ShoppingCart, Search, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
+<<<<<<< HEAD
 import Logo from '../../common/Logo';
+=======
+import { PRODUCTS } from '../../../data/productsData';
+>>>>>>> 1a9b3f45a70bacda2b932f56f92b8280d87dd927
 import './Navbar.css';
 
 const useMagneticEffect = () => {
@@ -29,9 +33,36 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const matchingProducts = useMemo(() => {
+    if (!searchQuery || searchQuery.trim().length < 1) return [];
+    const q = searchQuery.toLowerCase().trim();
+    return PRODUCTS.filter((p) => {
+      const titleMatch = (p.name || p.title || '').toLowerCase().includes(q);
+      const codeMatch = (p.code || p.sku || '').toLowerCase().includes(q);
+      const catMatch = (p.category || p.mainCategory || '').toLowerCase().includes(q);
+      const subCatMatch = (p.subCategory || p.subCategoryName || '').toLowerCase().includes(q);
+      const descMatch = (p.description || p.tagline || '').toLowerCase().includes(q);
+      return titleMatch || codeMatch || catMatch || subCatMatch || descMatch;
+    }).slice(0, 6);
+  }, [searchQuery]);
+
+  const totalMatchCount = useMemo(() => {
+    if (!searchQuery || searchQuery.trim().length < 1) return 0;
+    const q = searchQuery.toLowerCase().trim();
+    return PRODUCTS.filter((p) => {
+      const titleMatch = (p.name || p.title || '').toLowerCase().includes(q);
+      const codeMatch = (p.code || p.sku || '').toLowerCase().includes(q);
+      const catMatch = (p.category || p.mainCategory || '').toLowerCase().includes(q);
+      const subCatMatch = (p.subCategory || p.subCategoryName || '').toLowerCase().includes(q);
+      const descMatch = (p.description || p.tagline || '').toLowerCase().includes(q);
+      return titleMatch || codeMatch || catMatch || subCatMatch || descMatch;
+    }).length;
+  }, [searchQuery]);
 
   const fetchUser = async () => {
     const token = localStorage.getItem('token');
@@ -223,16 +254,149 @@ const Navbar = () => {
           <AnimatePresence>
             {isSearchOpen && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="search-row-secondary">
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="search-row-secondary"
+              >
                 <div className="search-row-inner">
                   <div className="search-row-container">
                     <Search size={18} className="search-row-icon" />
-                    <input autoFocus type="text" placeholder="Search..." className="search-row-input" />
-                    <button onClick={() => setIsSearchOpen(false)} className="search-row-close"><X size={18} /></button>
+                    <input
+                      autoFocus
+                      type="text"
+                      placeholder="Search 3M tapes, abrasives, adhesives, safety gear..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="search-row-input"
+                    />
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery('')}
+                        className="text-xs font-semibold text-slate-400 hover:text-white px-2 py-1 bg-slate-800/60 rounded-md transition-colors mr-1"
+                      >
+                        Clear
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        setIsSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      className="search-row-close"
+                    >
+                      <X size={18} />
+                    </button>
                   </div>
+
+                  {/* Pro Live Search Results Overlay */}
+                  {searchQuery.trim().length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ duration: 0.25 }}
+                      className="search-results-overlay"
+                    >
+                      {matchingProducts.length > 0 ? (
+                        <>
+                          <div className="search-results-header">
+                            <span className="search-results-title flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-300">
+                              <Search size={13} className="text-red-500" /> Matching 3M Products
+                            </span>
+                            <span className="search-results-badge text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30">
+                              {totalMatchCount} Available
+                            </span>
+                          </div>
+
+                          <div className="search-results-list">
+                            {matchingProducts.map((prod) => {
+                              const prodImg = prod.image || (prod.images && prod.images[0]) || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300';
+                              return (
+                                <div
+                                  key={prod.id}
+                                  onClick={() => {
+                                    setIsSearchOpen(false);
+                                    setSearchQuery('');
+                                    navigate(`/product/${prod.id}`);
+                                  }}
+                                  className="search-result-item group"
+                                >
+                                  <div className="search-result-img-box">
+                                    <img
+                                      src={prodImg}
+                                      alt={prod.name || prod.title}
+                                      className="search-result-img"
+                                      onError={(e) => {
+                                        e.target.src = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300';
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="search-result-info">
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                      <span className="search-result-cat">{prod.category || prod.mainCategory || '3M Industrial'}</span>
+                                      {prod.code && <span className="search-result-code">SKU: {prod.code}</span>}
+                                    </div>
+                                    <h4 className="search-result-title">{prod.name || prod.title}</h4>
+                                    <p className="search-result-desc">
+                                      {prod.tagline || prod.description || 'Engineered high-performance 3M industrial solution.'}
+                                    </p>
+                                  </div>
+                                  <div className="search-result-action">
+                                    <span className="search-view-btn">
+                                      View <ArrowRight size={13} />
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          <div className="search-results-footer">
+                            <button
+                              onClick={() => {
+                                const q = searchQuery;
+                                setIsSearchOpen(false);
+                                setSearchQuery('');
+                                navigate(`/products?search=${encodeURIComponent(q)}`);
+                              }}
+                              className="search-view-all-btn"
+                            >
+                              <span>View All {totalMatchCount} Products in Catalog</span>
+                              <ArrowRight size={14} />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="search-no-results">
+                          <div className="search-no-icon">
+                            <Search size={22} className="text-slate-400" />
+                          </div>
+                          <h4 className="text-sm font-bold text-slate-200 mb-1">
+                            No 3M products found for "{searchQuery}"
+                          </h4>
+                          <p className="text-xs text-slate-400 mb-3">
+                            Try searching for these popular industrial product categories:
+                          </p>
+                          <div className="search-tags-row">
+                            {['VHB Tapes', 'Masking Tapes', 'Abrasives', 'Electrical Tapes', 'Adhesives'].map((tag) => (
+                              <button
+                                key={tag}
+                                type="button"
+                                onClick={() => setSearchQuery(tag)}
+                                className="search-tag-chip"
+                              >
+                                {tag}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+
                   <div className="search-row-scanline" />
                 </div>
               </motion.div>

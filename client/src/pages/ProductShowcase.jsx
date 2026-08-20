@@ -4,7 +4,7 @@ import {
   Search, Filter, X, Eye, FileText, Download, CheckCircle2, 
   ArrowRight, ShieldCheck, Sparkles, PhoneCall, Info, Layers, Package, ShoppingBag, Plus, Minus
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Footer from '../components/layout/Footer/Footer';
 import { MAIN_CATEGORIES, SUB_CATEGORIES, PRODUCTS, INDUSTRIES } from '../data/productsData';
 import { getImageUrl } from '../utils/imageUtils';
@@ -234,11 +234,20 @@ const ModalProductGallery = ({ product }) => {
 
 const ProductShowcase = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlSearch = searchParams.get('search') || '';
+
   const [activeMainCategory, setActiveMainCategory] = useState('all');
   const [activeSubCategory, setActiveSubCategory] = useState('all');
   const [selectedIndustry, setSelectedIndustry] = useState('All Industries');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  React.useEffect(() => {
+    if (urlSearch) {
+      setSearchQuery(urlSearch);
+    }
+  }, [urlSearch]);
 
   // Available Subcategories based on selected Main Category Folder
   const availableSubCategories = useMemo(() => {

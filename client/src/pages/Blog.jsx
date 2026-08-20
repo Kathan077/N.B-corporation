@@ -445,44 +445,7 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════
-          05. EDITOR'S PICKS HORIZONTAL SCROLL
-      ══════════════════════════════════════════════ */}
-      <section className="picks-section">
-        <div className="picks-wrap">
-          <div className="picks-header">
-            <SectionEyebrow>Editor_Picks // Curated_Intel</SectionEyebrow>
-            <h2 className="picks-title">
-              Must-Read<br />
-              <span className="picks-title-outline">Transmissions</span>
-            </h2>
-          </div>
-          <div className="picks-scroll-track">
-            {POSTS.slice(0, 4).map((post, i) => (
-              <motion.div
-                key={post.id}
-                whileHover={{ y: -6 }}
-                className="pick-card group"
-              >
-                <div className="pick-img-box">
-                  <img src={post.image} alt={post.title} className="pick-img" />
-                  <div className="pick-img-grad" />
-                  <span className="pick-cat-tag">{post.category}</span>
-                </div>
-                <div className="pick-body">
-                  <div className="pick-meta">
-                    <Clock size={9} /> {post.readTime} &nbsp;·&nbsp; {post.date}
-                  </div>
-                  <h3 className="pick-title">{post.title}</h3>
-                  <button className="pick-btn">
-                    Read <ArrowRight size={12} />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* ══════════════════════════════════════════════
           06. RESOURCE ARCHIVE / VAULT

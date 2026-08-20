@@ -32,25 +32,7 @@ const POSTS = [
     excerpt: "Integrating graphene-based composites into everyday structural engineering for next-decade resilience.",
     author: "Marcus Vance", role: "Materials Lead", date: "MAR 18, 2026", readTime: "10 MIN", views: "7.8K",
     image: "https://images.pexels.com/photos/3861964/pexels-photo-3861964.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  },
-  {
-    id: "ART-004", title: "Network Security in Smart Factories", category: "SAFETY",
-    excerpt: "Protecting the digital core of industrial infrastructure from emerging quantum-level threat vectors.",
-    author: "Elena Rossi", role: "Security Analyst", date: "MAR 15, 2026", readTime: "7 MIN", views: "5.3K",
-    image: "https://images.pexels.com/photos/5473337/pexels-photo-5473337.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  },
-  {
-    id: "ART-005", title: "Precision Logistics in Zero-Gravity Conditions", category: "INNOVATION",
-    excerpt: "N.B Corp's research into orbital manufacturing supply chains and what it means for earth-bound logistics.",
-    author: "Dr. Yuki Tanaka", role: "Research Director", date: "MAR 10, 2026", readTime: "12 MIN", views: "18.2K",
-    image: "https://images.pexels.com/photos/73910/mars-mars-rover-space-travel-robot-73910.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  },
-  {
-    id: "ART-006", title: "The Carbon-Neutral Factory Blueprint", category: "SUSTAINABILITY",
-    excerpt: "A full lifecycle audit of our Surat facility that achieved net-zero operations 3 years ahead of schedule.",
-    author: "Priya Mehta", role: "Sustainability Lead", date: "MAR 06, 2026", readTime: "9 MIN", views: "6.7K",
-    image: "https://images.pexels.com/photos/9875441/pexels-photo-9875441.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  },
+  }
 ];
 
 const STATS = [

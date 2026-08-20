@@ -95,8 +95,18 @@
 }
 
 .footer-address-card {
-    padding: 14px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+width: 280px;
+padding: 10px;
+    border-radius: 14px;
+
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.footer-address-card:hover {
+    border-color: rgba(220, 38, 38, 0.35);
+    background: rgba(15, 23, 42, 0.85);
+    transform: translateY(-2px);
 }

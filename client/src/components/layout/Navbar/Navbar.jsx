@@ -259,11 +259,11 @@ const Navbar = () => {
               >
                 <div className="search-row-inner">
                   <div className="search-row-container">
-                    <Search size={18} className="search-row-icon" />
+                    <Search size={18} className="search-row-icon shrink-0" />
                     <input
                       autoFocus
                       type="text"
-                      placeholder="Search 3M tapes, abrasives, adhesives, safety gear..."
+                      placeholder="Search 3M products..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="search-row-input"
@@ -272,17 +272,19 @@ const Navbar = () => {
                       <button
                         type="button"
                         onClick={() => setSearchQuery('')}
-                        className="text-xs font-semibold text-slate-400 hover:text-white px-2 py-1 bg-slate-800/60 rounded-md transition-colors mr-1"
+                        className="text-[11px] font-semibold text-slate-400 hover:text-white px-2 py-0.5 bg-slate-800/80 rounded transition-colors shrink-0"
                       >
                         Clear
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={() => {
                         setIsSearchOpen(false);
                         setSearchQuery('');
                       }}
-                      className="search-row-close"
+                      className="search-row-close shrink-0"
+                      aria-label="Close search"
                     >
                       <X size={18} />
                     </button>
@@ -332,12 +334,14 @@ const Navbar = () => {
                                     />
                                   </div>
                                   <div className="search-result-info">
-                                    <div className="flex items-center gap-2 mb-0.5">
-                                      <span className="search-result-cat">{prod.category || prod.mainCategory || '3M Industrial'}</span>
-                                      {prod.code && <span className="search-result-code">SKU: {prod.code}</span>}
+                                    <div className="flex items-center justify-between gap-1 mb-0.5">
+                                      <span className="search-result-cat truncate max-w-[120px] sm:max-w-[200px]">
+                                        {prod.category || prod.mainCategory || '3M Industrial'}
+                                      </span>
+                                      {prod.code && <span className="search-result-code shrink-0">SKU: {prod.code}</span>}
                                     </div>
                                     <h4 className="search-result-title">{prod.name || prod.title}</h4>
-                                    <p className="search-result-desc">
+                                    <p className="search-result-desc text-[11px] sm:text-xs">
                                       {prod.tagline || prod.description || 'Engineered high-performance 3M industrial solution.'}
                                     </p>
                                   </div>

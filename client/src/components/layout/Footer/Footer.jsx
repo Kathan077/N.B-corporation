@@ -127,19 +127,18 @@ const Footer = () => {
             </div>
             <div className="footer-address-card">
               <div className="flex items-start gap-3">
-                <div className="footer-contact-icon shrink-0 mt-0.5">
-                  <MapPin size={16} />
+                <div className="footer-contact-icon shrink-0 mt-1">
+                  <MapPin size={18} />
                 </div>
-                <div className="text-[11px] sm:text-xs font-medium text-slate-300 leading-relaxed">
-                  <p className="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5 mb-1.5">
+                <div className="text-xs font-medium text-slate-300 leading-normal space-y-1">
+                  <p className="font-bold text-white text-sm flex items-center gap-1.5 mb-1">
                     <span>NB Corporation</span>
                     <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-600/20 text-red-400 border border-red-500/30">HQ</span>
                   </p>
-                  <p className="text-slate-300">G-10, 11, 12 Satkar Avenue,</p>
-                  <p className="text-slate-300">Nr. Railway Crossing, NH No. 08,</p>
-                  <p className="text-slate-300">Opp. Starline Maruti Showroom,</p>
-                  <p className="text-slate-300">Naroda, Ahmedabad,</p>
-                  <p className="text-slate-300">Gujarat - 382340</p>
+                  <p className="text-slate-300 whitespace-nowrap">G-10, 11, 12 Satkar Avenue,</p>
+                  <p className="text-slate-300 whitespace-nowrap">Nr. Railway Crossing, NH No. 08,</p>
+                  <p className="text-slate-300 whitespace-nowrap">Opp. Starline Maruti Showroom,</p>
+                  <p className="text-slate-300 whitespace-nowrap">Naroda, Ahmedabad, Gujarat 382340</p>
                 </div>
               </div>
             </div>

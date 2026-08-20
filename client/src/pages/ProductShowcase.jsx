@@ -234,6 +234,7 @@ const ModalProductGallery = ({ product }) => {
 
 const ProductShowcase = () => {
   const navigate = useNavigate();
+  const { cartCount, cartTotal } = useCart();
   const [searchParams] = useSearchParams();
   const urlSearch = searchParams.get('search') || '';
 
@@ -734,6 +735,44 @@ const ProductShowcase = () => {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── FLOATING VIEW CART ACTION (Right Edge) ── */}
+      <AnimatePresence>
+        {cartCount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, x: 80, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 80, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+            className="fixed right-4 sm:right-6 bottom-6 sm:bottom-8 z-40"
+          >
+            <button
+              onClick={() => navigate('/cart')}
+              className="group flex items-center gap-3.5 bg-slate-900/95 hover:bg-red-600 text-white pl-3.5 sm:pl-4 pr-4 sm:pr-5 py-3 sm:py-3.5 rounded-full shadow-2xl shadow-slate-950/40 border border-slate-700/60 hover:border-red-500 backdrop-blur-xl transition-all duration-300 active:scale-95 cursor-pointer hover:shadow-red-600/30"
+              title="View your shopping cart"
+            >
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-red-600 group-hover:bg-white text-white group-hover:text-red-600 flex items-center justify-center transition-colors duration-300 shadow-md">
+                  <ShoppingBag size={18} />
+                </div>
+                <span className="absolute -top-1 -right-1 bg-amber-400 text-slate-950 text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-xs border-2 border-slate-900 group-hover:border-red-600 transition-colors">
+                  {cartCount}
+                </span>
+              </div>
+
+              <div className="flex flex-col text-left">
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-black uppercase tracking-wider">View Cart</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+                <span className="text-[11px] text-slate-400 group-hover:text-red-100 font-medium">
+                  {cartCount} {cartCount === 1 ? 'item' : 'items'} added
+                </span>
+              </div>
+            </button>
+          </motion.div>
         )}
       </AnimatePresence>
 

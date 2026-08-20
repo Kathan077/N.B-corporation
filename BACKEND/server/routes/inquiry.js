@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const Inquiry = require("../models/Inquiry");
 
 // Target recipient email address
-const TARGET_EMAIL = process.env.TARGET_EMAIL || "nb2corporation@gmail.com";
+const TARGET_EMAIL = process.env.TARGET_EMAIL || "krishnapanchal822006@gmail.com";
 
 // Setup nodemailer transporter helper
 const createTransporter = () => {

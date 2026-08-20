@@ -122,7 +122,7 @@ const Checkout = () => {
 
       if (res.data?.success) {
         setSubmitted(true);
-        triggerToast('Your inquiry has been submitted and sent to nb2corporation@gmail.com!', 'success');
+        triggerToast('Your inquiry has been submitted successfully! Representative will contact you shortly.', 'success');
         if (cartItems.length > 0) {
           clearCart();
         }

@@ -5,11 +5,11 @@ const axios = require("axios");
 const Inquiry = require("../models/Inquiry");
 
 // Target recipient email address
-const TARGET_EMAIL = process.env.TARGET_EMAIL || "krishnapanchal822006@gmail.com";
+const TARGET_EMAIL = process.env.TARGET_EMAIL || "kathanpatel099@gmail.com";
 
 // Setup nodemailer transporter helper (Supports both Google Developer OAuth2 and Gmail App Password)
 const createTransporter = () => {
-  const emailUser = process.env.EMAIL_USER || process.env.TARGET_EMAIL || "krishnapanchal822006@gmail.com";
+  const emailUser = process.env.EMAIL_USER || process.env.TARGET_EMAIL || "kathanpatel099@gmail.com";
 
   // Option A: Google Developer Console (OAuth2)
   const clientId = process.env.OAUTH_CLIENT_ID;

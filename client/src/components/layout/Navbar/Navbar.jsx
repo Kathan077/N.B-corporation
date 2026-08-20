@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motio
 import { ArrowRight, UserPlus, LogIn, X, Menu, Phone, Mail, Instagram, Twitter, Facebook, ShoppingCart, Search, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
+import Logo from '../../common/Logo';
 import './Navbar.css';
 
 const useMagneticEffect = () => {
@@ -115,20 +116,13 @@ const Navbar = () => {
         <header className="main-nav">
           <div className="nav-content">
 
-            {/* ── LOGO ── flex-shrink: 1 so it can compress, min-width: 0 */}
+            {/* ── LOGO ── */}
             <motion.div className="nav-logo-area"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={isLoaded ? { scale: 1, opacity: 1 } : {}}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
-              <Link to="/" className="logo-link group">
-                <div className="logo-icon-box">
-                  <span className="logo-letter">N</span>
-                  <div className="noise-overlay" />
-                </div>
-                <div className="logo-text-wrap">
-                  <span className="logo-name">NB.CORP</span>
-                  <span className="logo-tagline">Elite Engineering</span>
-                </div>
+              <Link to="/" className="logo-link group flex items-center py-1">
+                <Logo height={56} />
               </Link>
             </motion.div>
 
@@ -264,14 +258,7 @@ const Navbar = () => {
               {/* Drawer Header */}
               <div className="drawer-header">
                 <Link to="/" onClick={() => setIsOpen(false)} className="logo-link group">
-                  <div className="logo-icon-box" style={{ width: 40, height: 40, borderRadius: 8 }}>
-                    <span className="logo-letter" style={{ fontSize: '1.1rem' }}>N</span>
-                    <div className="noise-overlay" />
-                  </div>
-                  <div className="logo-text-wrap">
-                    <span className="logo-name" style={{ fontSize: '1.1rem' }}>NB.CORP</span>
-                    <span className="logo-tagline">Elite Engineering</span>
-                  </div>
+                  <Logo height={48} />
                 </Link>
                 <motion.button whileHover={{ rotate: 90 }} whileTap={{ scale: 0.9 }}
                   onClick={() => setIsOpen(false)} className="drawer-close-btn">

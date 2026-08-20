@@ -1,143 +1,163 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Instagram, Twitter, Facebook, ArrowUpRight } from 'lucide-react';
+import { Phone, Mail, MapPin, Instagram, Twitter, Facebook, ArrowUpRight, Clock } from 'lucide-react';
+import Logo from '../../common/Logo';
 import './Footer.css';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="footer-section bg-slate-950 text-white pt-24 pb-12 overflow-hidden relative">
+    <footer className="footer-section bg-[#060a12] text-white pt-20 pb-12 overflow-hidden relative border-t border-slate-900/80">
       {/* Background Instrumentation */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.05]">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
         <div className="footer-grid" />
         <div className="footer-noise" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+      <div className="container mx-auto px-6 max-w-7xl relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-14 mb-16 items-start">
           
-          {/* Brand Identity */}
-          <div className="footer-brand">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4 mb-8"
-            >
-              <div className="w-10 h-1 bg-brand-red" />
-              <h2 className="text-2xl font-black uppercase tracking-tighter">N.B. Corp</h2>
-            </motion.div>
-            <p className="text-slate-400 text-sm font-medium leading-relaxed mb-10 max-w-xs uppercase tracking-wide">
-              Pioneering industrial excellence through technical precision and futuristic engineering solutions since 1998.
+          {/* Column 1: Brand Identity */}
+          <div className="footer-col footer-brand flex flex-col">
+            <div className="flex items-center mb-5">
+              <Logo height={58} light={true} />
+            </div>
+            <p className="text-slate-400 text-sm font-normal leading-relaxed mb-6">
+              Pioneering industrial excellence through technical precision, high-grade 3M adhesive tapes, and engineering solutions since 1998.
             </p>
-            <div className="flex gap-4">
-              {[Instagram, Twitter, Facebook].map((Icon, i) => (
+            <div className="flex items-center gap-3 mt-auto">
+              {[
+                { Icon: Instagram, href: "#", label: "Instagram" },
+                { Icon: Twitter,   href: "#", label: "Twitter" },
+                { Icon: Facebook,  href: "#", label: "Facebook" }
+              ].map(({ Icon, href, label }, i) => (
                 <motion.a 
                   key={i} 
-                  href="#" 
-                  whileHover={{ y: -5, color: '#DC2626' }}
-                  className="w-10 h-10 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 transition-colors"
+                  href={href} 
+                  aria-label={label}
+                  whileHover={{ y: -3, borderColor: '#DC2626', color: '#DC2626' }}
+                  className="w-10 h-10 rounded-xl border border-slate-800/80 bg-slate-900/50 flex items-center justify-center text-slate-400 transition-colors shadow-sm"
                 >
-                  <Icon size={18} />
+                  <Icon size={17} />
                 </motion.a>
               ))}
             </div>
           </div>
 
-          {/* Quick Nav */}
-          <div className="footer-links">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-10">Navigation</h3>
-            <ul className="flex flex-col gap-5">
+          {/* Column 2: Quick Links */}
+          <div className="footer-col footer-links flex flex-col">
+            <div className="footer-col-header">
+              <span className="footer-col-indicator" />
+              <h3 className="footer-col-title">Navigation</h3>
+            </div>
+            <ul className="flex flex-col gap-3.5">
               {[
                 { name: 'Home', path: '/' },
                 { name: 'About Us', path: '/about' },
-                { name: 'Blog', path: '/blog' },
-                { name: 'Products', path: '/product' },
-                { name: 'Contact', path: '/contact' }
+                { name: 'Products & Catalog', path: '/product' },
+                { name: 'Blog & Articles', path: '/blog' },
+                { name: 'Contact & Inquiry', path: '/contact' }
               ].map((item) => (
                 <li key={item.name}>
                   <Link 
                     to={item.path} 
-                    className="group flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors"
+                    className="group inline-flex items-center gap-2.5 text-sm font-medium text-slate-400 hover:text-white transition-colors"
                   >
-                    <motion.span 
-                      className="flex items-center gap-2"
-                      whileHover={{ x: 10 }}
-                    >
-                      <span className="w-0 h-px bg-brand-red group-hover:w-4 transition-all" />
-                      {item.name}
-                      <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </motion.span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-red-500 transition-colors" />
+                    <span>{item.name}</span>
+                    <ArrowUpRight size={13} className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-red-500" />
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact Suite */}
-          <div className="footer-contact">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-10">Communications</h3>
-            <div className="flex flex-col gap-8">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center text-brand-red">
-                  <Phone size={18} />
+          {/* Column 3: Communications */}
+          <div className="footer-col footer-contact flex flex-col">
+            <div className="footer-col-header">
+              <span className="footer-col-indicator" />
+              <h3 className="footer-col-title">Communications</h3>
+            </div>
+            <div className="flex flex-col gap-4">
+              <a 
+                href="tel:+919825954315" 
+                className="footer-contact-card group"
+              >
+                <div className="footer-contact-icon">
+                  <Phone size={16} />
                 </div>
                 <div>
-                  <span className="block text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Secure Line</span>
-                  <p className="text-sm font-bold">+91  98259 54315</p>
+                  <span className="footer-contact-tag">Direct Helpline</span>
+                  <p className="footer-contact-val group-hover:text-red-500 transition-colors">+91 98259 54315</p>
                 </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center text-brand-red">
-                  <Mail size={18} />
+              </a>
+
+              <a 
+                href="mailto:nb2corporation@gmail.com" 
+                className="footer-contact-card group"
+              >
+                <div className="footer-contact-icon">
+                  <Mail size={16} />
                 </div>
                 <div>
-                  <span className="block text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Digital Mail</span>
-                  <p className="text-sm font-bold">nb2corporation@gmail.com</p>
+                  <span className="footer-contact-tag">Digital Dispatch</span>
+                  <p className="footer-contact-val group-hover:text-red-500 transition-colors">nb2corporation@gmail.com</p>
+                </div>
+              </a>
+
+              <div className="footer-contact-card">
+                <div className="footer-contact-icon text-emerald-400 border-emerald-500/20 bg-emerald-500/10">
+                  <Clock size={16} />
+                </div>
+                <div>
+                  <span className="footer-contact-tag">Operating Hours</span>
+                  <p className="footer-contact-val">Mon - Sat: 9:00 AM - 7:00 PM</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Location / HQ */}
-          <div className="footer-hq">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-10">Tactical HQ</h3>
-            <div className="flex items-start gap-4 pr-10">
-              <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center text-brand-red">
-                <MapPin size={18} />
+          {/* Column 4: Tactical Headquarters */}
+          <div className="footer-col footer-hq flex flex-col">
+            <div className="footer-col-header">
+              <span className="footer-col-indicator" />
+              <h3 className="footer-col-title">Tactical HQ</h3>
+            </div>
+            <div className="footer-address-card">
+              <div className="flex items-start gap-3.5 mb-3">
+                <div className="footer-contact-icon shrink-0 mt-0.5">
+                  <MapPin size={16} />
+                </div>
+                <div className="text-sm font-medium text-slate-300 leading-relaxed">
+                  <p className="font-bold text-white mb-1">NB Corporation</p>
+                  <p>G-10, 11, 12 Satkar Avenue,</p>
+                  <p>Nr. Railway Crossing, NH No-08,</p>
+                  <p>Opp. Starline Maruti Showroom, Naroda,</p>
+                  <p>Ahmedabad, Gujarat 382340</p>
+                </div>
               </div>
-              <p className="text-sm font-bold leading-relaxed text-slate-300">
-               G-10,11,12 SATKAR AVENUE <br />NR. RAILWAY CROSSINGM, NH NO -08, opp. starline maruti showroom, Naroda, Ahmedabad, Gujarat 382340
-              </p>
             </div>
           </div>
         </div>
 
         {/* Bottom Metadata */}
-        <div className="pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-4">
-            <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.3em]">
-              © {currentYear} N.B. Corporation // All Rights Reserved
-            </span>
-            <div className="h-4 w-px bg-slate-800" />
-            <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.3em]">
-              Precision Standard V.2.1
-            </span>
+        <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-semibold text-slate-500">
+          <div className="flex items-center gap-3">
+            <span>© {currentYear} N.B. Corporation. All Rights Reserved.</span>
+            <span className="text-slate-700">|</span>
+            <span className="text-slate-400">Industrial Engineering Standard</span>
           </div>
           
-          <div className="flex gap-8">
-            <a href="#" className="text-[8px] font-black text-slate-600 hover:text-brand-red uppercase tracking-[0.3em] transition-colors">Privacy Policy</a>
-            <a href="#" className="text-[8px] font-black text-slate-600 hover:text-brand-red uppercase tracking-[0.3em] transition-colors">Terms of Service</a>
+          <div className="flex items-center gap-6">
+            <Link to="/about" className="hover:text-red-500 transition-colors">About</Link>
+            <Link to="/product" className="hover:text-red-500 transition-colors">Products</Link>
+            <Link to="/contact" className="hover:text-red-500 transition-colors">Contact</Link>
+            <a href="#" className="hover:text-red-500 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-red-500 transition-colors">Terms</a>
           </div>
         </div>
-      </div>
-
-      {/* Decorative Branding */}
-      <div className="absolute top-0 right-0 select-none pointer-events-none opacity-[0.02] overflow-hidden max-w-full">
-        <h2 className="text-[12vw] font-black leading-none uppercase tracking-tighter text-white">
-          PRECISION
-        </h2>
       </div>
     </footer>
   );

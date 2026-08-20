@@ -91,107 +91,26 @@ const Blog = () => {
       {/* ══════════════════════════════════════════════
           01. HERO
       ══════════════════════════════════════════════ */}
-      <section className="blog-hero">
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="hero-bg-layer">
-          <div className="hero-img-wrap">
-            <img
-              src={tapesImage}
-              alt="3M Industrial Tapes" 
-              className="hero-bg-img"
-              style={{ opacity: 0.5, filter: 'none', zIndex: 1 }}
-            />
-          </div>
-          <div className="hero-overlay" />
-          {/* Removed blueprint-grid */}
-          <div className="scan-line-v" />
-          {/* Diagonal accent stripe */}
-          <div className="hero-stripe" />
-        </motion.div>
-
-        <div className="hero-body">
+      {/* ══════════════════════════════════════════════
+          01. HERO (CLEAN & SIMPLE)
+      ══════════════════════════════════════════════ */}
+      <section className="blog-simple-hero">
+        <div className="simple-hero-container">
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: { 
-                opacity: 1,
-                transition: { staggerChildren: 0.15, delayChildren: 0.2 }
-              }
-            }}
-            className="hero-text-block"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="simple-hero-content"
           >
-            <motion.div 
-               variants={{
-                 hidden: { opacity: 0, x: -20 },
-                 visible: { opacity: 1, x: 0 }
-               }}
-               className="hero-badge"
-            >
-              <Radio size={11} className="hero-badge-icon" />
-              <span>Industrial Intel Stream</span>
-              <span className="hero-badge-live">● LIVE</span>
-            </motion.div>
-
-            <motion.h1 
-               variants={{
-                 hidden: { opacity: 0, y: 40 },
-                 visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-               }}
-               className="hero-title"
-            >
-              Our<br />
-              <span className="hero-title-outline">Blog</span>
-            </motion.h1>
-
-            <motion.p 
-               variants={{
-                 hidden: { opacity: 0, y: 20 },
-                 visible: { opacity: 1, y: 0 }
-               }}
-               className="hero-subtitle"
-            >
-              Cutting-edge insights from the forefront of industrial engineering, materials science, and global logistics.
-            </motion.p>
-          </motion.div>
-
-          {/* Stats strip */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{
-              hidden: { opacity: 0 },
-              visible: { 
-                opacity: 1,
-                transition: { staggerChildren: 0.1 }
-              }
-            }}
-            className="hero-stats"
-          >
-            {STATS.map((s, i) => (
-              <motion.div 
-                key={i} 
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                className="hero-stat-item"
-              >
-                <span className="hero-stat-icon">{s.icon}</span>
-                <div>
-                  <div className="hero-stat-value">
-                    <AnimatedCounter value={s.value} />
-                  </div>
-                  <div className="hero-stat-label">{s.label}</div>
-                </div>
-              </motion.div>
-            ))}
+            <span className="simple-hero-badge">Industrial Knowledge Hub</span>
+            <h1 className="simple-hero-title">
+              Our <span className="simple-hero-title-accent">Blog</span>
+            </h1>
+            <p className="simple-hero-subtitle">
+              Engineering insights, technical application guides, and industrial innovation updates.
+            </p>
           </motion.div>
         </div>
-
-        {/* Floating search */}
-    
       </section>
 
       {/* ══════════════════════════════════════════════
@@ -399,118 +318,12 @@ const Blog = () => {
               </div>
             )}
 
-            {/* Load more */}
-            <div className="load-more-row">
-              <button className="load-more-btn">
-                <span className="load-more-text">Load_More_Transmissions</span>
-                <div className="load-more-fill" />
-              </button>
-            </div>
           </motion.div>
 
         </div>
       </section>
 
 
-
-      {/* ══════════════════════════════════════════════
-          06. RESOURCE ARCHIVE / VAULT
-      ══════════════════════════════════════════════ */}
-      <section className="archive-section">
-        {/* Removed blueprint-grid */}
-        <div className="archive-wrap">
-          <div className="archive-header">
-            <div>
-              <SectionEyebrow>Intelligence_Vault</SectionEyebrow>
-              <h2 className="archive-title">
-                Technical<br />
-                <span className="archive-title-outline">Briefings</span>
-              </h2>
-            </div>
-            <p className="archive-desc">
-              Access deep-dive technical manuals, corporate whitepapers, and global engineering research curated for industry leaders.
-            </p>
-          </div>
-
-          <div className="archive-grid">
-            {[
-              { title: "Quantum Supply Optimization", id: "B-291", type: "WHITE_PAPER", icon: <Layers size={22} />, pages: "48 pages" },
-              { title: "Structural Integrity v4.0",   id: "B-442", type: "TECH_MANUAL", icon: <ShieldCheck size={22} />, pages: "112 pages" },
-              { title: "High-Frequency Logistics",    id: "B-108", type: "CORE_DATA",   icon: <Activity size={22} />, pages: "36 pages" },
-              { title: "Industrial AI Protocol",      id: "B-772", type: "ARCHIVE",     icon: <Terminal size={22} />, pages: "94 pages" },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ y: -4 }}
-                className="resource-card group"
-              >
-                <div className="rc-bracket tl" /><div className="rc-bracket br" />
-                <div className="rc-id">CRC_OK // {item.id}</div>
-                <div className="rc-icon-box">{item.icon}</div>
-                <span className="rc-type">{item.type}</span>
-                <h3 className="rc-title">{item.title}</h3>
-                <div className="rc-pages">{item.pages}</div>
-                <button className="rc-btn">
-                  Request Access <ArrowRight size={13} />
-                </button>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════
-          07. NEWSLETTER — FULL DARK SECTION
-      ══════════════════════════════════════════════ */}
-      <section className="nl-section">
-        <div className="nl-wrap">
-          <div className="nl-bg-grid" />
-          <div className="nl-bg-texture" />
-          <div className="nl-inner">
-            <div className="nl-left">
-              <SectionEyebrow>Direct_Uplink</SectionEyebrow>
-              <h2 className="nl-title">
-                Join the<br />
-                <span className="nl-title-outline">Elite Core</span>
-              </h2>
-              <p className="nl-sub">
-                Get exclusive access to pre-market technical reports and industrial insights before they hit the stream.
-              </p>
-              <div className="nl-trust-badges">
-                <span className="nl-badge">✓ GDPR Secure</span>
-                <span className="nl-badge">✓ No Spam</span>
-                <span className="nl-badge">✓ 1x Weekly</span>
-              </div>
-            </div>
-
-            <div className="nl-right">
-              <form className="nl-form" onSubmit={e => e.preventDefault()}>
-                <div className="nl-input-wrap">
-                  <input type="text" placeholder="Full Name..." className="nl-input" />
-                  <div className="nl-input-bracket" />
-                </div>
-                <div className="nl-input-wrap">
-                  <input type="email" placeholder="Professional Email..." className="nl-input" />
-                  <div className="nl-input-bracket" />
-                </div>
-                <div className="nl-select-wrap">
-                  <select className="nl-select">
-                    <option value="">Select Industry...</option>
-                    {CATEGORIES.filter(c => c !== "ALL").map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-                <button type="submit" className="nl-btn">
-                  Authenticate_Uplink
-                  <ArrowRight size={16} />
-                </button>
-                <p className="nl-note">Encrypted transmission // No spam // Unsubscribe anytime</p>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <Footer />
     </div>

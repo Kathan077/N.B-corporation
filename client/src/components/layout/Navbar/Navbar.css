@@ -88,9 +88,9 @@
 
 /* ── Logo Area ────────────────────────────────────────── */
 .nav-logo-area {
-  /* allow compression on mobile */
   min-width: 0;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 .logo-link {
   display: flex;

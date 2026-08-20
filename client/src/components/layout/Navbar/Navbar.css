@@ -289,10 +289,10 @@
 
 /* ── Secondary Search ─────────────────────────────────── */
 .search-row-secondary {
-  background:rgba(15,23,42,.85); backdrop-filter:blur(15px);
+  background:rgba(15,23,42,.92); backdrop-filter:blur(18px);
   border-top:1px solid rgba(255,255,255,.05);
   border-bottom:2px solid var(--primary-red);
-  overflow:hidden; width:100%;
+  overflow:visible; width:100%; z-index: 1000;
 }
 .search-row-inner { max-width:1600px; margin:0 auto; padding:1.25rem clamp(.875rem,4vw,5rem); position:relative; }
 .search-row-container {
@@ -305,7 +305,7 @@
 .search-row-container:focus-within { background:rgba(255,255,255,.08); border-color:var(--primary-red); }
 .search-row-icon { color:#94a3b8; flex-shrink:0; }
 .search-row-input { flex:1; background:transparent; border:none; outline:none; font-size:1rem; font-weight:700; color:white; }
-.search-row-input::placeholder { color:#cbd5e1; }
+.search-row-input::placeholder { color:#94a3b8; font-weight: 500; }
 .search-row-close {
   width:34px; height:34px; display:flex; align-items:center; justify-content:center;
   background:rgba(255,255,255,.1); border-radius:8px; color:white;
@@ -315,6 +315,191 @@
 .search-row-scanline {
   position:absolute; bottom:0; left:0; width:100%; height:1px;
   background:var(--primary-red); opacity:.2; animation:scan-width 2s infinite ease-in-out;
+}
+
+/* ── Pro Live Search Dropdown Overlay ─────────────────── */
+.search-results-overlay {
+  margin-top: 0.85rem;
+  background: rgba(15, 23, 42, 0.97);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.search-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.search-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-result-item:hover {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.4);
+  transform: translateX(4px);
+}
+
+.search-result-img-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.search-result-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.search-result-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-result-cat {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ef4444;
+}
+
+.search-result-code {
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.search-result-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-result-desc {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-result-action {
+  flex-shrink: 0;
+}
+
+.search-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  transition: color 0.2s;
+}
+
+.search-result-item:hover .search-view-btn {
+  color: #ef4444;
+}
+
+.search-results-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.search-view-all-btn {
+  width: 100%;
+  padding: 0.65rem;
+  border-radius: 0.65rem;
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #f8fafc;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.search-view-all-btn:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.search-no-results {
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.search-no-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 0.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.search-tag-chip {
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-tag-chip:hover {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: #ef4444;
+  color: #ffffff;
 }
 
 /* ── Mobile Drawer ────────────────────────────────────── */

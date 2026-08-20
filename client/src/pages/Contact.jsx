@@ -81,8 +81,8 @@ const Contact = () => {
         <div className="hero-content">
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
             <div className="hero-badge">
-              <Activity size={12} />
-              <span>Vector Selection Terminal</span>
+             
+           
             </div>
             <h1 className="hero-title">
               Contact<br />

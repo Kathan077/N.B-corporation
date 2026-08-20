@@ -24,7 +24,7 @@ const Brands = () => {
             viewport={{ once: true }}
             className="text-2xl md:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight"
           >
-            Serving India's Manufacturing Leaders <span className="text-brand-red italic font-semibold">Since 1993</span>
+            Industries Served <span className="text-brand-red italic font-semibold">Since 1993</span>
           </motion.h2>
         </div>
 

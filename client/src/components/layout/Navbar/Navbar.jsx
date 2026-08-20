@@ -188,7 +188,7 @@ const Navbar = () => {
                   </Link>
                   <button onClick={handleLogout} className="nav-icon-btn">
                     <LogIn size={18} className="text-slate-600 rotate-180" />
-                    <span className="hidden lg:inline text-xs font-bold uppercase text-slate-600 ml-1">Out</span>
+                    <span className="hidden lg:inline text-xs font-bold uppercase text-slate-600 ml-1">Logout</span>
                   </button>
                 </>
               ) : (

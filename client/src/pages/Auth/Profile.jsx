@@ -24,7 +24,7 @@ const Profile = () => {
   }, [navigate]);
 
   if (loading) {
-    return <div className="auth-loading">Initializing Personnel Data...</div>;
+    return <div className="auth-loading">Loading profile...</div>;
   }
 
   return (
@@ -34,8 +34,8 @@ const Profile = () => {
       </div>
       <div className="auth-bg-grid" aria-hidden="true" />
 
-      <span className="auth-side-label left">PROFILE_ACCESS // GRANTED</span>
-      <span className="auth-side-label right">VERIFICATION_STATUS // VERIFIED</span>
+      <span className="auth-side-label left">USER PROFILE</span>
+      <span className="auth-side-label right">VERIFIED ACCOUNT</span>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -52,19 +52,18 @@ const Profile = () => {
         <div className="profile-avatar-wrap">
           <div className="profile-avatar">
             <User size={38} />
-            <div className="profile-level-badge">LVL_3</div>
           </div>
           <h1 className="module-title">{user.name}</h1>
-          <p className="module-subtitle">Authorized Personnel Account</p>
+          <p className="module-subtitle">User Account</p>
         </div>
 
         {/* Info Blocks */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* ID */}
           <div className="profile-info-block">
-            <label>Identity_ID</label>
+            <label>User ID</label>
             <p className="profile-info-value profile-info-value--mono">
-              USR_{user._id?.slice(-8).toUpperCase()}
+              #{user._id?.slice(-8).toUpperCase()}
             </p>
             <div className="profile-verified-icon">
               <ShieldCheck size={20} color="#4ade80" />
@@ -76,7 +75,7 @@ const Profile = () => {
             <div className="profile-info-block">
               <label>
                 <Mail size={10} />
-                Email_Address
+                Email Address
               </label>
               <p className="profile-info-value">{user.email}</p>
             </div>
@@ -84,7 +83,7 @@ const Profile = () => {
             <div className="profile-info-block">
               <label>
                 <Phone size={10} />
-                Contact_Mobile
+                Mobile Number
               </label>
               <p className="profile-info-value">+91 {user.mobile}</p>
             </div>
@@ -96,7 +95,7 @@ const Profile = () => {
           <button onClick={() => navigate('/')} className="auth-btn-skew">
             <div className="btn-skew-bg" style={{ background: 'rgba(220,38,38,0.18)' }} />
             <div className="btn-content">
-              <span>Return to Dashboard</span>
+              <span>Go to Home</span>
             </div>
           </button>
         </div>

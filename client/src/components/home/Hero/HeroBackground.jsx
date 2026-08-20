@@ -8,15 +8,16 @@ const HeroBackground = ({ smoothMouseX, smoothMouseY, smoothCursorX, smoothCurso
       <div className="hero-background-image">
         <iframe 
           className="hero-video-bg"
-          src="https://www.youtube.com/embed/pcPo05-xO70?autoplay=1&mute=1&loop=1&playlist=pcPo05-xO70&controls=0&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1" 
-          title="3M™ Electrical Tapes Product Family" 
+          src="https://www.youtube-nocookie.com/embed/pcPo05-xO70?autoplay=1&mute=1&loop=1&playlist=pcPo05-xO70&controls=0&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&playsinline=1" 
+          title="Background Video" 
           frameBorder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          referrerPolicy="strict-origin-when-cross-origin" 
-          allowFullScreen
+          allow="autoplay; encrypted-media" 
+          tabIndex="-1"
+          aria-hidden="true"
+          style={{ pointerEvents: 'none', userSelect: 'none' }}
         ></iframe>
         <img src={abrasiveSheet} alt="Industrial Background" className="hero-fallback-img" />
-        <div className="hero-image-overlay" />
+        <div className="hero-image-overlay" style={{ pointerEvents: 'auto' }} />
       </div>
       <div className="hero-noise" />
       

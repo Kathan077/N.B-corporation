@@ -63,8 +63,8 @@ const Login = () => {
       </div>
       <div className="auth-bg-grid" aria-hidden="true" />
 
-      <span className="auth-side-label left">SECURITY_PROTOCOL // L3_ACCESS</span>
-      <span className="auth-side-label right">ENCRYPTION_STATUS // ACTIVE</span>
+      <span className="auth-side-label left">SECURE LOGIN // PORTAL</span>
+      <span className="auth-side-label right">SECURE CONNECTION</span>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -87,12 +87,12 @@ const Login = () => {
 
           <div className="module-brand-strip">
             <ShieldCheck size={17} className="brand-strip-icon" />
-            <span className="brand-strip-text">Auth Access Terminal</span>
+            <span className="brand-strip-text">User Login</span>
           </div>
 
-          <h1 className="module-title">{step === 1 ? 'Initialize' : 'Verify'}</h1>
+          <h1 className="module-title">{step === 1 ? 'Welcome Back' : 'Verify OTP'}</h1>
           <p className="module-subtitle">
-            {step === 1 ? 'Provide Personnel Identity' : 'Enter Decryption Key'}
+            {step === 1 ? 'Enter your mobile number to sign in' : 'Enter the 6-digit OTP sent to your phone'}
           </p>
         </div>
 
@@ -103,7 +103,7 @@ const Login = () => {
             animate={{ opacity: 1, y: 0 }}
             className="auth-notify error"
           >
-            Access Denied: {error}
+            {error}
           </motion.div>
         )}
 
@@ -120,7 +120,7 @@ const Login = () => {
               onSubmit={handleSendOtp}
             >
               <div className="auth-input-group">
-                <label>Personnel_Contact / Mobile</label>
+                <label>Mobile Number</label>
                 <div className="relative">
                   <span className="absolute">
                     <Phone size={14} />
@@ -141,7 +141,7 @@ const Login = () => {
                 <button type="submit" disabled={loading} className="auth-btn-skew">
                   <div className="btn-skew-bg" />
                   <div className="btn-content">
-                    <span>{loading ? 'Requesting...' : 'Request Access'}</span>
+                    <span>{loading ? 'Sending OTP...' : 'Send OTP'}</span>
                     <ArrowRight size={15} />
                   </div>
                 </button>
@@ -158,7 +158,7 @@ const Login = () => {
               onSubmit={handleVerifyOtp}
             >
               <div className="auth-input-group">
-                <label>Decryption_Key / OTP</label>
+                <label>One-Time Password (OTP)</label>
                 <div className="relative">
                   <span className="absolute">
                     <Lock size={14} />
@@ -184,7 +184,7 @@ const Login = () => {
                 <button type="submit" disabled={loading} className="auth-btn-skew">
                   <div className="btn-skew-bg" />
                   <div className="btn-content">
-                    <span>{loading ? 'Verifying...' : 'Authorize Access'}</span>
+                    <span>{loading ? 'Verifying...' : 'Verify & Sign In'}</span>
                     <CheckCircle2 size={15} />
                   </div>
                 </button>
@@ -199,7 +199,7 @@ const Login = () => {
         {/* Footer */}
         <div className="auth-footer-links">
           <Link to="/register" className="auth-link">
-            New Personnel? <span>Register Identity</span>
+            Don't have an account? <span>Register Here</span>
           </Link>
         </div>
 

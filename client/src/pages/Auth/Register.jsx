@@ -53,8 +53,8 @@ const Register = () => {
       </div>
       <div className="auth-bg-grid" aria-hidden="true" />
 
-      <span className="auth-side-label left">REGISTRATION_PROTOCOL // NEW_ENTRY</span>
-      <span className="auth-side-label right">DATA_VALIDATION // ACTIVE</span>
+      <span className="auth-side-label left">CREATE ACCOUNT // REGISTRATION</span>
+      <span className="auth-side-label right">SECURE REGISTRATION</span>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -77,11 +77,11 @@ const Register = () => {
 
           <div className="module-brand-strip">
             <ShieldPlus size={17} className="brand-strip-icon" />
-            <span className="brand-strip-text">Identity Setup Terminal</span>
+            <span className="brand-strip-text">New Account</span>
           </div>
 
-          <h1 className="module-title">Register</h1>
-          <p className="module-subtitle">Enroll Personnel Data</p>
+          <h1 className="module-title">Create Account</h1>
+          <p className="module-subtitle">Enter your details to create an account</p>
         </div>
 
         {/* Notifications */}
@@ -91,7 +91,7 @@ const Register = () => {
             animate={{ opacity: 1, y: 0 }}
             className="auth-notify error"
           >
-            Protocol Error: {error}
+            {error}
           </motion.div>
         )}
         {success && (
@@ -100,14 +100,14 @@ const Register = () => {
             animate={{ opacity: 1, y: 0 }}
             className="auth-notify success"
           >
-            Identity Registered. Initializing Login...
+            Account created successfully! Redirecting to login...
           </motion.div>
         )}
 
         {/* Form */}
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-input-group">
-            <label>Personnel_Name / Username</label>
+            <label>Full Name</label>
             <div className="relative">
               <span className="absolute"><User size={14} /></span>
               <input
@@ -122,7 +122,7 @@ const Register = () => {
           </div>
 
           <div className="auth-input-group">
-            <label>Personnel_Email / Contact</label>
+            <label>Email Address</label>
             <div className="relative">
               <span className="absolute"><Mail size={14} /></span>
               <input
@@ -137,7 +137,7 @@ const Register = () => {
           </div>
 
           <div className="auth-input-group">
-            <label>Personnel_Contact / Mobile</label>
+            <label>Mobile Number</label>
             <div className="relative">
               <span className="absolute"><Phone size={14} /></span>
               <input
@@ -156,7 +156,7 @@ const Register = () => {
             <button type="submit" disabled={loading || success} className="auth-btn-skew">
               <div className="btn-skew-bg" />
               <div className="btn-content">
-                <span>{loading ? 'Processing...' : 'Register Identity'}</span>
+                <span>{loading ? 'Processing...' : 'Create Account'}</span>
                 <UserPlus size={15} />
               </div>
             </button>
@@ -166,7 +166,7 @@ const Register = () => {
         {/* Footer */}
         <div className="auth-footer-links">
           <Link to="/login" className="auth-link">
-            Already Enrolled? <span>Access Terminal</span>
+            Already have an account? <span>Sign In</span>
           </Link>
         </div>
 

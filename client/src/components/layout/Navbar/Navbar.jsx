@@ -4,11 +4,8 @@ import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motio
 import { ArrowRight, UserPlus, LogIn, X, Menu, Phone, Mail, Instagram, Twitter, Facebook, ShoppingCart, Search, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
-<<<<<<< HEAD
 import Logo from '../../common/Logo';
-=======
 import { PRODUCTS } from '../../../data/productsData';
->>>>>>> 1a9b3f45a70bacda2b932f56f92b8280d87dd927
 import './Navbar.css';
 
 const useMagneticEffect = () => {

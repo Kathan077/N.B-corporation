@@ -70,7 +70,12 @@ const Contact = () => {
       {/* ── Hero ── */}
       <section className="contact-hero">
         <motion.div style={{ y, opacity }} className="hero-technical-bg">
-          {/* Removed blueprint-grid */}
+          <img 
+            src="https://www.uponor.com/getmedia/b4a84d72-f0e9-4505-ad1c-40d7a102124a/CustomerService_iStock_925689786.jpg?sitename=usa" 
+            alt="Customer Service Background" 
+            className="hero-bg-image"
+          />
+          <div className="hero-bg-overlay" />
           <div className="scan-line-v" />
         </motion.div>
         <div className="hero-content">

@@ -6,30 +6,8 @@ const HeroBackground = ({ smoothMouseX, smoothMouseY, smoothCursorX, smoothCurso
   return (
     <div className="absolute inset-0 z-0">
       <div className="hero-background-image">
-        <iframe 
-          className="hero-video-bg"
-          src="https://www.youtube.com/embed/YI-mwsBshHE?autoplay=1&mute=1&controls=0&loop=1&playlist=YI-mwsBshHE&rel=0&playsinline=1&disablekb=1&iv_load_policy=3&modestbranding=1" 
-          title="Video" 
-          frameBorder="0" 
-          allow="autoplay; encrypted-media" 
-          tabIndex="-1"
-          aria-hidden="true"
-          style={{ border: "none", pointerEvents: 'none', userSelect: 'none' }}
-        ></iframe>
-        {/* Full-cover blocker - intercepts all mouse events so YouTube controls NEVER appear */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 10,
-          background: 'transparent',
-          pointerEvents: 'auto',
-          cursor: 'default'
-        }} aria-hidden="true" />
         <img src={abrasiveSheet} alt="Industrial Background" className="hero-fallback-img" />
-        <div className="hero-image-overlay" style={{ pointerEvents: 'auto', zIndex: 11 }} />
+        <div className="hero-image-overlay" style={{ pointerEvents: 'auto' }} />
       </div>
       <div className="hero-noise" />
       

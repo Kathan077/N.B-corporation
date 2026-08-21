@@ -43,12 +43,14 @@ const Sidebar = ({
       <div>
         <div className="p-6 border-b border-slate-800/80">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-red-950/60 border border-red-500/30">
-              NB
-            </div>
+            <img 
+              src="/nb_logo.png" 
+              alt="NB Corporation" 
+              className="h-10 w-auto object-contain bg-white rounded-lg p-1 shadow"
+            />
             <div>
-              <h1 className="text-sm font-black text-white tracking-wider uppercase">
-                NB Corporation
+              <h1 className="text-sm font-black text-white tracking-wider uppercase leading-tight">
+                NB Corp
               </h1>
               <span className="text-[10px] font-mono font-bold text-red-500 tracking-widest uppercase">
                 Admin Panel

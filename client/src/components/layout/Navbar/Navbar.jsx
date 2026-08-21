@@ -150,7 +150,7 @@ const Navbar = () => {
               animate={isLoaded ? { scale: 1, opacity: 1 } : {}}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
               <Link to="/" className="logo-link group flex items-center py-1">
-                <Logo height={56} />
+                <Logo height={scrolled ? 64 : 76} />
               </Link>
             </motion.div>
 
@@ -423,7 +423,7 @@ const Navbar = () => {
               {/* Drawer Header */}
               <div className="drawer-header">
                 <Link to="/" onClick={() => setIsOpen(false)} className="logo-link group">
-                  <Logo height={48} />
+                  <Logo height={64} />
                 </Link>
                 <motion.button whileHover={{ rotate: 90 }} whileTap={{ scale: 0.9 }}
                   onClick={() => setIsOpen(false)} className="drawer-close-btn">

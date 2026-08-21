@@ -4,6 +4,7 @@ import {
   Filter, Eye, EyeOff, Layers, ExternalLink, RefreshCw, 
   ChevronLeft, ChevronRight, Image as ImageIcon, Sparkles, Tag, CheckCircle2
 } from 'lucide-react';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const CATEGORIES_LIST = [
   "Floor Marking Tapes",
@@ -350,12 +351,11 @@ const ProductsManager = ({
                         <div className="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
                           {prod.image ? (
                             <img
-                              src={prod.image}
+                              src={getImageUrl(prod.image)}
                               alt={prod.name}
                               className="w-full h-full object-contain p-1"
                               onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=150&q=80";
+                                e.target.style.display = 'none';
                               }}
                             />
                           ) : (
@@ -607,15 +607,27 @@ const ProductsManager = ({
                   <div>
                     <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center justify-between">
                       <span>Product Image URL</span>
-                      <span className="text-[10px] text-slate-500 font-mono">JPG, PNG, WebP or brochure path</span>
+                      <span className="text-[10px] text-slate-500 font-mono">JPG, PNG, WebP or /product/HD Images/...</span>
                     </label>
-                    <input
-                      type="text"
-                      value={formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      placeholder="https://images.unsplash.com/... or /product/HD Images/..."
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-3.5 py-2 text-xs text-white font-mono outline-none"
-                    />
+                    <div className="flex gap-3 items-center">
+                      <input
+                        type="text"
+                        value={formData.image}
+                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                        placeholder="https://images.unsplash.com/... or /product/HD Images/..."
+                        className="flex-1 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-3.5 py-2 text-xs text-white font-mono outline-none"
+                      />
+                      {formData.image && (
+                        <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
+                          <img
+                            src={getImageUrl(formData.image)}
+                            alt="Preview"
+                            className="w-full h-full object-contain p-1"
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div>

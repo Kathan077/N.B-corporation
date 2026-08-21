@@ -7,6 +7,7 @@ import {
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Footer from '../components/layout/Footer/Footer';
 import { MAIN_CATEGORIES, SUB_CATEGORIES, PRODUCTS, INDUSTRIES } from '../data/productsData';
+import { fetchLiveProducts } from '../services/productService';
 import { getImageUrl } from '../utils/imageUtils';
 import { useCart } from '../context/CartContext';
 import './ProductShowcase.css';
@@ -238,6 +239,7 @@ const ProductShowcase = () => {
   const [searchParams] = useSearchParams();
   const urlSearch = searchParams.get('search') || '';
 
+  const [allProducts, setAllProducts] = useState(PRODUCTS);
   const [activeMainCategory, setActiveMainCategory] = useState('all');
   const [activeSubCategory, setActiveSubCategory] = useState('all');
   const [selectedIndustry, setSelectedIndustry] = useState('All Industries');
@@ -249,6 +251,20 @@ const ProductShowcase = () => {
       setSearchQuery(urlSearch);
     }
   }, [urlSearch]);
+
+  React.useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const liveList = await fetchLiveProducts();
+        if (Array.isArray(liveList) && liveList.length > 0) {
+          setAllProducts(liveList);
+        }
+      } catch (err) {
+        console.warn('Failed to load dynamic products:', err);
+      }
+    };
+    loadProducts();
+  }, []);
 
   // Available Subcategories based on selected Main Category Folder
   const availableSubCategories = useMemo(() => {
@@ -265,7 +281,10 @@ const ProductShowcase = () => {
 
   // Filtering Logic
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((p) => {
+    return allProducts.filter((p) => {
+      // Visibility Filter
+      if (p.isActive === false) return false;
+
       // Main Category Folder Filter
       const matchMain = activeMainCategory === 'all' || p.mainCategoryId === activeMainCategory;
 
@@ -281,17 +300,17 @@ const ProductShowcase = () => {
       const q = searchQuery.toLowerCase().trim();
       const matchSearch =
         !q ||
-        p.name.toLowerCase().includes(q) ||
-        p.code.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.code && p.code.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q)) ||
         (p.subtitle && p.subtitle.toLowerCase().includes(q)) ||
         (p.description && p.description.toLowerCase().includes(q)) ||
         (p.backing && p.backing.toLowerCase().includes(q)) ||
-        (p.applications && p.applications.some((app) => app.toLowerCase().includes(q)));
+        (p.applications && Array.isArray(p.applications) && p.applications.some((app) => app.toLowerCase().includes(q)));
 
       return matchMain && matchSub && matchIndustry && matchSearch;
     });
-  }, [activeMainCategory, activeSubCategory, selectedIndustry, searchQuery]);
+  }, [allProducts, activeMainCategory, activeSubCategory, selectedIndustry, searchQuery]);
 
   const activeMainObj = MAIN_CATEGORIES.find((m) => m.id === activeMainCategory) || MAIN_CATEGORIES[0];
   const activeSubObj = SUB_CATEGORIES.find((s) => s.id === activeSubCategory);

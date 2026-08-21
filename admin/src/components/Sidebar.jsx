@@ -3,7 +3,7 @@ import {
   Home, Layout, Shield, Layers, Cpu, Quote, 
   Package, Globe2, TrendingUp, ExternalLink, 
   Sparkles, CheckCircle2, AlertCircle, Info,
-  Award, BookOpen, Factory, Boxes, Phone
+  Award, BookOpen, Factory, Boxes, Phone, ShoppingBag
 } from 'lucide-react';
 
 export const HOME_SECTIONS = [
@@ -27,15 +27,32 @@ export const ABOUT_SECTIONS = [
   { id: 'aboutContact', name: 'Headquarters & Contact', icon: Phone },
 ];
 
+export const PRODUCT_SECTIONS = [
+  { id: 'catalog', name: 'Full Product Catalog', icon: Package },
+];
+
 const Sidebar = ({ 
   activePage = 'home',
   onSelectPage,
   activeTab, 
   onSelectTab, 
   isOnline, 
-  unsavedChanges 
+  unsavedChanges,
+  productsCount = 0
 }) => {
-  const currentSections = activePage === 'about' ? ABOUT_SECTIONS : HOME_SECTIONS;
+  let currentSections = HOME_SECTIONS;
+  if (activePage === 'about') currentSections = ABOUT_SECTIONS;
+  if (activePage === 'products') currentSections = PRODUCT_SECTIONS;
+
+  let viewLiveLink = "http://localhost:5173";
+  let liveLabel = "Home";
+  if (activePage === 'about') {
+    viewLiveLink = "http://localhost:5173/about";
+    liveLabel = "About";
+  } else if (activePage === 'products') {
+    viewLiveLink = "http://localhost:5173/product";
+    liveLabel = "Products";
+  }
 
   return (
     <aside className="w-72 bg-[#080C14] border-r border-slate-800/80 flex flex-col justify-between shrink-0 h-screen sticky top-0 overflow-y-auto">
@@ -69,36 +86,49 @@ const Sidebar = ({
           </div>
         </div>
 
-        {/* Page Switcher */}
+        {/* 3-Way Page Switcher */}
         <div className="p-4 pb-2">
           <div className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-2 px-1">
-            Active Management Page
+            Active Management Module
           </div>
-          <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-950 border border-slate-800/80 rounded-xl">
+          <div className="grid grid-cols-3 gap-1 p-1 bg-slate-950 border border-slate-800/80 rounded-xl">
             <button
               type="button"
               onClick={() => onSelectPage('home')}
-              className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                 activePage === 'home'
                   ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
                   : 'text-slate-400 hover:text-white hover:bg-slate-900'
               }`}
             >
-              <Home size={14} />
+              <Home size={13} />
               <span>Home</span>
             </button>
 
             <button
               type="button"
               onClick={() => onSelectPage('about')}
-              className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                 activePage === 'about'
                   ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
                   : 'text-slate-400 hover:text-white hover:bg-slate-900'
               }`}
             >
-              <Info size={14} />
+              <Info size={13} />
               <span>About</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onSelectPage('products')}
+              className={`flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                activePage === 'products'
+                  ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <Package size={13} />
+              <span>Products</span>
             </button>
           </div>
         </div>
@@ -106,9 +136,11 @@ const Sidebar = ({
         {/* Section Navigation */}
         <div className="p-4 pt-1 space-y-1">
           <div className="px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 flex items-center justify-between">
-            <span>{activePage === 'about' ? 'About Sections' : 'Home Sections'}</span>
+            <span>
+              {activePage === 'about' ? 'About Sections' : (activePage === 'products' ? 'Product Catalog' : 'Home Sections')}
+            </span>
             <span className="bg-red-950/80 border border-red-500/30 text-red-400 text-[9px] px-1.5 py-0.5 rounded font-mono">
-              {currentSections.length} Sections
+              {activePage === 'products' ? `${productsCount} Items` : `${currentSections.length} Sections`}
             </span>
           </div>
 
@@ -151,14 +183,14 @@ const Sidebar = ({
         )}
 
         <a
-          href={activePage === 'about' ? "http://localhost:5173/about" : "http://localhost:5173"}
+          href={viewLiveLink}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-850 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-all group cursor-pointer"
         >
           <div className="flex items-center gap-2">
             <ExternalLink size={14} className="text-red-500" />
-            <span>View {activePage === 'about' ? 'About' : 'Home'} Live</span>
+            <span>View {liveLabel} Live</span>
           </div>
           <span className="text-[10px] font-mono text-slate-500">:5173</span>
         </a>

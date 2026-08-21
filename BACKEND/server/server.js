@@ -25,6 +25,7 @@ app.use("/api/cart", require("./routes/cart"));
 app.use("/api/inquiry", require("./routes/inquiry"));
 app.use("/api/home-content", require("./routes/homeContent"));
 app.use("/api/about-content", require("./routes/aboutContent"));
+app.use("/api/products", require("./routes/products"));
 
 // Only listen to port if run directly (local development)
 if (require.main === module) {

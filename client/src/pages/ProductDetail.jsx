@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Footer from '../components/layout/Footer/Footer';
 import { PRODUCTS, CATEGORIES } from '../data/productsData';
+import { fetchLiveProductById, fetchLiveProducts } from '../services/productService';
 import { getImageUrl } from '../utils/imageUtils';
 import { useCart } from '../context/CartContext';
 import './ProductDetail.css';
@@ -55,13 +56,33 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [liveProduct, setLiveProduct] = useState(null);
+
   // Find product by id or code
   const product = useMemo(() => {
+    if (liveProduct) return liveProduct;
     if (!id) return PRODUCTS[0];
     const found = PRODUCTS.find(
       (p) => p.id === id || p.code.toLowerCase() === id.toLowerCase() || p.id.toLowerCase() === id.toLowerCase()
     );
     return found || PRODUCTS[0];
+  }, [id, liveProduct]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadDynamic = async () => {
+      if (!id) return;
+      try {
+        const item = await fetchLiveProductById(id);
+        if (isMounted && item) {
+          setLiveProduct(item);
+        }
+      } catch (e) {
+        console.warn('Fallback to local product lookup:', e);
+      }
+    };
+    loadDynamic();
+    return () => { isMounted = false; };
   }, [id]);
 
   // State for selected variants

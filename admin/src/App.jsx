@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar, { HOME_SECTIONS, ABOUT_SECTIONS } from './components/Sidebar';
+import Sidebar, { HOME_SECTIONS, ABOUT_SECTIONS, PRODUCT_SECTIONS } from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
 
@@ -22,6 +22,9 @@ import AboutCategoriesEditor from './components/aboutEditors/AboutCategoriesEdit
 import AboutPillarsValuesEditor from './components/aboutEditors/AboutPillarsValuesEditor';
 import AboutContactEditor from './components/aboutEditors/AboutContactEditor';
 
+// Product Manager
+import ProductsManager from './components/productEditors/ProductsManager';
+
 // APIs
 import { 
   fetchHomeContent, 
@@ -37,12 +40,20 @@ import {
   DEFAULT_ABOUT_DATA
 } from './services/aboutApi';
 
+import {
+  fetchProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct
+} from './services/productApi';
+
 function App() {
-  const [activePage, setActivePage] = useState('home'); // 'home' | 'about'
+  const [activePage, setActivePage] = useState('home'); // 'home' | 'about' | 'products'
   const [activeTab, setActiveTab] = useState('hero');
 
   const [homeContent, setHomeContent] = useState(DEFAULT_HOME_DATA);
   const [aboutContent, setAboutContent] = useState(DEFAULT_ABOUT_DATA);
+  const [products, setProducts] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -59,6 +70,8 @@ function App() {
     setActivePage(page);
     if (page === 'about') {
       setActiveTab('aboutHero');
+    } else if (page === 'products') {
+      setActiveTab('catalog');
     } else {
       setActiveTab('hero');
     }
@@ -71,17 +84,20 @@ function App() {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [homeData, aboutData] = await Promise.all([
+      const [homeData, aboutData, productsList] = await Promise.all([
         fetchHomeContent().catch(() => DEFAULT_HOME_DATA),
-        fetchAboutContent().catch(() => DEFAULT_ABOUT_DATA)
+        fetchAboutContent().catch(() => DEFAULT_ABOUT_DATA),
+        fetchProducts().catch(() => [])
       ]);
       setHomeContent(homeData);
       setAboutContent(aboutData);
+      setProducts(productsList);
       setIsOnline(true);
     } catch (err) {
       console.warn('Backend API connection note:', err.message);
       setHomeContent(DEFAULT_HOME_DATA);
       setAboutContent(DEFAULT_ABOUT_DATA);
+      setProducts([]);
       setIsOnline(false);
     } finally {
       setLoading(false);
@@ -131,7 +147,73 @@ function App() {
     }
   };
 
-  // Manual save
+  // Products CRUD Operations
+  const handleAddProduct = async (productData) => {
+    try {
+      const res = await createProduct(productData);
+      if (res.data) {
+        setProducts([res.data, ...products]);
+        showToast({
+          type: 'success',
+          message: `Product '${productData.name}' created successfully!`
+        });
+      }
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to create product: ' + (err.response?.data?.msg || err.message)
+      });
+    }
+  };
+
+  const handleUpdateProduct = async (id, productData) => {
+    try {
+      const res = await updateProduct(id, productData);
+      if (res.data) {
+        setProducts(products.map(p => p.id === id ? res.data : p));
+        showToast({
+          type: 'success',
+          message: `Product '${productData.name || id}' updated successfully!`
+        });
+      }
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to update product: ' + (err.response?.data?.msg || err.message)
+      });
+    }
+  };
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      await deleteProduct(id);
+      setProducts(products.filter(p => p.id !== id));
+      showToast({
+        type: 'success',
+        message: 'Product deleted from catalog.'
+      });
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to delete product: ' + (err.response?.data?.msg || err.message)
+      });
+    }
+  };
+
+  const handleRefreshProducts = async () => {
+    try {
+      const list = await fetchProducts();
+      setProducts(list);
+      showToast({
+        type: 'info',
+        message: `Catalog refreshed (${list.length} products).`
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Manual save for Home / About
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -141,7 +223,7 @@ function App() {
           type: 'success',
           message: 'About page changes saved successfully!'
         });
-      } else {
+      } else if (activePage === 'home') {
         await saveFullHomeContent(homeContent);
         showToast({
           type: 'success',
@@ -195,7 +277,9 @@ function App() {
     }
   };
 
-  const currentTabs = activePage === 'about' ? ABOUT_SECTIONS : HOME_SECTIONS;
+  let currentTabs = HOME_SECTIONS;
+  if (activePage === 'about') currentTabs = ABOUT_SECTIONS;
+  if (activePage === 'products') currentTabs = PRODUCT_SECTIONS;
 
   return (
     <div className="flex min-h-screen bg-[#070A10] text-slate-100 font-sans">
@@ -207,6 +291,7 @@ function App() {
         onSelectTab={setActiveTab}
         isOnline={isOnline}
         unsavedChanges={unsavedChanges}
+        productsCount={products.length}
       />
 
       {/* Main Content Area */}
@@ -230,27 +315,29 @@ function App() {
             </div>
           ) : (
             <>
-              {/* Sub-tabs Pills Bar */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800/80 no-scrollbar">
-                {currentTabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
-                        isActive
-                          ? 'bg-red-600 text-white shadow-lg shadow-red-950/60'
-                          : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-850 border border-slate-800'
-                      }`}
-                    >
-                      <Icon size={14} />
-                      <span>{tab.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
+              {/* Sub-tabs Pills Bar (Only for Home and About) */}
+              {activePage !== 'products' && (
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800/80 no-scrollbar">
+                  {currentTabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
+                          isActive
+                            ? 'bg-red-600 text-white shadow-lg shadow-red-950/60'
+                            : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-850 border border-slate-800'
+                        }`}
+                      >
+                        <Icon size={14} />
+                        <span>{tab.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Dynamic Sub-section Editor View */}
               <div className="transition-all duration-300">
@@ -372,10 +459,21 @@ function App() {
                     )}
                   </>
                 )}
+
+                {/* --- PRODUCTS CATALOG MANAGER --- */}
+                {activePage === 'products' && (
+                  <ProductsManager
+                    products={products}
+                    onAddProduct={handleAddProduct}
+                    onUpdateProduct={handleUpdateProduct}
+                    onDeleteProduct={handleDeleteProduct}
+                    onRefresh={handleRefreshProducts}
+                  />
+                )}
               </div>
 
-              {/* Floating Save Trigger */}
-              {unsavedChanges && (
+              {/* Floating Save Trigger for Home/About */}
+              {unsavedChanges && activePage !== 'products' && (
                 <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 bg-slate-900/95 border border-red-500/40 backdrop-blur-xl px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce-in">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />

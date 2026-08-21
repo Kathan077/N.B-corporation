@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from './components/Sidebar';
+import Sidebar, { HOME_SECTIONS, ABOUT_SECTIONS } from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
+
+// Home Editors
 import HeroEditor from './components/editors/HeroEditor';
 import PrinciplesEditor from './components/editors/PrinciplesEditor';
 import WhyChooseUsEditor from './components/editors/WhyChooseUsEditor';
@@ -10,31 +12,38 @@ import TestimonialsEditor from './components/editors/TestimonialsEditor';
 import FeaturedProductsEditor from './components/editors/FeaturedProductsEditor';
 import BrandsEditor from './components/editors/BrandsEditor';
 import ImpactEditor from './components/editors/ImpactEditor';
+
+// About Editors
+import AboutBannerHeroEditor from './components/aboutEditors/AboutBannerHeroEditor';
+import AboutStatsEditor from './components/aboutEditors/AboutStatsEditor';
+import AboutStoryMissionEditor from './components/aboutEditors/AboutStoryMissionEditor';
+import AboutIndustriesEditor from './components/aboutEditors/AboutIndustriesEditor';
+import AboutCategoriesEditor from './components/aboutEditors/AboutCategoriesEditor';
+import AboutPillarsValuesEditor from './components/aboutEditors/AboutPillarsValuesEditor';
+import AboutContactEditor from './components/aboutEditors/AboutContactEditor';
+
+// APIs
 import { 
   fetchHomeContent, 
   saveFullHomeContent, 
   resetHomeToDefault, 
   DEFAULT_HOME_DATA 
 } from './services/api';
-import { 
-  Layout, Shield, Layers, Cpu, Quote, 
-  Package, Globe2, TrendingUp 
-} from 'lucide-react';
 
-const TABS = [
-  { id: 'hero', name: 'Hero Banner', icon: Layout },
-  { id: 'principles', name: 'Principles', icon: Shield },
-  { id: 'whyChooseUs', name: 'Why Choose Us', icon: Layers },
-  { id: 'applications', name: 'Applications', icon: Cpu },
-  { id: 'testimonials', name: 'Testimonials', icon: Quote },
-  { id: 'featuredProducts', name: 'Featured 3M', icon: Package },
-  { id: 'brands', name: 'Industries Served', icon: Globe2 },
-  { id: 'impact', name: 'Impact & Goals', icon: TrendingUp },
-];
+import {
+  fetchAboutContent,
+  saveFullAboutContent,
+  resetAboutToDefault,
+  DEFAULT_ABOUT_DATA
+} from './services/aboutApi';
 
 function App() {
+  const [activePage, setActivePage] = useState('home'); // 'home' | 'about'
   const [activeTab, setActiveTab] = useState('hero');
-  const [content, setContent] = useState(DEFAULT_HOME_DATA);
+
+  const [homeContent, setHomeContent] = useState(DEFAULT_HOME_DATA);
+  const [aboutContent, setAboutContent] = useState(DEFAULT_ABOUT_DATA);
+
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -45,19 +54,34 @@ function App() {
     setToast(toastObj);
   };
 
+  // Switch page handler
+  const handlePageChange = (page) => {
+    setActivePage(page);
+    if (page === 'about') {
+      setActiveTab('aboutHero');
+    } else {
+      setActiveTab('hero');
+    }
+  };
+
   useEffect(() => {
-    loadData();
+    loadAllData();
   }, []);
 
-  const loadData = async () => {
+  const loadAllData = async () => {
     setLoading(true);
     try {
-      const data = await fetchHomeContent();
-      setContent(data);
+      const [homeData, aboutData] = await Promise.all([
+        fetchHomeContent().catch(() => DEFAULT_HOME_DATA),
+        fetchAboutContent().catch(() => DEFAULT_ABOUT_DATA)
+      ]);
+      setHomeContent(homeData);
+      setAboutContent(aboutData);
       setIsOnline(true);
     } catch (err) {
       console.warn('Backend API connection note:', err.message);
-      setContent(DEFAULT_HOME_DATA);
+      setHomeContent(DEFAULT_HOME_DATA);
+      setAboutContent(DEFAULT_ABOUT_DATA);
       setIsOnline(false);
     } finally {
       setLoading(false);
@@ -65,36 +89,66 @@ function App() {
     }
   };
 
-  const handleSectionUpdate = async (sectionKey, updatedSectionData) => {
+  // Update Home section
+  const handleHomeSectionUpdate = async (sectionKey, updatedSectionData) => {
     const newContent = {
-      ...content,
+      ...homeContent,
       [sectionKey]: updatedSectionData
     };
-    setContent(newContent);
+    setHomeContent(newContent);
     setUnsavedChanges(true);
 
-    // Auto-sync to backend in background
     try {
       await saveFullHomeContent(newContent);
       setUnsavedChanges(false);
       showToast({
         type: 'success',
-        message: 'Updated and synced with live site!'
+        message: 'Home section updated and synced live!'
       });
     } catch (err) {
       console.warn('Auto-sync failed, keeping pending state:', err);
     }
   };
 
-  const handleSave = async () => {
-    setIsSaving(true);
+  // Update About section
+  const handleAboutSectionUpdate = async (sectionKey, updatedSectionData) => {
+    const newContent = {
+      ...aboutContent,
+      [sectionKey]: updatedSectionData
+    };
+    setAboutContent(newContent);
+    setUnsavedChanges(true);
+
     try {
-      await saveFullHomeContent(content);
+      await saveFullAboutContent(newContent);
       setUnsavedChanges(false);
       showToast({
         type: 'success',
-        message: 'Home section changes saved successfully!'
+        message: 'About section updated and synced live!'
       });
+    } catch (err) {
+      console.warn('Auto-sync failed, keeping pending state:', err);
+    }
+  };
+
+  // Manual save
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      if (activePage === 'about') {
+        await saveFullAboutContent(aboutContent);
+        showToast({
+          type: 'success',
+          message: 'About page changes saved successfully!'
+        });
+      } else {
+        await saveFullHomeContent(homeContent);
+        showToast({
+          type: 'success',
+          message: 'Home page changes saved successfully!'
+        });
+      }
+      setUnsavedChanges(false);
     } catch (err) {
       showToast({
         type: 'error',
@@ -105,35 +159,50 @@ function App() {
     }
   };
 
+  // Reset to defaults
   const handleReset = async () => {
-    if (!window.confirm('Reset all Home Section content back to official factory defaults?')) {
+    const targetLabel = activePage === 'about' ? 'About Page' : 'Home Page';
+    if (!window.confirm(`Reset all ${targetLabel} content back to official factory defaults?`)) {
       return;
     }
     setIsSaving(true);
     try {
-      await resetHomeToDefault();
-      setContent(DEFAULT_HOME_DATA);
+      if (activePage === 'about') {
+        await resetAboutToDefault();
+        setAboutContent(DEFAULT_ABOUT_DATA);
+      } else {
+        await resetHomeToDefault();
+        setHomeContent(DEFAULT_HOME_DATA);
+      }
       setUnsavedChanges(false);
       showToast({
         type: 'info',
-        message: 'Home section reset to default content.'
+        message: `${targetLabel} reset to default content.`
       });
     } catch (err) {
-      setContent(DEFAULT_HOME_DATA);
+      if (activePage === 'about') {
+        setAboutContent(DEFAULT_ABOUT_DATA);
+      } else {
+        setHomeContent(DEFAULT_HOME_DATA);
+      }
       setUnsavedChanges(false);
       showToast({
         type: 'info',
-        message: 'Reset locally to default content.'
+        message: `Reset locally to ${targetLabel} default content.`
       });
     } finally {
       setIsSaving(false);
     }
   };
 
+  const currentTabs = activePage === 'about' ? ABOUT_SECTIONS : HOME_SECTIONS;
+
   return (
     <div className="flex min-h-screen bg-[#070A10] text-slate-100 font-sans">
       {/* Sidebar Navigation */}
       <Sidebar
+        activePage={activePage}
+        onSelectPage={handlePageChange}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         isOnline={isOnline}
@@ -143,6 +212,7 @@ function App() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         <Header
+          activePage={activePage}
           activeTab={activeTab}
           unsavedChanges={unsavedChanges}
           isSaving={isSaving}
@@ -155,14 +225,14 @@ function App() {
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
               <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
               <p className="text-sm font-semibold text-slate-400 font-mono">
-                Loading Home Section Content...
+                Loading CMS Content...
               </p>
             </div>
           ) : (
             <>
               {/* Sub-tabs Pills Bar */}
               <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800/80 no-scrollbar">
-                {TABS.map((tab) => {
+                {currentTabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
                   return (
@@ -184,60 +254,123 @@ function App() {
 
               {/* Dynamic Sub-section Editor View */}
               <div className="transition-all duration-300">
-                {activeTab === 'hero' && (
-                  <HeroEditor
-                    data={content.hero || DEFAULT_HOME_DATA.hero}
-                    onChange={(data) => handleSectionUpdate('hero', data)}
-                  />
+                {/* --- HOME PAGE EDITORS --- */}
+                {activePage === 'home' && (
+                  <>
+                    {activeTab === 'hero' && (
+                      <HeroEditor
+                        data={homeContent.hero || DEFAULT_HOME_DATA.hero}
+                        onChange={(data) => handleHomeSectionUpdate('hero', data)}
+                      />
+                    )}
+
+                    {activeTab === 'principles' && (
+                      <PrinciplesEditor
+                        data={homeContent.principles || DEFAULT_HOME_DATA.principles}
+                        onChange={(data) => handleHomeSectionUpdate('principles', data)}
+                      />
+                    )}
+
+                    {activeTab === 'whyChooseUs' && (
+                      <WhyChooseUsEditor
+                        data={homeContent.whyChooseUs || DEFAULT_HOME_DATA.whyChooseUs}
+                        onChange={(data) => handleHomeSectionUpdate('whyChooseUs', data)}
+                      />
+                    )}
+
+                    {activeTab === 'applications' && (
+                      <ApplicationsEditor
+                        data={homeContent.applications || DEFAULT_HOME_DATA.applications}
+                        onChange={(data) => handleHomeSectionUpdate('applications', data)}
+                      />
+                    )}
+
+                    {activeTab === 'testimonials' && (
+                      <TestimonialsEditor
+                        data={homeContent.testimonials || DEFAULT_HOME_DATA.testimonials}
+                        onChange={(data) => handleHomeSectionUpdate('testimonials', data)}
+                      />
+                    )}
+
+                    {activeTab === 'featuredProducts' && (
+                      <FeaturedProductsEditor
+                        data={homeContent.featuredProducts || DEFAULT_HOME_DATA.featuredProducts}
+                        onChange={(data) => handleHomeSectionUpdate('featuredProducts', data)}
+                      />
+                    )}
+
+                    {activeTab === 'brands' && (
+                      <BrandsEditor
+                        data={homeContent.brands || DEFAULT_HOME_DATA.brands}
+                        onChange={(data) => handleHomeSectionUpdate('brands', data)}
+                      />
+                    )}
+
+                    {activeTab === 'impact' && (
+                      <ImpactEditor
+                        data={homeContent.impact || DEFAULT_HOME_DATA.impact}
+                        onChange={(data) => handleHomeSectionUpdate('impact', data)}
+                      />
+                    )}
+                  </>
                 )}
 
-                {activeTab === 'principles' && (
-                  <PrinciplesEditor
-                    data={content.principles || DEFAULT_HOME_DATA.principles}
-                    onChange={(data) => handleSectionUpdate('principles', data)}
-                  />
-                )}
+                {/* --- ABOUT PAGE EDITORS --- */}
+                {activePage === 'about' && (
+                  <>
+                    {activeTab === 'aboutHero' && (
+                      <AboutBannerHeroEditor
+                        topBanner={aboutContent.topBanner || DEFAULT_ABOUT_DATA.topBanner}
+                        hero={aboutContent.hero || DEFAULT_ABOUT_DATA.hero}
+                        onUpdateTopBanner={(data) => handleAboutSectionUpdate('topBanner', data)}
+                        onUpdateHero={(data) => handleAboutSectionUpdate('hero', data)}
+                      />
+                    )}
 
-                {activeTab === 'whyChooseUs' && (
-                  <WhyChooseUsEditor
-                    data={content.whyChooseUs || DEFAULT_HOME_DATA.whyChooseUs}
-                    onChange={(data) => handleSectionUpdate('whyChooseUs', data)}
-                  />
-                )}
+                    {activeTab === 'aboutStats' && (
+                      <AboutStatsEditor
+                        data={aboutContent.stats || DEFAULT_ABOUT_DATA.stats}
+                        onChange={(data) => handleAboutSectionUpdate('stats', data)}
+                      />
+                    )}
 
-                {activeTab === 'applications' && (
-                  <ApplicationsEditor
-                    data={content.applications || DEFAULT_HOME_DATA.applications}
-                    onChange={(data) => handleSectionUpdate('applications', data)}
-                  />
-                )}
+                    {activeTab === 'aboutStory' && (
+                      <AboutStoryMissionEditor
+                        data={aboutContent.story || DEFAULT_ABOUT_DATA.story}
+                        onChange={(data) => handleAboutSectionUpdate('story', data)}
+                      />
+                    )}
 
-                {activeTab === 'testimonials' && (
-                  <TestimonialsEditor
-                    data={content.testimonials || DEFAULT_HOME_DATA.testimonials}
-                    onChange={(data) => handleSectionUpdate('testimonials', data)}
-                  />
-                )}
+                    {activeTab === 'aboutIndustries' && (
+                      <AboutIndustriesEditor
+                        data={aboutContent.industries || DEFAULT_ABOUT_DATA.industries}
+                        onChange={(data) => handleAboutSectionUpdate('industries', data)}
+                      />
+                    )}
 
-                {activeTab === 'featuredProducts' && (
-                  <FeaturedProductsEditor
-                    data={content.featuredProducts || DEFAULT_HOME_DATA.featuredProducts}
-                    onChange={(data) => handleSectionUpdate('featuredProducts', data)}
-                  />
-                )}
+                    {activeTab === 'aboutCategories' && (
+                      <AboutCategoriesEditor
+                        data={aboutContent.categories || DEFAULT_ABOUT_DATA.categories}
+                        onChange={(data) => handleAboutSectionUpdate('categories', data)}
+                      />
+                    )}
 
-                {activeTab === 'brands' && (
-                  <BrandsEditor
-                    data={content.brands || DEFAULT_HOME_DATA.brands}
-                    onChange={(data) => handleSectionUpdate('brands', data)}
-                  />
-                )}
+                    {activeTab === 'aboutPillarsValues' && (
+                      <AboutPillarsValuesEditor
+                        pillarsData={aboutContent.pillars || DEFAULT_ABOUT_DATA.pillars}
+                        valuesData={aboutContent.values || DEFAULT_ABOUT_DATA.values}
+                        onUpdatePillars={(data) => handleAboutSectionUpdate('pillars', data)}
+                        onUpdateValues={(data) => handleAboutSectionUpdate('values', data)}
+                      />
+                    )}
 
-                {activeTab === 'impact' && (
-                  <ImpactEditor
-                    data={content.impact || DEFAULT_HOME_DATA.impact}
-                    onChange={(data) => handleSectionUpdate('impact', data)}
-                  />
+                    {activeTab === 'aboutContact' && (
+                      <AboutContactEditor
+                        data={aboutContent.contact || DEFAULT_ABOUT_DATA.contact}
+                        onChange={(data) => handleAboutSectionUpdate('contact', data)}
+                      />
+                    )}
+                  </>
                 )}
               </div>
 

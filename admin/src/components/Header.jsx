@@ -1,7 +1,8 @@
 import React from 'react';
-import { Save, RotateCcw, Check, Sparkles, Loader2, Globe } from 'lucide-react';
+import { Save, RotateCcw, Loader2 } from 'lucide-react';
 
 const TAB_TITLES = {
+  // Home
   hero: 'Hero Banner Section',
   principles: 'Company Principles (6 Pillars)',
   whyChooseUs: 'Why Choose Us (18+ Years Experience)',
@@ -10,26 +11,36 @@ const TAB_TITLES = {
   featuredProducts: 'Featured 3M Product Lineup',
   brands: 'Industries & Enterprise Brands Served',
   impact: 'Cost & Efficiency Impact Goals',
+  // About
+  aboutHero: 'About Banner & Hero Story',
+  aboutStats: 'Key Highlight Metrics (20+ Years, 40,000+ Products)',
+  aboutStory: 'Corporate Overview, Mission & Vision',
+  aboutIndustries: '9 Industries We Power',
+  aboutCategories: '21 Core Product Categories',
+  aboutPillarsValues: 'Strategic Pillars & Core Values',
+  aboutContact: 'Headquarters & Direct Hotlines',
 };
 
 const Header = ({ 
+  activePage = 'home',
   activeTab, 
   onSave, 
   onReset, 
   isSaving, 
-  unsavedChanges,
-  activeTabTitle 
+  unsavedChanges
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-[#070A10]/90 backdrop-blur-md border-b border-slate-800/80 px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-0.5">
-          <span className="text-red-500 font-mono font-bold">HOME SECTION</span>
+          <span className="text-red-500 font-mono font-bold uppercase">
+            {activePage === 'about' ? 'ABOUT PAGE CMS' : 'HOME PAGE CMS'}
+          </span>
           <span>/</span>
           <span className="text-slate-200 capitalize">{activeTab}</span>
         </div>
         <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">
-          {TAB_TITLES[activeTab] || 'Home Section Editor'}
+          {TAB_TITLES[activeTab] || 'Section Editor'}
         </h2>
       </div>
 

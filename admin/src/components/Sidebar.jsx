@@ -2,10 +2,11 @@ import React from 'react';
 import { 
   Home, Layout, Shield, Layers, Cpu, Quote, 
   Package, Globe2, TrendingUp, ExternalLink, 
-  Sparkles, CheckCircle2, AlertCircle
+  Sparkles, CheckCircle2, AlertCircle, Info,
+  Award, BookOpen, Factory, Boxes, Phone
 } from 'lucide-react';
 
-const SUB_SECTIONS = [
+export const HOME_SECTIONS = [
   { id: 'hero', name: 'Hero Banner', icon: Layout },
   { id: 'principles', name: 'Our Principles', icon: Shield },
   { id: 'whyChooseUs', name: 'Why Choose Us', icon: Layers },
@@ -16,9 +17,28 @@ const SUB_SECTIONS = [
   { id: 'impact', name: 'Impact & Goals', icon: TrendingUp },
 ];
 
-const Sidebar = ({ activeTab, onSelectTab, isOnline, unsavedChanges }) => {
+export const ABOUT_SECTIONS = [
+  { id: 'aboutHero', name: 'Banner & Hero', icon: Layout },
+  { id: 'aboutStats', name: 'Key Highlights', icon: Award },
+  { id: 'aboutStory', name: 'Story, Mission & Vision', icon: BookOpen },
+  { id: 'aboutIndustries', name: 'Industries We Power', icon: Factory },
+  { id: 'aboutCategories', name: '21 Product Categories', icon: Boxes },
+  { id: 'aboutPillarsValues', name: 'Pillars & Values', icon: Sparkles },
+  { id: 'aboutContact', name: 'Headquarters & Contact', icon: Phone },
+];
+
+const Sidebar = ({ 
+  activePage = 'home',
+  onSelectPage,
+  activeTab, 
+  onSelectTab, 
+  isOnline, 
+  unsavedChanges 
+}) => {
+  const currentSections = activePage === 'about' ? ABOUT_SECTIONS : HOME_SECTIONS;
+
   return (
-    <aside className="w-72 bg-[#080C14] border-r border-slate-800/80 flex flex-col justify-between shrink-0 h-screen sticky top-0">
+    <aside className="w-72 bg-[#080C14] border-r border-slate-800/80 flex flex-col justify-between shrink-0 h-screen sticky top-0 overflow-y-auto">
       {/* Brand Header */}
       <div>
         <div className="p-6 border-b border-slate-800/80">
@@ -47,24 +67,58 @@ const Sidebar = ({ activeTab, onSelectTab, isOnline, unsavedChanges }) => {
           </div>
         </div>
 
+        {/* Page Switcher */}
+        <div className="p-4 pb-2">
+          <div className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-2 px-1">
+            Active Management Page
+          </div>
+          <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-950 border border-slate-800/80 rounded-xl">
+            <button
+              type="button"
+              onClick={() => onSelectPage('home')}
+              className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activePage === 'home'
+                  ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <Home size={14} />
+              <span>Home</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onSelectPage('about')}
+              className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activePage === 'about'
+                  ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <Info size={14} />
+              <span>About</span>
+            </button>
+          </div>
+        </div>
+
         {/* Section Navigation */}
-        <div className="p-4 space-y-1">
+        <div className="p-4 pt-1 space-y-1">
           <div className="px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 flex items-center justify-between">
-            <span>Core Sections</span>
+            <span>{activePage === 'about' ? 'About Sections' : 'Home Sections'}</span>
             <span className="bg-red-950/80 border border-red-500/30 text-red-400 text-[9px] px-1.5 py-0.5 rounded font-mono">
-              Home Active
+              {currentSections.length} Sections
             </span>
           </div>
 
           <div className="space-y-1">
-            {SUB_SECTIONS.map((sec) => {
+            {currentSections.map((sec) => {
               const Icon = sec.icon;
               const isActive = activeTab === sec.id;
               return (
                 <button
                   key={sec.id}
                   onClick={() => onSelectTab(sec.id)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group cursor-pointer ${
                     isActive
                       ? 'bg-red-600/15 text-white border border-red-500/40 shadow-sm'
                       : 'text-slate-400 hover:text-white hover:bg-slate-900/50'
@@ -95,14 +149,14 @@ const Sidebar = ({ activeTab, onSelectTab, isOnline, unsavedChanges }) => {
         )}
 
         <a
-          href="http://localhost:5173"
+          href={activePage === 'about' ? "http://localhost:5173/about" : "http://localhost:5173"}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-850 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-all group"
+          className="flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-850 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-all group cursor-pointer"
         >
           <div className="flex items-center gap-2">
             <ExternalLink size={14} className="text-red-500" />
-            <span>View Live Website</span>
+            <span>View {activePage === 'about' ? 'About' : 'Home'} Live</span>
           </div>
           <span className="text-[10px] font-mono text-slate-500">:5173</span>
         </a>

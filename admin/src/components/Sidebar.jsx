@@ -1,9 +1,9 @@
 import React from 'react';
-import { 
-  Home, Layout, Shield, Layers, Cpu, Quote, 
-  Package, Globe2, TrendingUp, ExternalLink, 
+import {
+  Home, Layout, Shield, Layers, Cpu, Quote,
+  Package, Globe2, TrendingUp, ExternalLink,
   Sparkles, CheckCircle2, AlertCircle, Info,
-  Award, BookOpen, Factory, Boxes, Phone, ShoppingBag
+  Award, BookOpen, Factory, Boxes, Phone, ShoppingBag, FileText, Zap
 } from 'lucide-react';
 
 export const HOME_SECTIONS = [
@@ -31,18 +31,26 @@ export const PRODUCT_SECTIONS = [
   { id: 'catalog', name: 'Full Product Catalog', icon: Package },
 ];
 
-const Sidebar = ({ 
+export const BLOG_SECTIONS = [
+  { id: 'blogHero', name: 'Blog Hero Section', icon: Layout },
+  { id: 'blogSlider', name: 'Live Stream Slider', icon: Zap },
+  { id: 'blogPosts', name: 'All Blog Articles', icon: BookOpen },
+];
+
+const Sidebar = ({
   activePage = 'home',
   onSelectPage,
-  activeTab, 
-  onSelectTab, 
-  isOnline, 
+  activeTab,
+  onSelectTab,
+  isOnline,
   unsavedChanges,
-  productsCount = 0
+  productsCount = 0,
+  blogsCount = 0
 }) => {
   let currentSections = HOME_SECTIONS;
   if (activePage === 'about') currentSections = ABOUT_SECTIONS;
   if (activePage === 'products') currentSections = PRODUCT_SECTIONS;
+  if (activePage === 'blogs') currentSections = BLOG_SECTIONS;
 
   let viewLiveLink = "http://localhost:5173";
   let liveLabel = "Home";
@@ -52,7 +60,14 @@ const Sidebar = ({
   } else if (activePage === 'products') {
     viewLiveLink = "http://localhost:5173/product";
     liveLabel = "Products";
+  } else if (activePage === 'blogs') {
+    viewLiveLink = "http://localhost:5173/blog";
+    liveLabel = "Blog";
   }
+
+  let countBadge = `${currentSections.length} Sections`;
+  if (activePage === 'products') countBadge = `${productsCount} Items`;
+  if (activePage === 'blogs') countBadge = `${blogsCount} Articles`;
 
   return (
     <aside className="w-72 bg-[#080C14] border-r border-slate-800/80 flex flex-col justify-between shrink-0 h-screen sticky top-0 overflow-y-auto">
@@ -60,9 +75,9 @@ const Sidebar = ({
       <div>
         <div className="p-6 border-b border-slate-800/80">
           <div className="flex items-center gap-3 mb-2">
-            <img 
-              src="/nb_logo.png" 
-              alt="NB Corporation" 
+            <img
+              src="/nb_logo.png"
+              alt="NB Corporation"
               className="h-10 w-auto object-contain bg-white rounded-lg p-1 shadow"
             />
             <div>
@@ -86,20 +101,19 @@ const Sidebar = ({
           </div>
         </div>
 
-        {/* 3-Way Page Switcher */}
+        {/* 4-Way Page Switcher */}
         <div className="p-4 pb-2">
           <div className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-2 px-1">
             Active Management Module
           </div>
-          <div className="grid grid-cols-3 gap-1 p-1 bg-slate-950 border border-slate-800/80 rounded-xl">
+          <div className="grid grid-cols-4 gap-1 p-1 bg-slate-950 border border-slate-800/80 rounded-xl">
             <button
               type="button"
               onClick={() => onSelectPage('home')}
-              className={`flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                activePage === 'home'
+              className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${activePage === 'home'
                   ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
                   : 'text-slate-400 hover:text-white hover:bg-slate-900'
-              }`}
+                }`}
             >
               <Home size={13} />
               <span>Home</span>
@@ -108,11 +122,10 @@ const Sidebar = ({
             <button
               type="button"
               onClick={() => onSelectPage('about')}
-              className={`flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                activePage === 'about'
+              className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${activePage === 'about'
                   ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
                   : 'text-slate-400 hover:text-white hover:bg-slate-900'
-              }`}
+                }`}
             >
               <Info size={13} />
               <span>About</span>
@@ -121,14 +134,25 @@ const Sidebar = ({
             <button
               type="button"
               onClick={() => onSelectPage('products')}
-              className={`flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                activePage === 'products'
+              className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${activePage === 'products'
                   ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
                   : 'text-slate-400 hover:text-white hover:bg-slate-900'
-              }`}
+                }`}
             >
               <Package size={13} />
               <span>Products</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onSelectPage('blogs')}
+              className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${activePage === 'blogs'
+                  ? 'bg-red-600 text-white shadow-md shadow-red-950/50'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                }`}
+            >
+              <BookOpen size={13} />
+              <span>Blogs</span>
             </button>
           </div>
         </div>
@@ -137,10 +161,10 @@ const Sidebar = ({
         <div className="p-4 pt-1 space-y-1">
           <div className="px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 flex items-center justify-between">
             <span>
-              {activePage === 'about' ? 'About Sections' : (activePage === 'products' ? 'Product Catalog' : 'Home Sections')}
+              {activePage === 'about' ? 'About Sections' : (activePage === 'products' ? 'Product Catalog' : (activePage === 'blogs' ? 'Blog Management' : 'Home Sections'))}
             </span>
             <span className="bg-red-950/80 border border-red-500/30 text-red-400 text-[9px] px-1.5 py-0.5 rounded font-mono">
-              {activePage === 'products' ? `${productsCount} Items` : `${currentSections.length} Sections`}
+              {countBadge}
             </span>
           </div>
 
@@ -152,11 +176,10 @@ const Sidebar = ({
                 <button
                   key={sec.id}
                   onClick={() => onSelectTab(sec.id)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group cursor-pointer ${
-                    isActive
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group cursor-pointer ${isActive
                       ? 'bg-red-600/15 text-white border border-red-500/40 shadow-sm'
                       : 'text-slate-400 hover:text-white hover:bg-slate-900/50'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon size={16} className={isActive ? 'text-red-500' : 'text-slate-500 group-hover:text-slate-300'} />

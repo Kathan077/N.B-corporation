@@ -20,20 +20,27 @@ const TAB_TITLES = {
   aboutPillarsValues: 'Strategic Pillars & Core Values',
   aboutContact: 'Headquarters & Direct Hotlines',
   // Products
-  catalog: 'Full 3M™ Product Catalog & Inventory'
+  catalog: 'Full 3M™ Product Catalog & Inventory',
+  // Blogs
+  blogHero: 'Blog Hero & Featured Showcase Section',
+  blogSlider: 'Live Stream Ticker & Slider Section',
+  blogPosts: 'Technical Articles & Knowledge Base'
 };
 
-const Header = ({ 
+const Header = ({
   activePage = 'home',
-  activeTab, 
-  onSave, 
-  onReset, 
-  isSaving, 
+  activeTab,
+  onSave,
+  onReset,
+  isSaving,
   unsavedChanges
 }) => {
   let moduleName = 'HOME PAGE CMS';
   if (activePage === 'about') moduleName = 'ABOUT PAGE CMS';
   if (activePage === 'products') moduleName = 'PRODUCT INVENTORY CMS';
+  if (activePage === 'blogs') moduleName = 'BLOG & KNOWLEDGE CMS';
+
+  const isCollectionModule = activePage === 'products' || activePage === 'blogs';
 
   return (
     <header className="sticky top-0 z-30 bg-[#070A10]/90 backdrop-blur-md border-b border-slate-800/80 px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -46,11 +53,11 @@ const Header = ({
           <span className="text-slate-200 capitalize">{activeTab}</span>
         </div>
         <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">
-          {TAB_TITLES[activeTab] || 'Catalog & Section Editor'}
+          {TAB_TITLES[activeTab] || 'Section & Content Editor'}
         </h2>
       </div>
 
-      {activePage !== 'products' && (
+      {!isCollectionModule && (
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -66,11 +73,10 @@ const Header = ({
             type="button"
             disabled={isSaving}
             onClick={onSave}
-            className={`px-5 py-2.5 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-lg cursor-pointer ${
-              unsavedChanges
+            className={`px-5 py-2.5 rounded-xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-lg cursor-pointer ${unsavedChanges
                 ? 'bg-red-600 hover:bg-red-700 shadow-red-950/60 animate-pulse'
                 : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-950/60'
-            }`}
+              }`}
           >
             {isSaving ? (
               <>

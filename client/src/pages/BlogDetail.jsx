@@ -3,19 +3,40 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Eye, User, Calendar, Tag, ArrowRight, ShieldCheck, PhoneCall } from 'lucide-react';
 import { POSTS } from '../data/blogData';
+import { fetchLiveBlogPostById, fetchLiveBlogPosts } from '../services/blogService';
 import Footer from '../components/layout/Footer/Footer';
 import './BlogDetail.css';
 
 const BlogDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const post = POSTS.find((p) => p.id === id) || POSTS[0];
+  const [livePost, setLivePost] = React.useState(null);
+  const [allPosts, setAllPosts] = React.useState(POSTS);
+
+  const post = livePost || POSTS.find((p) => p.id === id) || POSTS[0];
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    let isMounted = true;
+    const loadData = async () => {
+      try {
+        const [single, list] = await Promise.all([
+          fetchLiveBlogPostById(id),
+          fetchLiveBlogPosts()
+        ]);
+        if (isMounted) {
+          if (single) setLivePost(single);
+          if (Array.isArray(list) && list.length > 0) setAllPosts(list);
+        }
+      } catch (err) {
+        console.warn('Fallback to local blog post lookup:', err);
+      }
+    };
+    loadData();
+    return () => { isMounted = false; };
   }, [id]);
 
-  const relatedPosts = POSTS.filter((p) => p.id !== post.id);
+  const relatedPosts = allPosts.filter((p) => p.id !== post.id && p.isActive !== false);
 
   return (
     <div className="blog-detail-page bg-slate-950 text-white min-h-screen pt-24 pb-12">

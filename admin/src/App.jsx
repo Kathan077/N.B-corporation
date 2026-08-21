@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar, { HOME_SECTIONS, ABOUT_SECTIONS, PRODUCT_SECTIONS } from './components/Sidebar';
+import Sidebar, { HOME_SECTIONS, ABOUT_SECTIONS, PRODUCT_SECTIONS, BLOG_SECTIONS } from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
 
@@ -25,6 +25,11 @@ import AboutContactEditor from './components/aboutEditors/AboutContactEditor';
 // Product Manager
 import ProductsManager from './components/productEditors/ProductsManager';
 
+// Blog Editors & Manager
+import BlogHeroEditor from './components/blogEditors/BlogHeroEditor';
+import BlogSliderEditor from './components/blogEditors/BlogSliderEditor';
+import BlogManager from './components/blogEditors/BlogManager';
+
 // APIs
 import { 
   fetchHomeContent, 
@@ -47,13 +52,26 @@ import {
   deleteProduct
 } from './services/productApi';
 
+import {
+  fetchBlogPosts,
+  createBlogPost,
+  updateBlogPost,
+  deleteBlogPost,
+  fetchBlogContent,
+  saveFullBlogContent,
+  resetBlogContentToDefault,
+  DEFAULT_BLOG_CONTENT
+} from './services/blogApi';
+
 function App() {
-  const [activePage, setActivePage] = useState('home'); // 'home' | 'about' | 'products'
+  const [activePage, setActivePage] = useState('home'); // 'home' | 'about' | 'products' | 'blogs'
   const [activeTab, setActiveTab] = useState('hero');
 
   const [homeContent, setHomeContent] = useState(DEFAULT_HOME_DATA);
   const [aboutContent, setAboutContent] = useState(DEFAULT_ABOUT_DATA);
+  const [blogContent, setBlogContent] = useState(DEFAULT_BLOG_CONTENT);
   const [products, setProducts] = useState([]);
+  const [blogPosts, setBlogPosts] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -72,6 +90,8 @@ function App() {
       setActiveTab('aboutHero');
     } else if (page === 'products') {
       setActiveTab('catalog');
+    } else if (page === 'blogs') {
+      setActiveTab('blogHero');
     } else {
       setActiveTab('hero');
     }
@@ -84,20 +104,26 @@ function App() {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [homeData, aboutData, productsList] = await Promise.all([
+      const [homeData, aboutData, blogConfig, productsList, postsList] = await Promise.all([
         fetchHomeContent().catch(() => DEFAULT_HOME_DATA),
         fetchAboutContent().catch(() => DEFAULT_ABOUT_DATA),
-        fetchProducts().catch(() => [])
+        fetchBlogContent().catch(() => DEFAULT_BLOG_CONTENT),
+        fetchProducts().catch(() => []),
+        fetchBlogPosts().catch(() => [])
       ]);
       setHomeContent(homeData);
       setAboutContent(aboutData);
+      setBlogContent(blogConfig);
       setProducts(productsList);
+      setBlogPosts(postsList);
       setIsOnline(true);
     } catch (err) {
       console.warn('Backend API connection note:', err.message);
       setHomeContent(DEFAULT_HOME_DATA);
       setAboutContent(DEFAULT_ABOUT_DATA);
+      setBlogContent(DEFAULT_BLOG_CONTENT);
       setProducts([]);
+      setBlogPosts([]);
       setIsOnline(false);
     } finally {
       setLoading(false);
@@ -141,6 +167,27 @@ function App() {
       showToast({
         type: 'success',
         message: 'About section updated and synced live!'
+      });
+    } catch (err) {
+      console.warn('Auto-sync failed, keeping pending state:', err);
+    }
+  };
+
+  // Update Blog Page configuration (Hero, Featured, Slider)
+  const handleBlogContentUpdate = async (sectionKey, updatedSectionData) => {
+    const newContent = {
+      ...blogContent,
+      [sectionKey]: updatedSectionData
+    };
+    setBlogContent(newContent);
+    setUnsavedChanges(true);
+
+    try {
+      await saveFullBlogContent(newContent);
+      setUnsavedChanges(false);
+      showToast({
+        type: 'success',
+        message: 'Blog section updated and synced live!'
       });
     } catch (err) {
       console.warn('Auto-sync failed, keeping pending state:', err);
@@ -213,7 +260,73 @@ function App() {
     }
   };
 
-  // Manual save for Home / About
+  // Blogs CRUD Operations
+  const handleAddBlogPost = async (postData) => {
+    try {
+      const res = await createBlogPost(postData);
+      if (res.data) {
+        setBlogPosts([res.data, ...blogPosts]);
+        showToast({
+          type: 'success',
+          message: `Article '${postData.title}' published successfully!`
+        });
+      }
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to create article: ' + (err.response?.data?.msg || err.message)
+      });
+    }
+  };
+
+  const handleUpdateBlogPost = async (id, postData) => {
+    try {
+      const res = await updateBlogPost(id, postData);
+      if (res.data) {
+        setBlogPosts(blogPosts.map(p => p.id === id ? res.data : p));
+        showToast({
+          type: 'success',
+          message: `Article '${postData.title || id}' updated successfully!`
+        });
+      }
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to update article: ' + (err.response?.data?.msg || err.message)
+      });
+    }
+  };
+
+  const handleDeleteBlogPost = async (id) => {
+    try {
+      await deleteBlogPost(id);
+      setBlogPosts(blogPosts.filter(p => p.id !== id));
+      showToast({
+        type: 'success',
+        message: 'Article deleted from blog.'
+      });
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to delete article: ' + (err.response?.data?.msg || err.message)
+      });
+    }
+  };
+
+  const handleRefreshBlogPosts = async () => {
+    try {
+      const list = await fetchBlogPosts();
+      setBlogPosts(list);
+      showToast({
+        type: 'info',
+        message: `Blog articles refreshed (${list.length} articles).`
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Manual save for Home / About / Blog settings
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -229,6 +342,12 @@ function App() {
           type: 'success',
           message: 'Home page changes saved successfully!'
         });
+      } else if (activePage === 'blogs') {
+        await saveFullBlogContent(blogContent);
+        showToast({
+          type: 'success',
+          message: 'Blog page settings saved successfully!'
+        });
       }
       setUnsavedChanges(false);
     } catch (err) {
@@ -243,7 +362,10 @@ function App() {
 
   // Reset to defaults
   const handleReset = async () => {
-    const targetLabel = activePage === 'about' ? 'About Page' : 'Home Page';
+    let targetLabel = 'Home Page';
+    if (activePage === 'about') targetLabel = 'About Page';
+    if (activePage === 'blogs') targetLabel = 'Blog Page';
+
     if (!window.confirm(`Reset all ${targetLabel} content back to official factory defaults?`)) {
       return;
     }
@@ -252,6 +374,9 @@ function App() {
       if (activePage === 'about') {
         await resetAboutToDefault();
         setAboutContent(DEFAULT_ABOUT_DATA);
+      } else if (activePage === 'blogs') {
+        await resetBlogContentToDefault();
+        setBlogContent(DEFAULT_BLOG_CONTENT);
       } else {
         await resetHomeToDefault();
         setHomeContent(DEFAULT_HOME_DATA);
@@ -264,6 +389,8 @@ function App() {
     } catch (err) {
       if (activePage === 'about') {
         setAboutContent(DEFAULT_ABOUT_DATA);
+      } else if (activePage === 'blogs') {
+        setBlogContent(DEFAULT_BLOG_CONTENT);
       } else {
         setHomeContent(DEFAULT_HOME_DATA);
       }
@@ -280,6 +407,9 @@ function App() {
   let currentTabs = HOME_SECTIONS;
   if (activePage === 'about') currentTabs = ABOUT_SECTIONS;
   if (activePage === 'products') currentTabs = PRODUCT_SECTIONS;
+  if (activePage === 'blogs') currentTabs = BLOG_SECTIONS;
+
+  const isProductCatalogOnly = activePage === 'products';
 
   return (
     <div className="flex min-h-screen bg-[#070A10] text-slate-100 font-sans">
@@ -292,6 +422,7 @@ function App() {
         isOnline={isOnline}
         unsavedChanges={unsavedChanges}
         productsCount={products.length}
+        blogsCount={blogPosts.length}
       />
 
       {/* Main Content Area */}
@@ -315,8 +446,8 @@ function App() {
             </div>
           ) : (
             <>
-              {/* Sub-tabs Pills Bar (Only for Home and About) */}
-              {activePage !== 'products' && (
+              {/* Sub-tabs Pills Bar (For Home, About, and Blog) */}
+              {!isProductCatalogOnly && (
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800/80 no-scrollbar">
                   {currentTabs.map((tab) => {
                     const Icon = tab.icon;
@@ -470,10 +601,43 @@ function App() {
                     onRefresh={handleRefreshProducts}
                   />
                 )}
+
+                {/* --- BLOGS MANAGEMENT --- */}
+                {activePage === 'blogs' && (
+                  <>
+                    {activeTab === 'blogHero' && (
+                      <BlogHeroEditor
+                        heroData={blogContent.hero}
+                        featuredData={blogContent.featured}
+                        posts={blogPosts}
+                        onUpdateHero={(data) => handleBlogContentUpdate('hero', data)}
+                        onUpdateFeatured={(data) => handleBlogContentUpdate('featured', data)}
+                      />
+                    )}
+
+                    {activeTab === 'blogSlider' && (
+                      <BlogSliderEditor
+                        tickerData={blogContent.ticker}
+                        posts={blogPosts}
+                        onUpdateTicker={(data) => handleBlogContentUpdate('ticker', data)}
+                      />
+                    )}
+
+                    {activeTab === 'blogPosts' && (
+                      <BlogManager
+                        posts={blogPosts}
+                        onAddPost={handleAddBlogPost}
+                        onUpdatePost={handleUpdateBlogPost}
+                        onDeletePost={handleDeleteBlogPost}
+                        onRefresh={handleRefreshBlogPosts}
+                      />
+                    )}
+                  </>
+                )}
               </div>
 
-              {/* Floating Save Trigger for Home/About */}
-              {unsavedChanges && activePage !== 'products' && (
+              {/* Floating Save Trigger */}
+              {unsavedChanges && !isProductCatalogOnly && (
                 <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 bg-slate-900/95 border border-red-500/40 backdrop-blur-xl px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce-in">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />

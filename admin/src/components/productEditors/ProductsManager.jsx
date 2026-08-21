@@ -483,67 +483,71 @@ const ProductsManager = ({
 
       {/* Add / Edit Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl animate-scale-up my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-lg">
-                  <Package size={20} />
+        <div className="fixed inset-0 z-50 overflow-y-auto p-3 sm:p-6 bg-black/85 backdrop-blur-md flex items-center justify-center">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-5 sm:p-7 shadow-2xl animate-scale-up max-h-[90vh] flex flex-col my-auto overflow-hidden">
+            {/* Modal Header */}
+            <div className="shrink-0 space-y-3 pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-lg shrink-0">
+                    <Package size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-white">
+                      {editingProduct ? `Edit Product: ${editingProduct.code || ''}` : 'Add New 3M Product'}
+                    </h4>
+                    <p className="text-xs text-slate-400">
+                      Configure official specifications, high-definition image, and brochure details.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-base font-bold text-white">
-                    {editingProduct ? `Edit Product: ${editingProduct.code || ''}` : 'Add New 3M Product'}
-                  </h4>
-                  <p className="text-xs text-slate-400">
-                    Configure official specifications, high-definition image, and brochure details.
-                  </p>
-                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition-colors"
+                >
+                  <X size={18} />
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition-colors"
-              >
-                <X size={18} />
-              </button>
+              {/* Modal Subtabs */}
+              <div className="flex items-center gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setModalTab('basic')}
+                  className={`flex-1 py-2 rounded-lg font-bold transition-all ${
+                    modalTab === 'basic' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  1. General & Image
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalTab('content')}
+                  className={`flex-1 py-2 rounded-lg font-bold transition-all ${
+                    modalTab === 'content' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  2. Features & Applications
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalTab('specs')}
+                  className={`flex-1 py-2 rounded-lg font-bold transition-all ${
+                    modalTab === 'specs' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  3. Technical Specs
+                </button>
+              </div>
             </div>
 
-            {/* Modal Subtabs */}
-            <div className="flex items-center gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs">
-              <button
-                type="button"
-                onClick={() => setModalTab('basic')}
-                className={`flex-1 py-2 rounded-lg font-bold transition-all ${
-                  modalTab === 'basic' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                1. General & Image
-              </button>
-              <button
-                type="button"
-                onClick={() => setModalTab('content')}
-                className={`flex-1 py-2 rounded-lg font-bold transition-all ${
-                  modalTab === 'content' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                2. Features & Applications
-              </button>
-              <button
-                type="button"
-                onClick={() => setModalTab('specs')}
-                className={`flex-1 py-2 rounded-lg font-bold transition-all ${
-                  modalTab === 'specs' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                3. Technical Specs
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveProduct} className="space-y-5">
-              {/* Tab 1: General */}
-              {modalTab === 'basic' && (
-                <div className="space-y-4 animate-fade-in">
+            <form onSubmit={handleSaveProduct} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+              <div className="flex-1 overflow-y-auto pr-1 py-3 space-y-4">
+                {/* Tab 1: General */}
+                {modalTab === 'basic' && (
+                  <div className="space-y-4 animate-fade-in">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="sm:col-span-1">
                       <label className="block text-xs font-semibold text-slate-300 mb-1">
@@ -726,37 +730,39 @@ const ProductsManager = ({
                   </div>
                 </div>
               )}
-
-              {/* Status Toggle */}
-              <div className="flex items-center gap-2 pt-2 border-t border-slate-800">
-                <input
-                  type="checkbox"
-                  id="prodActive"
-                  checked={formData.isActive !== false}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded bg-slate-950 border-slate-800 text-red-600 focus:ring-red-500 w-4 h-4 cursor-pointer"
-                />
-                <label htmlFor="prodActive" className="text-xs text-slate-300 font-medium cursor-pointer">
-                  Display this product on the live frontend store catalog
-                </label>
               </div>
 
-              {/* Modal Footer */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white transition-colors flex items-center gap-2 shadow-lg shadow-red-950/50 cursor-pointer"
-                >
-                  <Check size={14} />
-                  {editingProduct ? 'Save Changes' : 'Create Product'}
-                </button>
+              {/* Status Toggle & Pinned Modal Footer */}
+              <div className="shrink-0 pt-3 border-t border-slate-800 space-y-3">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="prodActive"
+                    checked={formData.isActive !== false}
+                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                    className="rounded bg-slate-950 border-slate-800 text-red-600 focus:ring-red-500 w-4 h-4 cursor-pointer"
+                  />
+                  <label htmlFor="prodActive" className="text-xs text-slate-300 font-medium cursor-pointer">
+                    Display this product on the live frontend store catalog
+                  </label>
+                </div>
+
+                <div className="flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white transition-colors flex items-center gap-2 shadow-lg shadow-red-950/50 cursor-pointer"
+                  >
+                    <Check size={14} />
+                    {editingProduct ? 'Save Changes' : 'Create Product'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

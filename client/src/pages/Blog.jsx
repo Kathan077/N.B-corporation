@@ -11,6 +11,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Footer from '../components/layout/Footer/Footer';
 import tapesImage from '../assets/3m_industrial_tapes.png';
 import { CATEGORIES, POSTS } from '../data/blogData';
+import { fetchLiveBlogPosts, fetchLiveBlogContent, DEFAULT_BLOG_PAGE_DATA } from '../services/blogService';
 import './Blog.css';
 
 const STATS = [
@@ -19,8 +20,6 @@ const STATS = [
   { value: "94%", label: "Reader Satisfaction", icon: <Award size={20} /> },
   { value: "12+", label: "Industry Sectors", icon: <BarChart2 size={20} /> },
 ];
-
-
 
 /* ─── SUB-COMPONENTS ────────────────────────────────────── */
 const HudTag = ({ children, className = "" }) => (
@@ -57,28 +56,70 @@ const AnimatedCounter = ({ value }) => {
 /* ─── MAIN COMPONENT ────────────────────────────────────── */
 const Blog = () => {
   const navigate = useNavigate();
+  const [posts, setPosts] = useState(POSTS);
+  const [blogConfig, setBlogConfig] = useState(DEFAULT_BLOG_PAGE_DATA);
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [livePosts, liveConfig] = await Promise.all([
+          fetchLiveBlogPosts(),
+          fetchLiveBlogContent()
+        ]);
+        if (Array.isArray(livePosts) && livePosts.length > 0) {
+          setPosts(livePosts);
+        }
+        if (liveConfig) {
+          setBlogConfig(liveConfig);
+        }
+      } catch (err) {
+        console.warn('Fallback to static blog data:', err);
+      }
+    };
+    loadData();
+  }, []);
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 220]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
 
-  const filteredPosts = POSTS.filter(p => {
-    const matchCat = activeCategory === "ALL" || p.category === activeCategory;
+  const filteredPosts = posts.filter(p => {
+    if (p.isActive === false) return false;
+    const matchCat = activeCategory === "ALL" || p.category?.toUpperCase() === activeCategory.toUpperCase();
     const matchQ = !searchQuery ||
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchQuery.toLowerCase());
+      (p.title && p.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (p.excerpt && p.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (p.author && p.author.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchCat && matchQ;
   });
 
-  const featuredPost = POSTS[0] || {};
+  // Featured / Pinned article
+  const targetFeaturedId = blogConfig?.featured?.selectedPostId;
+  const featuredPost = (targetFeaturedId ? posts.find(p => p.id === targetFeaturedId && p.isActive !== false) : null)
+    || posts.find(p => p.featured && p.isActive !== false)
+    || posts.find(p => p.isActive !== false)
+    || posts[0]
+    || {};
+
+  const heroBadge = blogConfig?.hero?.badge || "Industrial Knowledge Hub";
+  const heroTitle = blogConfig?.hero?.title || "Our Blog";
+  const heroTitleAccent = blogConfig?.hero?.titleAccent || "Blog";
+  const heroSubtitle = blogConfig?.hero?.subtitle || "Engineering insights, technical application guides, and industrial innovation updates.";
+
+  const featuredEyebrow = blogConfig?.featured?.eyebrow || "PINNED_INTEL // EDITOR'S PICK";
+  const featuredUnitTag = blogConfig?.featured?.unitTag || "PRIORITY_TRANS // 0xAF92";
+  const featuredCtaText = blogConfig?.featured?.ctaText || "Read Full Article";
+
+  const tickerEnabled = blogConfig?.ticker?.enabled !== false;
+  const tickerLabel = blogConfig?.ticker?.label || "LIVE_STREAM";
+  const tickerCustom = blogConfig?.ticker?.customMessage;
 
   return (
     <div className="blog-page" ref={containerRef}>
-
 
       {/* ── HUD Frame ─────────────────────────────────── */}
       <div className="page-hud-elements" aria-hidden>
@@ -88,9 +129,6 @@ const Blog = () => {
         <div className="side-label-v right">STATUS: DATA_SYNCHRONIZED</div>
       </div>
 
-      {/* ══════════════════════════════════════════════
-          01. HERO
-      ══════════════════════════════════════════════ */}
       {/* ══════════════════════════════════════════════
           01. HERO (CLEAN & SIMPLE)
       ══════════════════════════════════════════════ */}
@@ -102,12 +140,13 @@ const Blog = () => {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="simple-hero-content"
           >
-            <span className="simple-hero-badge">Industrial Knowledge Hub</span>
+            <span className="simple-hero-badge">{heroBadge}</span>
             <h1 className="simple-hero-title">
-              Our <span className="simple-hero-title-accent">Blog</span>
+              {heroTitle.replace(new RegExp(heroTitleAccent, 'i'), '').trim()}{' '}
+              <span className="simple-hero-title-accent">{heroTitleAccent}</span>
             </h1>
             <p className="simple-hero-subtitle">
-              Engineering insights, technical application guides, and industrial innovation updates.
+              {heroSubtitle}
             </p>
           </motion.div>
         </div>
@@ -116,95 +155,107 @@ const Blog = () => {
       {/* ══════════════════════════════════════════════
           02. FEATURED HERO POST
       ══════════════════════════════════════════════ */}
-      <section className="featured-section">
-        {/* Removed blueprint-grid */}
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="featured-wrap"
-        >
-          {/* Image side */}
+      {featuredPost && featuredPost.title && (
+        <section className="featured-section">
+          {/* Removed blueprint-grid */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="featured-img-col"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="featured-wrap"
           >
-            <div className="featured-img-frame cursor-pointer" onClick={() => navigate(`/blog/${featuredPost.id}`)}>
-              <HudTag className="featured-unit-tag">PRIORITY_TRANS // 0xAF92</HudTag>
-              <img src={featuredPost.image} alt={featuredPost.title} className="featured-img" />
-              <div className="featured-img-grad" />
-              <div className="featured-img-bottom">
-                <span className="featured-img-cat">{featuredPost.category}</span>
-                <div className="featured-img-meta">
-                  <span><Clock size={10} /> {featuredPost.readTime} READ</span>
-                  <span><Eye size={10} /> {featuredPost.views}</span>
+            {/* Image side */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="featured-img-col"
+            >
+              <div className="featured-img-frame cursor-pointer" onClick={() => navigate(`/blog/${featuredPost.id}`)}>
+                <HudTag className="featured-unit-tag">{featuredUnitTag}</HudTag>
+                <img src={featuredPost.image} alt={featuredPost.title} className="featured-img" />
+                <div className="featured-img-grad" />
+                <div className="featured-img-bottom">
+                  <span className="featured-img-cat">{featuredPost.category}</span>
+                  <div className="featured-img-meta">
+                    <span><Clock size={10} /> {featuredPost.readTime} READ</span>
+                    <span><Eye size={10} /> {featuredPost.views}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
 
-          {/* Text side */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="featured-text-col"
-          >
-            <SectionEyebrow>Pinned_Intel // Editor's Pick</SectionEyebrow>
+            {/* Text side */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="featured-text-col"
+            >
+              <SectionEyebrow>{featuredEyebrow}</SectionEyebrow>
 
-            <h2 className="featured-title cursor-pointer hover:text-red-500 transition-colors" onClick={() => navigate(`/blog/${featuredPost.id}`)}>{featuredPost.title}</h2>
+              <h2 className="featured-title cursor-pointer hover:text-red-500 transition-colors" onClick={() => navigate(`/blog/${featuredPost.id}`)}>{featuredPost.title}</h2>
 
-            <p className="featured-excerpt">{featuredPost.excerpt}</p>
+              <p className="featured-excerpt">{featuredPost.excerpt}</p>
 
-            <div className="featured-author-row">
-              <div className="featured-author-avatar">
-                <div className="w-8 h-8 rounded-full bg-red-600/20 text-red-500 flex items-center justify-center font-bold text-xs border border-red-500/30">
-                  <User size={14} />
+              <div className="featured-author-row">
+                <div className="featured-author-avatar">
+                  <div className="w-8 h-8 rounded-full bg-red-600/20 text-red-500 flex items-center justify-center font-bold text-xs border border-red-500/30">
+                    <User size={14} />
+                  </div>
+                </div>
+                <div>
+                  <div className="featured-author-name">{featuredPost.author}</div>
+                  <div className="featured-author-role">{featuredPost.role}</div>
+                </div>
+                <div className="featured-date-chip">
+                  <Activity size={10} />
+                  <span>{featuredPost.date}</span>
                 </div>
               </div>
-              <div>
-                <div className="featured-author-name">{featuredPost.author}</div>
-                <div className="featured-author-role">{featuredPost.role}</div>
-              </div>
-              <div className="featured-date-chip">
-                <Activity size={10} />
-                <span>{featuredPost.date}</span>
-              </div>
-            </div>
 
-            <button onClick={() => navigate(`/blog/${featuredPost.id}`)} className="featured-cta">
-              <span>Read Full Article</span>
-              <div className="featured-cta-circle">
-                <ChevronRight size={18} />
-              </div>
-            </button>
+              <button onClick={() => navigate(`/blog/${featuredPost.id}`)} className="featured-cta">
+                <span>{featuredCtaText}</span>
+                <div className="featured-cta-circle">
+                  <ChevronRight size={18} />
+                </div>
+              </button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </section>
+        </section>
+      )}
 
       {/* ══════════════════════════════════════════════
-          03. TICKER / LIVE STREAM BAR
+          03. TICKER / LIVE STREAM BAR (DYNAMIC CMS)
       ══════════════════════════════════════════════ */}
-      <div className="ticker-bar" aria-hidden>
-        <div className="ticker-label">
-          <Zap size={11} />
-          <span>LIVE_STREAM</span>
-        </div>
-        <div className="ticker-track">
-          <div className="ticker-inner">
-            {[...POSTS, ...POSTS].map((p, i) => (
-              <span key={i} className="ticker-item cursor-pointer" onClick={() => navigate(`/blog/${p.id}`)}>
-                <span className="ticker-cat">{p.category}</span>
-                {p.title}
-                <span className="ticker-sep">//</span>
-              </span>
-            ))}
+      {tickerEnabled && (
+        <div className="ticker-bar" aria-hidden>
+          <div className="ticker-label">
+            <Zap size={11} />
+            <span>{tickerLabel}</span>
+          </div>
+          <div className="ticker-track">
+            <div className="ticker-inner">
+              {tickerCustom ? (
+                <span className="ticker-item">
+                  <span className="ticker-cat">ANNOUNCEMENT</span>
+                  {tickerCustom}
+                  <span className="ticker-sep">//</span>
+                </span>
+              ) : (
+                [...posts, ...posts].map((p, i) => (
+                  <span key={i} className="ticker-item cursor-pointer" onClick={() => navigate(`/blog/${p.id}`)}>
+                    <span className="ticker-cat">{p.category}</span>
+                    {p.title}
+                    <span className="ticker-sep">//</span>
+                  </span>
+                ))
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* ══════════════════════════════════════════════
           04. TRENDING SIDEBAR + FILTER + GRID
@@ -213,7 +264,7 @@ const Blog = () => {
         <div className="main-content-wrap">
 
           {/* Left: grid + filter */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -266,8 +317,8 @@ const Blog = () => {
                     >
                       {/* Corner brackets */}
                       <div className="card-brackets" aria-hidden>
-                        <i className="cb tl"/><i className="cb tr"/>
-                        <i className="cb bl"/><i className="cb br"/>
+                        <i className="cb tl" /><i className="cb tr" />
+                        <i className="cb bl" /><i className="cb br" />
                       </div>
 
                       {/* Image */}
@@ -322,8 +373,6 @@ const Blog = () => {
 
         </div>
       </section>
-
-
 
       <Footer />
     </div>

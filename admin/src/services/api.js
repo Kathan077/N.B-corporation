@@ -104,7 +104,7 @@ export const DEFAULT_HOME_DATA = {
           "Floor marking & safety tapes"
         ],
         icon: "Factory",
-        image: "https://tapeuniversity.com/wp-content/uploads/2019/04/Duct-Tape-Decoded-Group.jpg",
+        image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
         order: 1,
         isActive: true
       },
@@ -146,7 +146,7 @@ export const DEFAULT_HOME_DATA = {
           "Maritime technical supplies"
         ],
         icon: "Truck",
-        image: "https://multimedia.3m.com/mws/media/379885J/3m-tm-r3-rapid-responsive-reliable-roll-image.jpg?width=506",
+        image: "https://images.unsplash.com/photo-1519074069444-1ba4ea16e6f6?auto=format&fit=crop&w=800&q=80",
         order: 4,
         isActive: true
       }

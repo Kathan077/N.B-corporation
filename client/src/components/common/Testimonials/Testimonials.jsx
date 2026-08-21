@@ -159,25 +159,6 @@ const Testimonials = ({ content }) => {
             </button>
           </div>
         </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="t-cta-wrapper"
-        >
-          <button className="testimonial-cta">
-            <span className="cta-background" />
-            <span className="cta-text">
-              Explore Our Success Metrics
-              <span className="cta-arrow-box">
-                <ArrowUpRight size={15} />
-              </span>
-            </span>
-            <span className="cta-metadata">COORD: 28.4595° N, 77.0266° E</span>
-          </button>
-        </motion.div>
       </div>
     </section>
   );

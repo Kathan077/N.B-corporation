@@ -2,17 +2,24 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import './Brands.css';
 
-const Brands = () => {
-  const brands = [
-    { name: "LARSEN & TOUBRO", id: "LT-01" },
-    { name: "AIR INDIA", id: "AI-02" },
-    { name: "SAMSUNG", id: "SM-03" },
-    { name: "VVDN", id: "VV-04" },
-    { name: "SGS", id: "SGS-05" },
-    { name: "UFLEX", id: "UF-06" },
-    { name: "IFB", id: "IFB-07" },
-    { name: "POLYPLEX", id: "PX-08" },
-  ];
+const defaultBrands = [
+  { name: "LARSEN & TOUBRO", id: "LT-01" },
+  { name: "AIR INDIA", id: "AI-02" },
+  { name: "SAMSUNG", id: "SM-03" },
+  { name: "VVDN", id: "VV-04" },
+  { name: "SGS", id: "SGS-05" },
+  { name: "UFLEX", id: "UF-06" },
+  { name: "IFB", id: "IFB-07" },
+  { name: "POLYPLEX", id: "PX-08" },
+];
+
+const Brands = ({ content }) => {
+  const title = content?.title || 'Industries';
+  const highlight = content?.highlight || 'Served';
+  const watermark = content?.watermark || 'PARTNERS';
+  const brands = content?.items && content.items.length > 0 
+    ? content.items.filter(it => it.isActive !== false) 
+    : defaultBrands;
 
   return (
     <section className="brands-section relative py-20 overflow-hidden bg-white">
@@ -24,14 +31,14 @@ const Brands = () => {
             viewport={{ once: true }}
             className="text-2xl md:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight"
           >
-            Industries  <span className="text-brand-red italic font-semibold">Served</span>
+            {title} <span className="text-brand-red italic font-semibold">{highlight}</span>
           </motion.h2>
         </div>
 
         <div className="brands-logo-grid flex flex-wrap items-center justify-between gap-8 md:gap-12 py-8">
           {brands.map((brand, index) => (
             <motion.div
-              key={brand.id}
+              key={brand.id || index}
               initial={{ opacity: 0, filter: "grayscale(100%) blur(5px)" }}
               whileInView={{ opacity: 1, filter: "grayscale(0%) blur(0px)" }}
               viewport={{ once: true }}
@@ -58,7 +65,7 @@ const Brands = () => {
       {/* Extreme Watermark Subtle */}
       <div className="absolute -bottom-10 right-10 select-none pointer-events-none opacity-[0.01]">
         <h2 className="text-[20vw] font-black leading-none uppercase tracking-tighter text-slate-900">
-          PARTNERS
+          {watermark}
         </h2>
       </div>
     </section>

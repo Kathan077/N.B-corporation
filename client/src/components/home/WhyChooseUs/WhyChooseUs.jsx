@@ -1,10 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, ShieldCheck, Cpu, Globe2, TrendingUp } from 'lucide-react';
-import abrasiveSheet from '../../../assets/abrasivesheet.avif';
+import { ChevronRight } from 'lucide-react';
 import './WhyChooseUs.css';
 
-const FeatureItem = ({ icon: Icon, text, index }) => (
+const FeatureItem = ({ text, index }) => (
   <motion.div 
     initial={{ opacity: 0, x: 20 }}
     whileInView={{ opacity: 1, x: 0 }}
@@ -22,13 +21,21 @@ const FeatureItem = ({ icon: Icon, text, index }) => (
   </motion.div>
 );
 
-const WhyChooseUs = () => {
-  const features = [
-    "Strong, durable bonding with trusted 3M™ technology",
-    "Faster assembly with clean, efficient application",
-    "Ideal for multiple surfaces and industrial uses",
-    "Consistent performance in extreme conditions"
-  ];
+const defaultFeatures = [
+  "Strong, durable bonding with trusted 3M™ technology",
+  "Faster assembly with clean, efficient application",
+  "Ideal for multiple surfaces and industrial uses",
+  "Consistent performance in extreme conditions"
+];
+
+const WhyChooseUs = ({ content }) => {
+  const eyebrow = content?.eyebrow || 'Operational Supremacy';
+  const title = content?.title || 'Why';
+  const highlight = content?.highlight || 'Choose Us';
+  const description = content?.description || "With over 18 years of experience, NB Corporation has earned a reputation for delivering reliable, application-specific adhesive solutions with timely delivery and responsive support. Whether you're a small business or a large industrial enterprise, we aim to be your long-term adhesive partner by offering products that enhance efficiency, safety, and performance.";
+  const imageUrl = content?.imageUrl || 'https://scapaindustrial.com/wp-content/uploads/2025/03/Scapa_675x450_Images_ParnterwithUs.jpg';
+  const features = content?.features && content.features.length > 0 ? content.features : defaultFeatures;
+  const watermark = content?.watermark || 'MASTERY';
 
   return (
     <section className="why-choose-section relative overflow-hidden bg-white py-24 sm:py-32">
@@ -49,7 +56,7 @@ const WhyChooseUs = () => {
           >
             <div className="choice-image-frame overflow-hidden rounded-3xl shadow-2xl relative">
               <motion.img 
-                src={'https://scapaindustrial.com/wp-content/uploads/2025/03/Scapa_675x450_Images_ParnterwithUs.jpg'} 
+                src={imageUrl} 
                 alt="Industrial Mastery" 
                 className="w-full h-full object-cover choice-main-image"
                 initial={{ scale: 1.2 }}
@@ -57,10 +64,6 @@ const WhyChooseUs = () => {
                 transition={{ duration: 2, ease: "easeOut" }}
               />
               <div className="choice-image-overlay" />
-              
-              {/* Floating Content on Image */}
-            
-              
             </div>
 
             {/* Decorative Blueprint Elements */}
@@ -79,7 +82,7 @@ const WhyChooseUs = () => {
             >
               <div className="w-12 h-px bg-slate-900" />
               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500">
-                Operational Supremacy
+                {eyebrow}
               </span>
             </motion.div>
 
@@ -90,9 +93,9 @@ const WhyChooseUs = () => {
               transition={{ duration: 0.8, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-dark uppercase leading-[0.9] tracking-tighter mb-8"
             >
-              Why <br /> 
+              {title} <br /> 
               <span className="text-brand-red italic relative">
-                Choose Us
+                {highlight}
                 <div className="absolute -bottom-1 right-0 w-1/3 h-[0.1em] bg-brand-red/20 -z-10" />
               </span>
             </motion.h2>
@@ -104,8 +107,7 @@ const WhyChooseUs = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-brand-slate text-sm font-medium leading-relaxed mb-10 max-w-lg border-l-2 border-slate-100 pl-8"
             >
-      
-With over 18 years of experience, NB Corporation has earned a reputation for delivering reliable, application-specific adhesive solutions with timely delivery and responsive support. Whether you're a small business or a large industrial enterprise, we aim to be your long-term adhesive partner by offering products that enhance efficiency, safety, and performance.
+              {description}
             </motion.p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12">
@@ -113,17 +115,6 @@ With over 18 years of experience, NB Corporation has earned a reputation for del
                 <FeatureItem key={i} text={feature} index={i} />
               ))}
             </div>
-
-            {/* Metrics Tag */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.8 }}
-              className="mt-16 flex items-center gap-6"
-            >
-              
-            </motion.div>
           </div>
         </div>
       </div>
@@ -131,7 +122,7 @@ With over 18 years of experience, NB Corporation has earned a reputation for del
       {/* Extreme Visual Accent */}
       <div className="absolute -bottom-10 -left-10 select-none pointer-events-none opacity-[0.02]">
         <h2 className="text-[25vw] font-black leading-none uppercase tracking-tighter text-slate-900">
-          MASTERY
+          {watermark}
         </h2>
       </div>
     </section>

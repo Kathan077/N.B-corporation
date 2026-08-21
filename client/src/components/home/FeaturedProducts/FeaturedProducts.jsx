@@ -151,9 +151,14 @@ const ProductCard = ({ product, index, onInquire, onExplore }) => {
   );
 };
 
-const FeaturedProducts = () => {
+const FeaturedProducts = ({ content }) => {
   const navigate = useNavigate();
-  const featuredProducts = PRODUCTS.filter((p) => p.featured).slice(0, 8);
+  const maxCount = content?.maxCount || 8;
+  const eyebrow = content?.eyebrow || 'Official 3M Authorised Lineup';
+  const heading = content?.heading || 'Featured';
+  const highlight = content?.highlight || '3M Solutions';
+  const buttonText = content?.buttonText || 'View Full Catalog';
+  const featuredProducts = PRODUCTS.filter((p) => p.featured).slice(0, maxCount);
 
   const handleInquire = (product) => {
     navigate(`/contact?subject=Inquiry for ${encodeURIComponent(product.name)} (${product.code})`);
@@ -182,7 +187,7 @@ const FeaturedProducts = () => {
             >
               <ShieldCheck size={14} className="text-red-600" />
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-red-700">
-                Official 3M Authorised Lineup
+                {eyebrow}
               </span>
             </motion.div>
 
@@ -192,7 +197,7 @@ const FeaturedProducts = () => {
               viewport={{ once: true }}
               className="text-4xl md:text-5xl font-black text-slate-900 uppercase leading-tight tracking-tight"
             >
-              Featured <span className="text-red-600 italic">3M Solutions</span>
+              {heading} <span className="text-red-600 italic">{highlight}</span>
             </motion.h2>
           </div>
 
@@ -205,7 +210,7 @@ const FeaturedProducts = () => {
               onClick={handleExplore}
               className="px-6 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg shadow-red-600/20 flex items-center gap-2 cursor-pointer"
             >
-              <span>View Full Catalog ({PRODUCTS.length})</span>
+              <span>{buttonText} ({PRODUCTS.length})</span>
               <ArrowRight size={14} />
             </button>
           </motion.div>

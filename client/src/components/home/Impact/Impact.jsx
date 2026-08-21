@@ -1,9 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronsRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './Impact.css';
 
-const Impact = () => {
+const Impact = ({ content }) => {
+  const navigate = useNavigate();
+  const tagline = content?.tagline || 'We Can Help You';
+  const cost = content?.costReduction || '20%';
+  const efficiency = content?.efficiencyIncrease || '30%';
+  const quality = content?.qualityIncrease || '40%';
+  const buttonText = content?.buttonText || 'Contact Now';
+  const buttonLink = content?.buttonLink || '/contact';
+
   return (
     <section className="impact-section py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-6">
@@ -20,7 +29,7 @@ const Impact = () => {
             viewport={{ once: true }}
             className="impact-tagline"
           >
-            We Can Help You
+            {tagline}
           </motion.span>
         </div>
 
@@ -32,18 +41,19 @@ const Impact = () => {
           className="impact-content mb-12"
         >
           <h2 className="impact-statement">
-            we aim to reduce production costs by <span className="highlight-text">20%</span> and increase efficiency by <span className="highlight-text">30%</span> while simultaneously improving product quality and lifespan by <span className="highlight-text">40%</span>.
+            we aim to reduce production costs by <span className="highlight-text">{cost}</span> and increase efficiency by <span className="highlight-text">{efficiency}</span> while simultaneously improving product quality and lifespan by <span className="highlight-text">{quality}</span>.
           </h2>
         </motion.div>
 
         <motion.button
+          onClick={() => navigate(buttonLink)}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
           className="contact-now-btn group"
         >
-          <span className="btn-text">Contact Now</span>
+          <span className="btn-text">{buttonText}</span>
           <div className="btn-icon-wrapper">
             <ChevronsRight size={20} className="icon-arrows" />
           </div>

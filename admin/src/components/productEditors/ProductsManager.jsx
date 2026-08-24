@@ -55,13 +55,14 @@ const ProductsManager = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [modalTab, setModalTab] = useState('basic'); // 'basic' | 'content' | 'specs'
+  const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     id: '',
     code: '',
     name: '',
     category: CATEGORIES_LIST[0],
-    categoryId: 'floor-marking',
+    categoryId: 'floor-marking-tapes',
     subtitle: '',
     description: '',
     image: '',
@@ -111,7 +112,7 @@ const ProductsManager = ({
       code: '',
       name: '',
       category: CATEGORIES_LIST[0],
-      categoryId: 'floor-marking',
+      categoryId: CATEGORIES_LIST[0].toLowerCase().replace(/[^a-z0-9]/g, '-'),
       subtitle: '',
       description: '',
       image: '',
@@ -145,36 +146,49 @@ const ProductsManager = ({
     e.preventDefault();
     if (!formData.name.trim() || !formData.category.trim()) return;
 
-    const featuresArray = typeof formData.features === 'string'
-      ? formData.features.split('\n').map(s => s.trim()).filter(s => s.length > 0)
-      : formData.features || [];
+    setIsSaving(true);
+    try {
+      const featuresArray = typeof formData.features === 'string'
+        ? formData.features.split('\n').map(s => s.trim()).filter(s => s.length > 0)
+        : formData.features || [];
 
-    const applicationsArray = typeof formData.applications === 'string'
-      ? formData.applications.split('\n').map(s => s.trim()).filter(s => s.length > 0)
-      : formData.applications || [];
+      const applicationsArray = typeof formData.applications === 'string'
+        ? formData.applications.split('\n').map(s => s.trim()).filter(s => s.length > 0)
+        : formData.applications || [];
 
-    const productPayload = {
-      ...formData,
-      features: featuresArray,
-      applications: applicationsArray
-    };
+      const catId = formData.categoryId || formData.category.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
-    if (editingProduct) {
-      await onUpdateProduct(editingProduct.id, productPayload);
-    } else {
-      await onAddProduct(productPayload);
+      const productPayload = {
+        ...formData,
+        categoryId: catId,
+        features: featuresArray,
+        applications: applicationsArray
+      };
+
+      let success = false;
+      if (editingProduct) {
+        success = await onUpdateProduct(editingProduct.id || editingProduct._id, productPayload);
+      } else {
+        success = await onAddProduct(productPayload);
+      }
+
+      if (success !== false) {
+        setIsModalOpen(false);
+      }
+    } finally {
+      setIsSaving(false);
     }
-    setIsModalOpen(false);
   };
 
-  const handleDelete = (id, name) => {
+  const handleDelete = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete product "${name}"?`)) {
-      onDeleteProduct(id);
+      await onDeleteProduct(id);
     }
   };
 
   const handleToggleActive = (prod) => {
-    onUpdateProduct(prod.id, {
+    const targetId = prod.id || prod._id;
+    onUpdateProduct(targetId, {
       ...prod,
       isActive: prod.isActive === false ? true : false
     });
@@ -340,106 +354,109 @@ const ProductsManager = ({
             </thead>
             <tbody className="divide-y divide-slate-800/60">
               {paginatedProducts.length > 0 ? (
-                paginatedProducts.map((prod) => (
-                  <tr 
-                    key={prod.id} 
-                    className="hover:bg-slate-850/50 transition-colors group"
-                  >
-                    {/* Code & Thumbnail */}
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
-                          {prod.image ? (
-                            <img
-                              src={getImageUrl(prod.image)}
-                              alt={prod.name}
-                              className="w-full h-full object-contain p-1"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                              }}
-                            />
-                          ) : (
-                            <Package size={18} className="text-slate-600" />
-                          )}
+                paginatedProducts.map((prod, index) => {
+                  const targetId = prod.id || prod._id;
+                  return (
+                    <tr 
+                      key={targetId || `prod-${index}`} 
+                      className="hover:bg-slate-850/50 transition-colors group"
+                    >
+                      {/* Code & Thumbnail */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
+                            {prod.image ? (
+                              <img
+                                src={getImageUrl(prod.image)}
+                                alt={prod.name}
+                                className="w-full h-full object-contain p-1"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <Package size={18} className="text-slate-600" />
+                            )}
+                          </div>
+                          <div>
+                            <span className="inline-block px-2 py-0.5 rounded bg-red-950/80 border border-red-500/30 text-red-400 font-mono font-bold text-[10px]">
+                              3M {prod.code || 'CODE'}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="inline-block px-2 py-0.5 rounded bg-red-950/80 border border-red-500/30 text-red-400 font-mono font-bold text-[10px]">
-                            3M {prod.code || 'CODE'}
-                          </span>
+                      </td>
+
+                      {/* Name */}
+                      <td className="py-3 px-4 font-bold text-white max-w-xs">
+                        <div className="truncate group-hover:text-red-400 transition-colors">
+                          {prod.name}
                         </div>
-                      </div>
-                    </td>
+                        <div className="text-[11px] text-slate-400 font-normal line-clamp-1">
+                          {prod.description}
+                        </div>
+                      </td>
 
-                    {/* Name */}
-                    <td className="py-3 px-4 font-bold text-white max-w-xs">
-                      <div className="truncate group-hover:text-red-400 transition-colors">
-                        {prod.name}
-                      </div>
-                      <div className="text-[11px] text-slate-400 font-normal line-clamp-1">
-                        {prod.description}
-                      </div>
-                    </td>
+                      {/* Category */}
+                      <td className="py-3 px-4 text-slate-300">
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[11px]">
+                          {prod.category}
+                        </span>
+                      </td>
 
-                    {/* Category */}
-                    <td className="py-3 px-4 text-slate-300">
-                      <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[11px]">
-                        {prod.category}
-                      </span>
-                    </td>
+                      {/* Subtitle / Dimensions */}
+                      <td className="py-3 px-4 text-slate-400 font-mono text-[11px] max-w-[200px] truncate">
+                        {prod.subtitle || '—'}
+                      </td>
 
-                    {/* Subtitle / Dimensions */}
-                    <td className="py-3 px-4 text-slate-400 font-mono text-[11px] max-w-[200px] truncate">
-                      {prod.subtitle || '—'}
-                    </td>
-
-                    {/* Status Toggle */}
-                    <td className="py-3 px-4 text-center">
-                      <button
-                        type="button"
-                        onClick={() => handleToggleActive(prod)}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
-                          prod.isActive !== false
-                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30'
-                            : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'
-                        }`}
-                      >
-                        <span className={`w-1.5 h-1.5 rounded-full ${prod.isActive !== false ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
-                        {prod.isActive !== false ? 'Active' : 'Hidden'}
-                      </button>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="py-3 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <a
-                          href={`http://localhost:5173/product/${prod.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
-                          title="View on live site"
-                        >
-                          <ExternalLink size={14} />
-                        </a>
+                      {/* Status Toggle */}
+                      <td className="py-3 px-4 text-center">
                         <button
                           type="button"
-                          onClick={() => openEditModal(prod)}
-                          className="p-1.5 text-slate-300 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
-                          title="Edit Product"
+                          onClick={() => handleToggleActive(prod)}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
+                            prod.isActive !== false
+                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30'
+                              : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'
+                          }`}
                         >
-                          <Edit2 size={14} />
+                          <span className={`w-1.5 h-1.5 rounded-full ${prod.isActive !== false ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+                          {prod.isActive !== false ? 'Active' : 'Hidden'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(prod.id, prod.name)}
-                          className="p-1.5 text-slate-300 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
-                          title="Delete Product"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <a
+                            href={`http://localhost:5173/product/${targetId || prod.code}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                            title="View on live site"
+                          >
+                            <ExternalLink size={14} />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(prod)}
+                            className="p-1.5 text-slate-300 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                            title="Edit Product"
+                          >
+                            <Edit2 size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(targetId, prod.name)}
+                            className="p-1.5 text-slate-300 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                            title="Delete Product"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-slate-500">
@@ -585,7 +602,14 @@ const ProductsManager = ({
                       </label>
                       <select
                         value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        onChange={(e) => {
+                          const cat = e.target.value;
+                          setFormData({
+                            ...formData,
+                            category: cat,
+                            categoryId: cat.toLowerCase().replace(/[^a-z0-9]/g, '-')
+                          });
+                        }}
                         className="w-full bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-3.5 py-2 text-xs text-white outline-none"
                       >
                         {CATEGORIES_LIST.map((cat) => (
@@ -757,10 +781,20 @@ const ProductsManager = ({
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white transition-colors flex items-center gap-2 shadow-lg shadow-red-950/50 cursor-pointer"
+                    disabled={isSaving}
+                    className="px-6 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-colors flex items-center gap-2 shadow-lg shadow-red-950/50 cursor-pointer"
                   >
-                    <Check size={14} />
-                    {editingProduct ? 'Save Changes' : 'Create Product'}
+                    {isSaving ? (
+                      <>
+                        <RefreshCw size={14} className="animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Check size={14} />
+                        {editingProduct ? 'Save Changes' : 'Create Product'}
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

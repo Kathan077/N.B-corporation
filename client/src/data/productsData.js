@@ -427,18 +427,18 @@ export const PRODUCTS = [
     "categoryId": "floor-marking",
     "subtitle": "2\" to 45\" X 33Mtr • Available in 6 Colors",
     "description": "Heavy-duty vinyl floor marking tape with rubber adhesive, designed to withstand high-traffic areas including pallet drag and forklift scuffing. Linered construction allows precise positioning and die-cutting of custom shapes.",
-    "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07.jpeg",
+    "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.22 (2).jpeg",
     "pdfPage": 5,
     "colors": [
       {
         "name": "Yellow",
         "hex": "#eab308",
-        "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07 (2).jpeg"
+        "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.22 (2).jpeg"
       },
       {
         "name": "Red",
         "hex": "#ef4444",
-        "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07.jpeg"
+        "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07 (2).jpeg"
       },
       {
         "name": "Blue",
@@ -458,7 +458,7 @@ export const PRODUCTS = [
       {
         "name": "Green",
         "hex": "#22c55e",
-        "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.22 (2).jpeg"
+        "image": "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07.jpeg"
       }
     ],
     "widths": [
@@ -506,12 +506,12 @@ export const PRODUCTS = [
     "mainCategoryId": "industrial-tapes",
     "subCategoryId": "floor-marking",
     "images": [
-      "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07.jpeg",
+      "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.22 (2).jpeg",
       "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07 (2).jpeg",
       "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.14 (2).jpeg",
       "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.17.jpeg",
       "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.18 (3).jpeg",
-      "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.22 (2).jpeg"
+      "/product/HD Images/FLOOR MARKING  TAPES/764 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape/WhatsApp Image 2026-07-28 at 11.16.07.jpeg"
     ]
   },
   {
@@ -640,13 +640,13 @@ export const PRODUCTS = [
     "categoryId": "floor-marking",
     "subtitle": "2\" X 33 Mtr • Heavy-Duty Industrial Grade",
     "description": "Heavy-duty vinyl floor marking tape built for high-traffic industrial environments. Tough, low-profile backing resists curling and pallet scuffing to maintain vivid markings long-term. Rubber adhesive allows clean one-piece removal.",
-    "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.01.jpeg",
+    "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.13.jpeg",
     "pdfPage": 7,
     "colors": [
       {
         "name": "Yellow",
         "hex": "#eab308",
-        "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.01.jpeg"
+        "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.13.jpeg"
       },
       {
         "name": "Red",
@@ -661,12 +661,12 @@ export const PRODUCTS = [
       {
         "name": "White",
         "hex": "#ffffff",
-        "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.11 (1).jpeg"
+        "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.01.jpeg"
       },
       {
         "name": "Green",
         "hex": "#22c55e",
-        "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.13.jpeg"
+        "image": "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.11 (1).jpeg"
       }
     ],
     "widths": [
@@ -710,11 +710,11 @@ export const PRODUCTS = [
     "mainCategoryId": "industrial-tapes",
     "subCategoryId": "floor-marking",
     "images": [
-      "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.01.jpeg",
+      "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.13.jpeg",
       "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.02.jpeg",
       "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.09 (1).jpeg",
-      "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.11 (1).jpeg",
-      "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.13.jpeg"
+      "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.01.jpeg",
+      "/product/HD Images/FLOOR MARKING  TAPES/971 Yellow, Red, Blue, Black, White, Green — 3M Floor Marking Tape1/WhatsApp Image 2026-07-24 at 14.57.11 (1).jpeg"
     ]
   },
   {

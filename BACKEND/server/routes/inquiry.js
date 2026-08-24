@@ -240,4 +240,97 @@ router.post("/", async (req, res) => {
   }
 });
 
+// @route   GET /api/inquiry
+// @desc    Get all inquiries with search and status filter
+// @access  Public / Admin
+router.get("/", async (req, res) => {
+  try {
+    const { search, status } = req.query;
+    let query = {};
+
+    if (status && status !== "ALL") {
+      query.status = status;
+    }
+
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      query.$or = [
+        { name: searchRegex },
+        { email: searchRegex },
+        { mobile: searchRegex },
+        { location: searchRegex },
+        { selectedProduct: searchRegex },
+        { message: searchRegex }
+      ];
+    }
+
+    const inquiries = await Inquiry.find(query).sort({ createdAt: -1 });
+
+    return res.json({
+      success: true,
+      count: inquiries.length,
+      data: inquiries
+    });
+  } catch (error) {
+    console.error("Fetch Inquiries Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch customer inquiries: " + error.message
+    });
+  }
+});
+
+// @route   PUT /api/inquiry/:id
+// @desc    Update inquiry status or details
+// @access  Public / Admin
+router.put("/:id", async (req, res) => {
+  try {
+    const { status, notes } = req.body;
+    const inquiry = await Inquiry.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+
+    if (!inquiry) {
+      return res.status(404).json({ success: false, message: "Inquiry not found" });
+    }
+
+    return res.json({
+      success: true,
+      message: "Inquiry updated successfully",
+      data: inquiry
+    });
+  } catch (error) {
+    console.error("Update Inquiry Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update inquiry: " + error.message
+    });
+  }
+});
+
+// @route   DELETE /api/inquiry/:id
+// @desc    Delete inquiry
+// @access  Public / Admin
+router.delete("/:id", async (req, res) => {
+  try {
+    const inquiry = await Inquiry.findByIdAndDelete(req.params.id);
+    if (!inquiry) {
+      return res.status(404).json({ success: false, message: "Inquiry not found" });
+    }
+
+    return res.json({
+      success: true,
+      message: "Inquiry deleted successfully"
+    });
+  } catch (error) {
+    console.error("Delete Inquiry Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete inquiry: " + error.message
+    });
+  }
+});
+
 module.exports = router;

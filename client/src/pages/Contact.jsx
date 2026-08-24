@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, Phone, MapPin, Send, Clock, CheckCircle2, 
@@ -7,6 +7,7 @@ import {
   Headphones, FileText, Check
 } from 'lucide-react';
 import Footer from '../components/layout/Footer/Footer';
+import { fetchLiveContactContent, submitContactInquiry, DEFAULT_CONTACT_PAGE_DATA } from '../services/contactService';
 import './Contact.css';
 
 const FAQItem = ({ question, answer, isOpen, onClick }) => (
@@ -32,6 +33,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => (
 );
 
 const Contact = () => {
+  const [content, setContent] = useState(DEFAULT_CONTACT_PAGE_DATA);
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -43,7 +45,22 @@ const Contact = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [openFaq, setOpenFaq] = useState(0);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const live = await fetchLiveContactContent();
+        if (live) {
+          setContent(live);
+        }
+      } catch (err) {
+        console.warn('Fallback to default contact content:', err);
+      }
+    };
+    loadContent();
+  }, []);
 
   const inquiryTypes = [
     '3M Tape & Adhesives',
@@ -53,37 +70,33 @@ const Contact = () => {
     'Technical Support'
   ];
 
-  const faqs = [
-    {
-      q: "Can I request product samples for testing on our production line?",
-      a: "Yes, absolutely! We provide technical samples of 3M™ VHB tapes, abrasive discs, and adhesives so your engineering team can validate bond strength and surface finish before placing volume orders."
-    },
-    {
-      q: "Do you offer custom slitting and die-cutting services?",
-      a: "Yes. We operate advanced precision slitting and die-cutting machinery to convert tape rolls to any custom width (from 3mm upwards) or bespoke shape according to your engineering drawings."
-    },
-    {
-      q: "What is the typical turnaround time for orders and RFQs?",
-      a: "Standard inquiries and quotes are processed within 4–12 business hours. In-stock products are dispatched within 24–48 hours across our pan-India logistics network."
-    },
-    {
-      q: "Are all products genuine and certified by 3M™?",
-      a: "As an Authorized 3M™ Industrial Distributor & Converter with 20+ years of industry leadership, 100% of our products are certified, traceable, and backed by full manufacturer warranties and technical datasheets."
-    }
-  ];
+  const hero = content.hero || DEFAULT_CONTACT_PAGE_DATA.hero;
+  const cards = content.cards || DEFAULT_CONTACT_PAGE_DATA.cards;
+  const valueSection = content.valueSection || DEFAULT_CONTACT_PAGE_DATA.valueSection;
+  const faqs = (Array.isArray(content.faqs) && content.faqs.length > 0) ? content.faqs : DEFAULT_CONTACT_PAGE_DATA.faqs;
 
   const handleChange = (e) => {
     setFormState(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    if (errorMessage) setErrorMessage('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formState.name || !formState.email || !formState.message) return;
+    if (!formState.name || !formState.email || !formState.message) {
+      setErrorMessage('Please fill out all required fields (*)');
+      return;
+    }
     setSubmitting(true);
-    // Simulate server submission
-    await new Promise(r => setTimeout(r, 1200));
-    setSubmitting(false);
-    setSubmitted(true);
+    setErrorMessage('');
+    try {
+      await submitContactInquiry(formState);
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Submission failed:", err);
+      setErrorMessage(err.response?.data?.message || 'Failed to submit inquiry. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -101,7 +114,7 @@ const Contact = () => {
             className="contact-badge-pill"
           >
             <span className="contact-badge-dot" />
-            <span>CONNECT WITH OUR INDUSTRIAL SPECIALISTS</span>
+            <span>{hero.badge}</span>
           </motion.div>
 
           <motion.h1 
@@ -110,7 +123,8 @@ const Contact = () => {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="contact-hero-heading"
           >
-            Let's Engineer Your <span className="text-red-highlight">Solution Together</span>
+            {hero.heading.replace(new RegExp(hero.headingAccent, 'i'), '').trim()}{' '}
+            <span className="text-red-highlight">{hero.headingAccent}</span>
           </motion.h1>
 
           <motion.p 
@@ -119,7 +133,7 @@ const Contact = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="contact-hero-sub"
           >
-            Whether you need custom slit tapes, high-performance 3M™ abrasives, or a competitive volume quote, our application engineers are ready to assist you.
+            {hero.subheading}
           </motion.p>
         </div>
       </section>
@@ -141,12 +155,12 @@ const Contact = () => {
                 <Phone size={24} />
               </div>
               <div className="contact-card-content">
-                <span className="contact-card-tag">DIRECT HOTLINE</span>
-                <h3 className="contact-card-title">+91 98259 54315</h3>
-                <p className="contact-card-desc">Mon – Sat: 9:00 AM – 7:00 PM IST</p>
+                <span className="contact-card-tag">{cards.phone?.tag || "DIRECT HOTLINE"}</span>
+                <h3 className="contact-card-title">{cards.phone?.value || "+91 98259 54315"}</h3>
+                <p className="contact-card-desc">{cards.phone?.desc || "Mon – Sat: 9:00 AM – 7:00 PM IST"}</p>
               </div>
-              <a href="tel:+919825954315" className="contact-card-action">
-                <span>Call Directly</span>
+              <a href={cards.phone?.link || "tel:+919825954315"} className="contact-card-action">
+                <span>{cards.phone?.action || "Call Directly"}</span>
                 <ArrowRight size={15} />
               </a>
             </motion.div>
@@ -163,12 +177,12 @@ const Contact = () => {
                 <Mail size={24} />
               </div>
               <div className="contact-card-content">
-                <span className="contact-card-tag">OFFICIAL EMAIL</span>
-                <h3 className="contact-card-title">nb2corporation@gmail.com</h3>
-                <p className="contact-card-desc">Fast response within 4–12 business hours</p>
+                <span className="contact-card-tag">{cards.email?.tag || "OFFICIAL EMAIL"}</span>
+                <h3 className="contact-card-title">{cards.email?.value || "nb2corporation@gmail.com"}</h3>
+                <p className="contact-card-desc">{cards.email?.desc || "Fast response within 4–12 business hours"}</p>
               </div>
-              <a href="mailto:nb2corporation@gmail.com" className="contact-card-action">
-                <span>Send Email</span>
+              <a href={cards.email?.link || "mailto:nb2corporation@gmail.com"} className="contact-card-action">
+                <span>{cards.email?.action || "Send Email"}</span>
                 <ArrowRight size={15} />
               </a>
             </motion.div>
@@ -185,17 +199,17 @@ const Contact = () => {
                 <MapPin size={24} />
               </div>
               <div className="contact-card-content">
-                <span className="contact-card-tag">CENTRAL FACILITY</span>
-                <h3 className="contact-card-title">Ahmedabad, Gujarat</h3>
-                <p className="contact-card-desc">Headquarters & Conversion Facility</p>
+                <span className="contact-card-tag">{cards.location?.tag || "CENTRAL FACILITY"}</span>
+                <h3 className="contact-card-title">{cards.location?.value || "Ahmedabad, Gujarat"}</h3>
+                <p className="contact-card-desc">{cards.location?.desc || "Headquarters & Conversion Facility"}</p>
               </div>
               <a 
-                href="https://maps.google.com/?q=Ahmedabad,Gujarat,India" 
+                href={cards.location?.link || "https://maps.google.com/?q=Ahmedabad,Gujarat,India"} 
                 target="_blank" 
                 rel="noreferrer" 
                 className="contact-card-action"
               >
-                <span>Get Directions</span>
+                <span>{cards.location?.action || "Get Directions"}</span>
                 <ArrowRight size={15} />
               </a>
             </motion.div>
@@ -219,49 +233,32 @@ const Contact = () => {
             >
               <div className="contact-section-badge">
                 <Sparkles size={14} className="text-red-600" />
-                <span>EXCELLENCE WITH EXPERIENCE</span>
+                <span>{valueSection.badge}</span>
               </div>
               
               <h2 className="contact-details-heading">
-                Partner with Certified <br />
-                <span className="text-red-highlight">3M™ Industrial Leaders</span>
+                {valueSection.heading.replace(new RegExp(valueSection.headingAccent, 'i'), '').trim()}{' '}
+                <br />
+                <span className="text-red-highlight">{valueSection.headingAccent}</span>
               </h2>
 
               <p className="contact-details-sub">
-                Since 2006, N.B. Corporation has empowered over 1,000+ manufacturing facilities across India with state-of-the-art adhesive and abrasive solutions.
+                {valueSection.subheading}
               </p>
 
               {/* Value Highlights */}
               <div className="contact-perks-list">
-                <div className="contact-perk-item">
-                  <div className="contact-perk-icon">
-                    <Wrench size={20} />
+                {(valueSection.perks || []).map((perk, idx) => (
+                  <div key={idx} className="contact-perk-item">
+                    <div className="contact-perk-icon">
+                      {idx === 0 ? <Wrench size={20} /> : (idx === 1 ? <ShieldCheck size={20} /> : <FileText size={20} />)}
+                    </div>
+                    <div>
+                      <h4 className="contact-perk-title">{perk.title}</h4>
+                      <p className="contact-perk-desc">{perk.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="contact-perk-title">Technical Application Consulting</h4>
-                    <p className="contact-perk-desc">On-site technical evaluation to ensure the ideal tape & abrasive grade for your exact substrates.</p>
-                  </div>
-                </div>
-
-                <div className="contact-perk-item">
-                  <div className="contact-perk-icon">
-                    <ShieldCheck size={20} />
-                  </div>
-                  <div>
-                    <h4 className="contact-perk-title">100% Genuine 3M™ Certified</h4>
-                    <p className="contact-perk-desc">Authorized distributor backing with official batch warranties and technical datasheets.</p>
-                  </div>
-                </div>
-
-                <div className="contact-perk-item">
-                  <div className="contact-perk-icon">
-                    <FileText size={20} />
-                  </div>
-                  <div>
-                    <h4 className="contact-perk-title">Fast RFQ & Sample Dispatches</h4>
-                    <p className="contact-perk-desc">Rapid quote turnarounds and trial samples dispatched directly to your manufacturing plant.</p>
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Working Hours Card */}
@@ -272,11 +269,11 @@ const Contact = () => {
                 </div>
                 <div className="contact-hours-row">
                   <span>Monday – Saturday:</span>
-                  <span className="font-semibold text-slate-800">9:00 AM – 7:00 PM (IST)</span>
+                  <span className="font-semibold text-slate-800">{valueSection.hoursWeekdays}</span>
                 </div>
                 <div className="contact-hours-row">
                   <span>Sunday:</span>
-                  <span className="text-slate-500 font-medium">Closed (Emergency support via Email)</span>
+                  <span className="text-slate-500 font-medium">{valueSection.hoursSunday}</span>
                 </div>
               </div>
             </motion.div>
@@ -432,11 +429,17 @@ const Contact = () => {
                       </div>
                     </div>
 
+                    {errorMessage && (
+                      <div className="p-3 bg-red-950/40 border border-red-500/30 text-red-400 rounded-xl text-xs">
+                        {errorMessage}
+                      </div>
+                    )}
+
                     {/* Submit Button */}
                     <button 
                       type="submit" 
                       disabled={submitting} 
-                      className="contact-submit-btn group"
+                      className="contact-submit-btn group cursor-pointer"
                     >
                       {submitting ? (
                         <div className="flex items-center justify-center gap-2">

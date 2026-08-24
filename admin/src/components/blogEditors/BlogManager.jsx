@@ -31,6 +31,7 @@ const BlogManager = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
   const [modalTab, setModalTab] = useState('meta'); // 'meta' | 'sections'
+  const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     id: '',
@@ -95,8 +96,7 @@ const BlogManager = ({
       image: '/assets/blog_tapes.png',
       summary: '',
       sections: [
-        { heading: 'Introduction & Industrial Scope', body: '' },
-        { heading: 'Technical Implementation & Best Practices', body: '' }
+        { heading: 'Introduction & Industrial Scope', body: 'Overview of the technical application and engineering benefits.' }
       ],
       featured: false,
       isActive: true
@@ -119,17 +119,43 @@ const BlogManager = ({
     e.preventDefault();
     if (!formData.title.trim()) return;
 
-    if (editingPost) {
-      await onUpdatePost(editingPost.id, formData);
-    } else {
-      await onAddPost(formData);
+    setIsSaving(true);
+    try {
+      // Clean sections: remove completely blank ones, or fill body if heading exists
+      const cleanedSections = (formData.sections || [])
+        .map(s => ({
+          heading: (s.heading || '').trim(),
+          body: (s.body || '').trim()
+        }))
+        .filter(s => s.heading.length > 0 || s.body.length > 0)
+        .map(s => ({
+          heading: s.heading || 'Section',
+          body: s.body || 'Content details...'
+        }));
+
+      const payload = {
+        ...formData,
+        sections: cleanedSections
+      };
+
+      let success = false;
+      if (editingPost) {
+        success = await onUpdatePost(editingPost.id || editingPost._id, payload);
+      } else {
+        success = await onAddPost(payload);
+      }
+
+      if (success !== false) {
+        setIsModalOpen(false);
+      }
+    } finally {
+      setIsSaving(false);
     }
-    setIsModalOpen(false);
   };
 
-  const handleDelete = (id, title) => {
+  const handleDelete = async (id, title) => {
     if (window.confirm(`Are you sure you want to delete article "${title}"?`)) {
-      onDeletePost(id);
+      await onDeletePost(id);
     }
   };
 
@@ -716,10 +742,20 @@ const BlogManager = ({
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white transition-colors flex items-center gap-2 shadow-lg shadow-red-950/50 cursor-pointer"
+                    disabled={isSaving}
+                    className="px-6 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-colors flex items-center gap-2 shadow-lg shadow-red-950/50 cursor-pointer"
                   >
-                    <Check size={14} />
-                    {editingPost ? 'Save Changes' : 'Publish Article'}
+                    {isSaving ? (
+                      <>
+                        <RefreshCw size={14} className="animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Check size={14} />
+                        {editingPost ? 'Save Changes' : 'Publish Article'}
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

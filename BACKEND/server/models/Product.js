@@ -7,11 +7,11 @@ const ColorVariantSchema = new mongoose.Schema({
 }, { _id: false });
 
 const ProductSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true, index: true },
-  code: { type: String, required: true, index: true },
+  id: { type: String, default: "", index: true },
+  code: { type: String, default: "", index: true },
   name: { type: String, required: true },
   category: { type: String, required: true },
-  categoryId: { type: String, required: true, index: true },
+  categoryId: { type: String, default: "", index: true },
   mainCategoryId: { type: String, default: "" },
   subtitle: { type: String, default: "" },
   description: { type: String, default: "" },
@@ -26,6 +26,15 @@ const ProductSchema = new mongoose.Schema({
   order: { type: Number, default: 0 }
 }, {
   timestamps: true
+});
+
+ProductSchema.pre("save", function() {
+  if (!this.id) {
+    this.id = this._id ? this._id.toString() : `prod-${Date.now()}`;
+  }
+  if (!this.categoryId && this.category) {
+    this.categoryId = this.category.toLowerCase().replace(/[^a-z0-9]/g, "-");
+  }
 });
 
 const Product = mongoose.model("Product", ProductSchema);

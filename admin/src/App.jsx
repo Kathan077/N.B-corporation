@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar, { HOME_SECTIONS, ABOUT_SECTIONS, PRODUCT_SECTIONS, BLOG_SECTIONS } from './components/Sidebar';
+import Sidebar, { HOME_SECTIONS, ABOUT_SECTIONS, PRODUCT_SECTIONS, BLOG_SECTIONS, CONTACT_SECTIONS } from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
 
@@ -29,6 +29,11 @@ import ProductsManager from './components/productEditors/ProductsManager';
 import BlogHeroEditor from './components/blogEditors/BlogHeroEditor';
 import BlogSliderEditor from './components/blogEditors/BlogSliderEditor';
 import BlogManager from './components/blogEditors/BlogManager';
+
+// Contact Editors & Inquiries Manager
+import ContactHeroEditor from './components/contactEditors/ContactHeroEditor';
+import ContactFaqsEditor from './components/contactEditors/ContactFaqsEditor';
+import InquiriesManager from './components/contactEditors/InquiriesManager';
 
 // APIs
 import { 
@@ -63,15 +68,69 @@ import {
   DEFAULT_BLOG_CONTENT
 } from './services/blogApi';
 
+import {
+  fetchContactContent,
+  saveFullContactContent,
+  resetContactContentToDefault,
+  fetchInquiries,
+  updateInquiry,
+  deleteInquiry,
+  DEFAULT_CONTACT_CONTENT
+} from './services/contactApi';
+
+const getDefaultTabForPage = (page) => {
+  switch (page) {
+    case 'about': return 'aboutHero';
+    case 'products': return 'catalog';
+    case 'blogs': return 'blogHero';
+    case 'contact': return 'contactHero';
+    default: return 'hero';
+  }
+};
+
+const getInitialNavigation = () => {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlPage = urlParams.get('page');
+    const urlTab = urlParams.get('tab');
+
+    const validPages = ['home', 'about', 'products', 'blogs', 'contact'];
+    
+    if (urlPage && validPages.includes(urlPage)) {
+      return { 
+        page: urlPage, 
+        tab: urlTab || getDefaultTabForPage(urlPage) 
+      };
+    }
+
+    const savedPage = localStorage.getItem('nb_admin_active_page');
+    const savedTab = localStorage.getItem('nb_admin_active_tab');
+
+    if (savedPage && validPages.includes(savedPage)) {
+      return { 
+        page: savedPage, 
+        tab: savedTab || getDefaultTabForPage(savedPage) 
+      };
+    }
+  } catch (e) {
+    console.warn('Navigation state init fallback:', e);
+  }
+  return { page: 'home', tab: 'hero' };
+};
+
 function App() {
-  const [activePage, setActivePage] = useState('home'); // 'home' | 'about' | 'products' | 'blogs'
-  const [activeTab, setActiveTab] = useState('hero');
+  const initialNav = getInitialNavigation();
+  const [activePage, setActivePage] = useState(initialNav.page); // 'home' | 'about' | 'products' | 'blogs' | 'contact'
+  const [activeTab, setActiveTab] = useState(initialNav.tab);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const [homeContent, setHomeContent] = useState(DEFAULT_HOME_DATA);
   const [aboutContent, setAboutContent] = useState(DEFAULT_ABOUT_DATA);
   const [blogContent, setBlogContent] = useState(DEFAULT_BLOG_CONTENT);
+  const [contactContent, setContactContent] = useState(DEFAULT_CONTACT_CONTENT);
   const [products, setProducts] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -83,18 +142,25 @@ function App() {
     setToast(toastObj);
   };
 
+  // Sync active page & tab with URL and localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('nb_admin_active_page', activePage);
+      localStorage.setItem('nb_admin_active_tab', activeTab);
+
+      const url = new URL(window.location.href);
+      url.searchParams.set('page', activePage);
+      url.searchParams.set('tab', activeTab);
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {
+      console.warn('Sync URL state:', e);
+    }
+  }, [activePage, activeTab]);
+
   // Switch page handler
   const handlePageChange = (page) => {
     setActivePage(page);
-    if (page === 'about') {
-      setActiveTab('aboutHero');
-    } else if (page === 'products') {
-      setActiveTab('catalog');
-    } else if (page === 'blogs') {
-      setActiveTab('blogHero');
-    } else {
-      setActiveTab('hero');
-    }
+    setActiveTab(getDefaultTabForPage(page));
   };
 
   useEffect(() => {
@@ -104,26 +170,32 @@ function App() {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [homeData, aboutData, blogConfig, productsList, postsList] = await Promise.all([
+      const [homeData, aboutData, blogConfig, contactData, productsList, postsList, inqList] = await Promise.all([
         fetchHomeContent().catch(() => DEFAULT_HOME_DATA),
         fetchAboutContent().catch(() => DEFAULT_ABOUT_DATA),
         fetchBlogContent().catch(() => DEFAULT_BLOG_CONTENT),
+        fetchContactContent().catch(() => DEFAULT_CONTACT_CONTENT),
         fetchProducts().catch(() => []),
-        fetchBlogPosts().catch(() => [])
+        fetchBlogPosts().catch(() => []),
+        fetchInquiries().catch(() => [])
       ]);
       setHomeContent(homeData);
       setAboutContent(aboutData);
       setBlogContent(blogConfig);
+      setContactContent(contactData);
       setProducts(productsList);
       setBlogPosts(postsList);
+      setInquiries(inqList);
       setIsOnline(true);
     } catch (err) {
       console.warn('Backend API connection note:', err.message);
       setHomeContent(DEFAULT_HOME_DATA);
       setAboutContent(DEFAULT_ABOUT_DATA);
       setBlogContent(DEFAULT_BLOG_CONTENT);
+      setContactContent(DEFAULT_CONTACT_CONTENT);
       setProducts([]);
       setBlogPosts([]);
+      setInquiries([]);
       setIsOnline(false);
     } finally {
       setLoading(false);
@@ -131,6 +203,7 @@ function App() {
     }
   };
 
+  // Update Home section
   // Update Home section
   const handleHomeSectionUpdate = async (sectionKey, updatedSectionData) => {
     const newContent = {
@@ -143,10 +216,6 @@ function App() {
     try {
       await saveFullHomeContent(newContent);
       setUnsavedChanges(false);
-      showToast({
-        type: 'success',
-        message: 'Home section updated and synced live!'
-      });
     } catch (err) {
       console.warn('Auto-sync failed, keeping pending state:', err);
     }
@@ -164,10 +233,6 @@ function App() {
     try {
       await saveFullAboutContent(newContent);
       setUnsavedChanges(false);
-      showToast({
-        type: 'success',
-        message: 'About section updated and synced live!'
-      });
     } catch (err) {
       console.warn('Auto-sync failed, keeping pending state:', err);
     }
@@ -185,10 +250,23 @@ function App() {
     try {
       await saveFullBlogContent(newContent);
       setUnsavedChanges(false);
-      showToast({
-        type: 'success',
-        message: 'Blog section updated and synced live!'
-      });
+    } catch (err) {
+      console.warn('Auto-sync failed, keeping pending state:', err);
+    }
+  };
+
+  // Update Contact Page configuration (Hero, Cards, Value, FAQs)
+  const handleContactContentUpdate = async (sectionKey, updatedSectionData) => {
+    const newContent = {
+      ...contactContent,
+      [sectionKey]: updatedSectionData
+    };
+    setContactContent(newContent);
+    setUnsavedChanges(true);
+
+    try {
+      await saveFullContactContent(newContent);
+      setUnsavedChanges(false);
     } catch (err) {
       console.warn('Auto-sync failed, keeping pending state:', err);
     }
@@ -198,52 +276,62 @@ function App() {
   const handleAddProduct = async (productData) => {
     try {
       const res = await createProduct(productData);
-      if (res.data) {
-        setProducts([res.data, ...products]);
+      if (res && (res.data || res.success)) {
+        const newProd = res.data || res;
+        setProducts([newProd, ...products]);
         showToast({
           type: 'success',
           message: `Product '${productData.name}' created successfully!`
         });
+        return true;
       }
+      return false;
     } catch (err) {
       showToast({
         type: 'error',
-        message: 'Failed to create product: ' + (err.response?.data?.msg || err.message)
+        message: 'Failed to create product: ' + (err.response?.data?.msg || err.response?.data?.message || err.message)
       });
+      return false;
     }
   };
 
   const handleUpdateProduct = async (id, productData) => {
     try {
       const res = await updateProduct(id, productData);
-      if (res.data) {
-        setProducts(products.map(p => p.id === id ? res.data : p));
+      if (res && (res.data || res.success)) {
+        const updated = res.data || res;
+        setProducts(products.map(p => (p.id === id || p._id === id) ? { ...p, ...updated } : p));
         showToast({
           type: 'success',
           message: `Product '${productData.name || id}' updated successfully!`
         });
+        return true;
       }
+      return false;
     } catch (err) {
       showToast({
         type: 'error',
-        message: 'Failed to update product: ' + (err.response?.data?.msg || err.message)
+        message: 'Failed to update product: ' + (err.response?.data?.msg || err.response?.data?.message || err.message)
       });
+      return false;
     }
   };
 
   const handleDeleteProduct = async (id) => {
     try {
       await deleteProduct(id);
-      setProducts(products.filter(p => p.id !== id));
+      setProducts(products.filter(p => p.id !== id && p._id !== id));
       showToast({
         type: 'success',
         message: 'Product deleted from catalog.'
       });
+      return true;
     } catch (err) {
       showToast({
         type: 'error',
-        message: 'Failed to delete product: ' + (err.response?.data?.msg || err.message)
+        message: 'Failed to delete product: ' + (err.response?.data?.msg || err.response?.data?.message || err.message)
       });
+      return false;
     }
   };
 
@@ -264,36 +352,44 @@ function App() {
   const handleAddBlogPost = async (postData) => {
     try {
       const res = await createBlogPost(postData);
-      if (res.data) {
-        setBlogPosts([res.data, ...blogPosts]);
+      if (res && (res.data || res.success)) {
+        const newPost = res.data || res;
+        setBlogPosts([newPost, ...blogPosts]);
         showToast({
           type: 'success',
           message: `Article '${postData.title}' published successfully!`
         });
+        return true;
       }
+      return false;
     } catch (err) {
       showToast({
         type: 'error',
-        message: 'Failed to create article: ' + (err.response?.data?.msg || err.message)
+        message: 'Failed to create article: ' + (err.response?.data?.msg || err.response?.data?.message || err.message)
       });
+      return false;
     }
   };
 
   const handleUpdateBlogPost = async (id, postData) => {
     try {
       const res = await updateBlogPost(id, postData);
-      if (res.data) {
-        setBlogPosts(blogPosts.map(p => p.id === id ? res.data : p));
+      if (res && (res.data || res.success)) {
+        const updated = res.data || res;
+        setBlogPosts(blogPosts.map(p => p.id === id ? { ...p, ...updated } : p));
         showToast({
           type: 'success',
           message: `Article '${postData.title || id}' updated successfully!`
         });
+        return true;
       }
+      return false;
     } catch (err) {
       showToast({
         type: 'error',
-        message: 'Failed to update article: ' + (err.response?.data?.msg || err.message)
+        message: 'Failed to update article: ' + (err.response?.data?.msg || err.response?.data?.message || err.message)
       });
+      return false;
     }
   };
 
@@ -305,11 +401,13 @@ function App() {
         type: 'success',
         message: 'Article deleted from blog.'
       });
+      return true;
     } catch (err) {
       showToast({
         type: 'error',
-        message: 'Failed to delete article: ' + (err.response?.data?.msg || err.message)
+        message: 'Failed to delete article: ' + (err.response?.data?.msg || err.response?.data?.message || err.message)
       });
+      return false;
     }
   };
 
@@ -326,7 +424,55 @@ function App() {
     }
   };
 
-  // Manual save for Home / About / Blog settings
+  // Inquiries CRM Operations
+  const handleUpdateInquiry = async (id, updateData) => {
+    try {
+      const res = await updateInquiry(id, updateData);
+      if (res.data) {
+        setInquiries(inquiries.map(i => i._id === id ? res.data : i));
+        showToast({
+          type: 'success',
+          message: `Inquiry status updated to ${updateData.status || 'Updated'}`
+        });
+      }
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to update inquiry: ' + err.message
+      });
+    }
+  };
+
+  const handleDeleteInquiry = async (id) => {
+    try {
+      await deleteInquiry(id);
+      setInquiries(inquiries.filter(i => i._id !== id));
+      showToast({
+        type: 'success',
+        message: 'Inquiry deleted successfully.'
+      });
+    } catch (err) {
+      showToast({
+        type: 'error',
+        message: 'Failed to delete inquiry: ' + err.message
+      });
+    }
+  };
+
+  const handleRefreshInquiries = async () => {
+    try {
+      const list = await fetchInquiries();
+      setInquiries(list);
+      showToast({
+        type: 'info',
+        message: `Inquiries inbox refreshed (${list.length} records).`
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Manual save for Home / About / Blog / Contact settings
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -348,6 +494,12 @@ function App() {
           type: 'success',
           message: 'Blog page settings saved successfully!'
         });
+      } else if (activePage === 'contact') {
+        await saveFullContactContent(contactContent);
+        showToast({
+          type: 'success',
+          message: 'Contact page settings saved successfully!'
+        });
       }
       setUnsavedChanges(false);
     } catch (err) {
@@ -365,6 +517,7 @@ function App() {
     let targetLabel = 'Home Page';
     if (activePage === 'about') targetLabel = 'About Page';
     if (activePage === 'blogs') targetLabel = 'Blog Page';
+    if (activePage === 'contact') targetLabel = 'Contact Page';
 
     if (!window.confirm(`Reset all ${targetLabel} content back to official factory defaults?`)) {
       return;
@@ -377,6 +530,9 @@ function App() {
       } else if (activePage === 'blogs') {
         await resetBlogContentToDefault();
         setBlogContent(DEFAULT_BLOG_CONTENT);
+      } else if (activePage === 'contact') {
+        await resetContactContentToDefault();
+        setContactContent(DEFAULT_CONTACT_CONTENT);
       } else {
         await resetHomeToDefault();
         setHomeContent(DEFAULT_HOME_DATA);
@@ -391,6 +547,8 @@ function App() {
         setAboutContent(DEFAULT_ABOUT_DATA);
       } else if (activePage === 'blogs') {
         setBlogContent(DEFAULT_BLOG_CONTENT);
+      } else if (activePage === 'contact') {
+        setContactContent(DEFAULT_CONTACT_CONTENT);
       } else {
         setHomeContent(DEFAULT_HOME_DATA);
       }
@@ -408,13 +566,16 @@ function App() {
   if (activePage === 'about') currentTabs = ABOUT_SECTIONS;
   if (activePage === 'products') currentTabs = PRODUCT_SECTIONS;
   if (activePage === 'blogs') currentTabs = BLOG_SECTIONS;
+  if (activePage === 'contact') currentTabs = CONTACT_SECTIONS;
 
   const isProductCatalogOnly = activePage === 'products';
 
   return (
-    <div className="flex min-h-screen bg-[#070A10] text-slate-100 font-sans">
-      {/* Sidebar Navigation */}
+    <div className="flex min-h-screen bg-[#070A10] text-slate-100 font-sans overflow-x-hidden">
+      {/* Sidebar Navigation (Desktop Sticky + Mobile Drawer) */}
       <Sidebar
+        isOpen={isMobileNavOpen}
+        onClose={() => setIsMobileNavOpen(false)}
         activePage={activePage}
         onSelectPage={handlePageChange}
         activeTab={activeTab}
@@ -423,11 +584,13 @@ function App() {
         unsavedChanges={unsavedChanges}
         productsCount={products.length}
         blogsCount={blogPosts.length}
+        inquiriesCount={inquiries.length}
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 w-full overflow-x-hidden">
         <Header
+          onToggleSidebar={() => setIsMobileNavOpen((prev) => !prev)}
           activePage={activePage}
           activeTab={activeTab}
           unsavedChanges={unsavedChanges}
@@ -436,7 +599,7 @@ function App() {
           onReset={handleReset}
         />
 
-        <main className="flex-1 p-6 sm:p-8 max-w-7xl w-full mx-auto space-y-8">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 sm:space-y-8">
           {loading ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
               <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
@@ -446,7 +609,7 @@ function App() {
             </div>
           ) : (
             <>
-              {/* Sub-tabs Pills Bar (For Home, About, and Blog) */}
+              {/* Sub-tabs Pills Bar */}
               {!isProductCatalogOnly && (
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800/80 no-scrollbar">
                   {currentTabs.map((tab) => {
@@ -634,10 +797,42 @@ function App() {
                     )}
                   </>
                 )}
+
+                {/* --- CONTACT & INQUIRIES MANAGEMENT --- */}
+                {activePage === 'contact' && (
+                  <>
+                    {activeTab === 'contactHero' && (
+                      <ContactHeroEditor
+                        heroData={contactContent.hero}
+                        cardsData={contactContent.cards}
+                        valueData={contactContent.valueSection}
+                        onUpdateHero={(data) => handleContactContentUpdate('hero', data)}
+                        onUpdateCards={(data) => handleContactContentUpdate('cards', data)}
+                        onUpdateValue={(data) => handleContactContentUpdate('valueSection', data)}
+                      />
+                    )}
+
+                    {activeTab === 'contactFaqs' && (
+                      <ContactFaqsEditor
+                        faqsData={contactContent.faqs}
+                        onUpdateFaqs={(data) => handleContactContentUpdate('faqs', data)}
+                      />
+                    )}
+
+                    {activeTab === 'contactInquiries' && (
+                      <InquiriesManager
+                        inquiries={inquiries}
+                        onUpdateInquiry={handleUpdateInquiry}
+                        onDeleteInquiry={handleDeleteInquiry}
+                        onRefresh={handleRefreshInquiries}
+                      />
+                    )}
+                  </>
+                )}
               </div>
 
               {/* Floating Save Trigger */}
-              {unsavedChanges && !isProductCatalogOnly && (
+              {unsavedChanges && !isProductCatalogOnly && activeTab !== 'contactInquiries' && (
                 <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 bg-slate-900/95 border border-red-500/40 backdrop-blur-xl px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce-in">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />

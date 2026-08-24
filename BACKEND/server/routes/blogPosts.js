@@ -1,19 +1,37 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const { BlogPost } = require("../models/BlogPost");
+
+// Flexible query builder to match custom id or MongoDB ObjectId _id
+const buildPostQuery = (id) => {
+  if (!id) return { _id: null };
+  const strId = String(id).trim();
+  const conditions = [{ id: strId }];
+  if (mongoose.Types.ObjectId.isValid(strId) && strId.length === 24) {
+    try {
+      conditions.unshift({ _id: new mongoose.Types.ObjectId(strId) });
+    } catch (e) {}
+  }
+  return { $or: conditions };
+};
 
 // 🟢 GET /api/blog-posts - Get all blog articles
 router.get("/", async (req, res) => {
   try {
-    const { category, search, activeOnly } = req.query;
+    const { category, search, activeOnly, featured } = req.query;
     const query = {};
 
     if (activeOnly === "true") {
       query.isActive = true;
     }
 
+    if (featured === "true") {
+      query.featured = true;
+    }
+
     if (category && category !== "ALL" && category !== "all") {
-      query.category = new RegExp(category, "i");
+      query.category = new RegExp(`^${category}$`, "i");
     }
 
     if (search && search.trim()) {
@@ -43,7 +61,8 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const post = await BlogPost.findOne({ id: id });
+    const query = buildPostQuery(id);
+    const post = await BlogPost.findOne(query);
 
     if (!post) {
       return res.status(404).json({ success: false, msg: "Blog post not found" });
@@ -62,9 +81,22 @@ router.get("/:id", async (req, res) => {
 // ➕ POST /api/blog-posts - Create a new blog article
 router.post("/", async (req, res) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
     if (!data.title) {
       return res.status(400).json({ success: false, msg: "Article title is required" });
+    }
+
+    delete data._id;
+    delete data.__v;
+
+    // Clean and normalize sections
+    if (Array.isArray(data.sections)) {
+      data.sections = data.sections
+        .map(s => ({
+          heading: (s.heading || "").trim(),
+          body: (s.body || "").trim()
+        }))
+        .filter(s => s.heading || s.body);
     }
 
     if (!data.id) {
@@ -96,10 +128,24 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.__v;
+
+    // Clean and normalize sections
+    if (Array.isArray(updateData.sections)) {
+      updateData.sections = updateData.sections
+        .map(s => ({
+          heading: (s.heading || "").trim(),
+          body: (s.body || "").trim()
+        }))
+        .filter(s => s.heading || s.body);
+    }
+
+    const query = buildPostQuery(id);
 
     const post = await BlogPost.findOneAndUpdate(
-      { id: id },
+      query,
       { $set: updateData },
       { new: true, runValidators: true }
     );
@@ -123,7 +169,8 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await BlogPost.findOneAndDelete({ id: id });
+    const query = buildPostQuery(id);
+    const deleted = await BlogPost.findOneAndDelete(query);
 
     if (!deleted) {
       return res.status(404).json({ success: false, msg: "Blog post not found" });

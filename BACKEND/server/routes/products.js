@@ -1,6 +1,22 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const { Product } = require("../models/Product");
+
+// Flexible query builder to match custom id, MongoDB ObjectId _id, or product code
+const buildProductQuery = (id) => {
+  if (!id) return { _id: null };
+  const strId = String(id).trim();
+  const conditions = [{ id: strId }, { code: strId }];
+  if (mongoose.Types.ObjectId.isValid(strId) && strId.length === 24) {
+    try {
+      conditions.unshift({ _id: new mongoose.Types.ObjectId(strId) });
+    } catch (e) {
+      // ignore
+    }
+  }
+  return { $or: conditions };
+};
 
 // 🟢 GET /api/products - Get all products with optional filters
 router.get("/", async (req, res) => {
@@ -47,9 +63,8 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findOne({
-      $or: [{ id: id }, { code: id }]
-    });
+    const query = buildProductQuery(id);
+    const product = await Product.findOne(query);
 
     if (!product) {
       return res.status(404).json({ success: false, msg: "Product not found" });
@@ -68,14 +83,21 @@ router.get("/:id", async (req, res) => {
 // ➕ POST /api/products - Create a new product
 router.post("/", async (req, res) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
     if (!data.name || !data.category) {
       return res.status(400).json({ success: false, msg: "Product Name and Category are required" });
     }
 
+    delete data._id;
+    delete data.__v;
+
     if (!data.id) {
       const codePart = (data.code || "item").toLowerCase().replace(/[^a-z0-9]/g, "-");
       data.id = `prod-${codePart}-${Date.now().toString().slice(-4)}`;
+    }
+
+    if (!data.categoryId) {
+      data.categoryId = data.category.toLowerCase().replace(/[^a-z0-9]/g, "-");
     }
 
     // Check if duplicate ID exists
@@ -104,10 +126,18 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.__v;
+
+    if (updateData.category && !updateData.categoryId) {
+      updateData.categoryId = updateData.category.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    }
+
+    const query = buildProductQuery(id);
 
     const product = await Product.findOneAndUpdate(
-      { id: id },
+      query,
       { $set: updateData },
       { new: true, runValidators: true }
     );
@@ -131,7 +161,8 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await Product.findOneAndDelete({ id: id });
+    const query = buildProductQuery(id);
+    const deleted = await Product.findOneAndDelete(query);
 
     if (!deleted) {
       return res.status(404).json({ success: false, msg: "Product not found" });

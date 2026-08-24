@@ -121,17 +121,26 @@ const ProductDetail = () => {
   const galleryList = useMemo(() => {
     if (!product) return [];
     const list = [];
-    if (product.image) list.push(product.image);
-    if (product.images && Array.isArray(product.images)) {
-      product.images.forEach((img) => {
-        if (img && !list.includes(img)) list.push(img);
-      });
-    }
+
+    // If product has colors with images, add each color's image in color order
     if (product.colors && Array.isArray(product.colors)) {
       product.colors.forEach((c) => {
         if (c.image && !list.includes(c.image)) list.push(c.image);
       });
     }
+
+    // Include primary product image if not already in list
+    if (product.image && !list.includes(product.image)) {
+      list.unshift(product.image);
+    }
+
+    // Include extra gallery images
+    if (product.images && Array.isArray(product.images)) {
+      product.images.forEach((img) => {
+        if (img && !list.includes(img)) list.push(img);
+      });
+    }
+
     return list;
   }, [product]);
 
@@ -143,6 +152,7 @@ const ProductDetail = () => {
       const idx = galleryList.indexOf(selectedColor.image);
       if (idx !== -1) {
         setActiveImageIndex(idx);
+        setImageError(false);
       }
     }
   }, [selectedColor, galleryList]);
@@ -327,6 +337,12 @@ const ProductDetail = () => {
                             onClick={() => {
                               setActiveImageIndex(idx);
                               setImageError(false);
+                              if (product.colors && Array.isArray(product.colors)) {
+                                const matched = product.colors.find(c => c.image === img);
+                                if (matched) {
+                                  setSelectedColor(matched);
+                                }
+                              }
                             }}
                             className={`relative w-16 h-16 rounded-2xl border p-1 shrink-0 bg-slate-50 transition-all cursor-pointer overflow-hidden ${
                               isActive
@@ -421,7 +437,16 @@ const ProductDetail = () => {
                     return (
                       <button
                         key={idx}
-                        onClick={() => setSelectedColor(col)}
+                        onClick={() => {
+                          setSelectedColor(col);
+                          if (col.image) {
+                            const foundIdx = galleryList.indexOf(col.image);
+                            if (foundIdx !== -1) {
+                              setActiveImageIndex(foundIdx);
+                              setImageError(false);
+                            }
+                          }
+                        }}
                         className={`group relative flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                           isSelected
                             ? 'bg-slate-900 text-white border-slate-900 shadow-md ring-2 ring-red-600 ring-offset-2'

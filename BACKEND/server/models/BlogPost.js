@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
 const SectionSchema = new mongoose.Schema({
-  heading: { type: String, required: true },
-  body: { type: String, required: true }
+  heading: { type: String, default: "" },
+  body: { type: String, default: "" }
 }, { _id: false });
 
 const BlogPostSchema = new mongoose.Schema({

@@ -126,18 +126,18 @@ const Footer = () => {
             </div>
             <div className="footer-address-card">
               <div className="flex items-start gap-3">
-                <div className="footer-contact-icon shrink-0 mt-1">
+                <div className="footer-contact-icon shrink-0 mt-0.5">
                   <MapPin size={18} />
                 </div>
-                <div className="text-xs font-medium text-slate-600 leading-normal space-y-1">
-                  <p className="font-bold text-slate-900 text-sm flex items-center gap-1.5 mb-1">
+                <div className="text-xs font-medium text-slate-600 leading-relaxed space-y-0.5">
+                  <p className="font-bold text-slate-900 text-sm flex items-center gap-1.5 mb-1.5">
                     <span>NB Corporation</span>
                     <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-100 text-red-600 border border-red-200">HQ</span>
                   </p>
-                  <p className="text-slate-600 whitespace-nowrap">G-10, 11, 12 Satkar Avenue,</p>
-                  <p className="text-slate-600 whitespace-nowrap">Nr. Railway Crossing, NH No. 08,</p>
-                  <p className="text-slate-600 whitespace-nowrap">Opp. Starline Maruti Showroom,</p>
-                  <p className="text-slate-600 whitespace-nowrap">Naroda, Ahmedabad, Gujarat 382340</p>
+                  <p className="text-slate-600">G-10, 11, 12 Satkar Avenue,</p>
+                  <p className="text-slate-600">Nr. Railway Crossing, NH No. 08,</p>
+                  <p className="text-slate-600">Opp. Starline Maruti Showroom,</p>
+                  <p className="text-slate-600">Naroda, Ahmedabad, Gujarat 382340</p>
                 </div>
               </div>
             </div>

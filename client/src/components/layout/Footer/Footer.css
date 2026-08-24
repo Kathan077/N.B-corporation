@@ -90,14 +90,12 @@
 
 .footer-address-card {
     width: 100%;
-    max-width: 300px;
-    padding: 14px 16px;
+    padding: 16px 18px;
     border-radius: 16px;
     background: #ffffff;
     border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     transition: all 0.3s ease;
-    overflow: hidden;
 }
 
 .footer-address-card:hover {
